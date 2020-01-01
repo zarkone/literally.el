@@ -1,19 +1,5 @@
 * Global functions and key bindings
 
-** behavior
-Some defaults and glo
-#+BEGIN_SRC emacs-lisp
-(setq-default word-wrap nil)
-(setq-default truncate-lines t)
-(setq browse-url-browser-function 'browse-url-chrome)
-
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
-
-(put 'narrow-to-region 'disabled nil)
-(put 'narrow-to-page 'disabled nil)
-(put 'downcase-region 'disabled nil)
-
-#+END_SRC
 ** My Functions
 #+BEGIN_SRC emacs-lisp
   (defun me/comment-or-uncomment-region-or-line ()
@@ -90,40 +76,56 @@ future refrence.
              (interactive "p")
              (kmacro-exec-ring-item (quote (,keyseq-string 0 "%d")) arg))))
 #+END_SRC
-** Global key bindings
+** Global vars, hooks and key bindings
 #+BEGIN_SRC emacs-lisp
-  (define-key key-translation-map (kbd "C-h") (kbd "<DEL>"))
+  (use-package emacs
+    :hook (before-save . delete-trailing-whitespace)
 
-  (global-set-key (kbd "M-[") 'other-window)
-  (global-set-key [remap text-scale-decrease] 'undo)
-  (global-set-key (kbd "C--") 'undo)
-  (global-set-key (kbd "<C-return>") 'save-buffer)
-  (global-set-key (kbd "C-x RET RET") 'compile)
-  (global-set-key (kbd "C-M-;") 'replace-regexp)
-  (global-set-key (kbd "C-x H") 'help)
-  (global-set-key (kbd "C-c M-.") 'insdate-insert-current-date)
-  (global-set-key (kbd "C-x C-g") 'goto-address-at-point)
-  (global-set-key (kbd "s-k") 'windmove-up)
-  (global-set-key (kbd "s-j") 'windmove-down)
-  (global-set-key (kbd "s-h") 'windmove-left)
-  (global-set-key (kbd "s-l") 'windmove-right)
+    :init
+    (show-paren-mode 1)
 
+    :config
+    (put 'narrow-to-region 'disabled nil)
+    (put 'narrow-to-page 'disabled nil)
+    (put 'downcase-region 'disabled nil)
+
+
+
+    (setq-default indent-tabs-mode nil
+                  word-wrap nil
+                  truncate-lines t)
+    (setq x-select-enable-clipboard t
+          x-select-enable-primary t
+          browse-url-browser-function 'browse-url-chrome
+          uniquify-buffer-name-style 'forward
+          save-interprogram-paste-before-kill t
+          apropos-do-all t
+          mouse-yank-at-point t
+          save-place-file (concat user-emacs-directory ".places")
+          backup-directory-alist `(("." . ,(concat user-emacs-directory ".backups"))))
+
+    (define-key key-translation-map (kbd "C-h") (kbd "<DEL>"))
+
+    :bind (("M-[" . other-window)
+           ([remap text-scale-decrease] . undo)
+           ("C--" . undo)
+           ("<C-return>" . save-buffer)
+           ("C-x RET RET" . compile)
+           ("C-M-;" . replace-regexp)
+           ("C-x H" . help)
+           ("C-c M-." . insdate-insert-current-date)
+           ("C-x C-g" . goto-address-at-point)
+           ("M-/" . hippie-expand)
+           ("C-s" . isearch-forward-regexp)
+           ("C-r" . isearch-backward-regexp)
+           ("s-k" . windmove-up)
+           ("s-j" . windmove-down)
+           ("s-h" . windmove-left)
+           ("s-l" . windmove-right)))
 #+END_SRC
 ** Better defaults
 #+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "M-/") 'hippie-expand)
-  (global-set-key (kbd "C-s") 'isearch-forward-regexp)
-  (global-set-key (kbd "C-r") 'isearch-backward-regexp)
-  (show-paren-mode 1)
-  (setq-default indent-tabs-mode nil)
-  (setq x-select-enable-clipboard t
-        x-select-enable-primary t
-        uniquify-buffer-name-style 'forward
-        save-interprogram-paste-before-kill t
-        apropos-do-all t
-        mouse-yank-at-point t
-        save-place-file (concat user-emacs-directory ".places")
-        backup-directory-alist `(("." . ,(concat user-emacs-directory ".backups"))))
+
 #+END_SRC
 * Appearance
 ** Disable all GUI
