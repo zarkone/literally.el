@@ -1,6 +1,6 @@
 * Global functions and key bindings
 
-** my functions
+** My Functions
 #+BEGIN_SRC emacs-lisp
 (defun me/comment-or-uncomment-region-or-line ()
   "Comments or uncomments the region or the current line if there's no active region."
@@ -40,7 +40,22 @@
       (message filename))))
 (global-set-key (kbd "C-x M-w") 'me/my-put-file-name-on-clipboard)
 #+END_SRC
-** key bindings
+** My KBD Macro
+#+BEGIN_SRC emacs-lisp
+  (defmacro defkbdmacro (name keyseq-string &optional docstring)
+    `(fset (quote ,name)
+           (lambda (&optional arg)
+             ,docstring
+            (interactive "p")
+            (kmacro-exec-ring-item (quote (,keyseq-string 0 "%d"))
+                                   arg))))
+
+  (defkbdmacro kill-till-end [67108896 134217790 23] "Remove text till EOF.")
+  (defkbdmacro dired-open-this-dir "d" "Open Dired here.")
+  (defkbdmacro dupstr "
+  " "Duplicate string.")
+#+END_SRC
+** Global key bindings
 #+BEGIN_SRC emacs-lisp
   (define-key key-translation-map (kbd "C-h") (kbd "<DEL>"))
 
