@@ -1,0 +1,144 @@
+#+TITLE: Emacs dotfiles
+#+AUTHOR: Anatolii Smolianinov <zarkone@ya.ru>
+
+Thanks https://github.com/angrybacon/dotemacs -- very nice-organized
+emacs config, used as a skeleton.
+
+Previously, I used multi-file emacs config: =.init.el.= loads lots of
+files with corresponding configuration code. For example,
+=.setup-clojure.el.= contains the code which is related to Clojure
+setup -- just code, without using any kind of tools like =.use-package.=
+
+But at some point of time i decided to get back to one big init.el:
+sometimes i quickly add\edit some configuration on-fly and then don't
+reboot emacs. Or, more rarely, something breaks after update of
+packages\emacs itself and I restart emacs daemon. Since =.load-file.=
+is runtime fn for loading emacs lisp code, I don't get clear location
+if =.init.el.= loading fails: from interpreter perspective it's all in =.init.el.=
+
+#+BEGIN_EXAMPLE
+Warning (initialization): An error occurred while loading ‘/home/zarkone/.emacs.d/init.el’:
+
+Symbol's value as variable is void: aslkj11!
+#+END_EXAMPLE
+
+Another problem is that it's sometimes hard to remember why some
+config code was added. I hope that literate programming approach will
+force me to comment all the changes.
+
+And another reason why I decided to port my config to org is that I think
+it's a good chance to remove old garbage and adopt new, better
+solutions.
+
+* Global functions and key bindings
+
+** comment-or-uncomment-region-or-line
+Better =.comment-dwim.=
+
+#+BEGIN_SRC emacs-lisp
+(defun me/comment-or-uncomment-region-or-line ()
+  "Comments or uncomments the region or the current line if there's no active region."
+  (interactive)
+  (let (beg end)
+    (if (region-active-p)
+        (setq beg (region-beginning) end (region-end))
+      (setq beg (line-beginning-position) end (line-end-position)))
+    (comment-or-uncomment-region beg end)
+    (next-line)))
+
+(define-key prog-mode-map (kbd "C-;") 'me/comment-or-uncomment-region-or-line)
+#+END_SRC
+
+** switch-to-previous-buffer
+#+BEGIN_SRC emacs-lisp
+(defun me/switch-to-previous-buffer ()
+  (interactive)
+  (switch-to-buffer (other-buffer (current-buffer) 1)))
+
+(global-set-key (kbd "<C-tab>") 'me/switch-to-previous-buffer)
+#+END_SRC
+** kill-region-or-backward-kill-word
+#+BEGIN_SRC emacs-lisp
+(defun me/kill-region-or-backward-kill-word (&optional arg region)
+  "`kill-region' if the region is active, otherwise `backward-kill-word'"
+  (interactive
+   (list (prefix-numeric-value current-prefix-arg) (use-region-p)))
+  (if region
+      (kill-region (region-beginning) (region-end))
+    (backward-kill-word arg)))
+
+(global-set-key (kbd "C-w") 'me/kill-region-or-backward-kill-word)
+#+END_SRC
+** my-put-file-name-on-clipboard
+#+BEGIN_SRC
+(defun me/my-put-file-name-on-clipboard ()
+  "Put the current file name on the clipboard"
+  (interactive)
+  (let ((filename (if (equal major-mode 'dired-mode)
+                      default-directory
+                    (buffer-file-name))))
+    (when filename
+      (with-temp-buffer
+        (insert filename)
+        (clipboard-kill-region (point-min) (point-max)))
+      (message filename))))
+(global-set-key (kbd "C-x M-w") 'me/my-put-file-name-on-clipboard)
+#+END_SRC
+** key bindings
+#+BEGIN_SRC emacs-lisp
+  (define-key key-translation-map (kbd "C-h") (kbd "<DEL>"))
+
+  (global-set-key (kbd "M-[") 'other-window)
+  (global-set-key [remap text-scale-decrease] 'undo)
+  (global-set-key (kbd "C--") 'undo)
+  (global-set-key (kbd "C-M-=") 'toggle-input-method)
+  (global-set-key (kbd "C-M--") 'toggle-input-method)
+  (global-set-key (kbd "<C-return>") 'save-buffer)
+  (global-set-key (kbd "C-x RET RET") 'compile)
+  (global-set-key (kbd "C-M-;") 'replace-regexp)
+  (global-set-key (kbd "C-x H") 'help)
+  (global-set-key (kbd "C-c M-.") 'insdate-insert-current-date)
+  (global-set-key (kbd "s-k") 'windmove-up)
+  (global-set-key (kbd "s-j") 'windmove-down)
+  (global-set-key (kbd "s-h") 'windmove-left)
+  (global-set-key (kbd "s-l") 'windmove-right)
+
+
+
+  ;; external
+  ;; todo: require deps with use-package
+  ;; (global-set-key (kbd "C-M-g") 'magit-status)
+  ;; (global-set-key (kbd "M-RET") 'projectile-run-project)
+  ;; (global-set-key (kbd "M-s o") 'helm-multi-occur)
+  ;; (global-set-key (kbd "C-x C-r") 'helm-recentf)
+  ;; (global-set-key (kbd "C-x x") 'er/expand-region)
+  ;; (global-set-key (kbd "C-x G") 'git-timemachine)
+
+  ;; ;; https://github.com/lukhas/buffer-move
+  ;; (global-set-key (kbd "C-s-k") 'buf-move-up)
+  ;; (global-set-key (kbd "C-s-j") 'buf-move-down)
+  ;; (global-set-key (kbd "C-s-h") 'buf-move-left)
+  ;; (global-set-key (kbd "C-s-l") 'buf-move-right)
+
+  ;; end external
+
+  ;; macro
+  ;; (global-set-key (kbd "C-M-y") 'dupstr)
+  ;; (global-set-key (kbd "C-x C-k DEL") 'kill-till-end)
+  ;; (global-set-key (kbd "M-;") 'trim-witespace)
+  ;; (global-unset-key (kbd "C-x C-d"))
+  ;; (global-set-key (kbd "C-x C-d") 'dired-open-this-dir)
+  ;; (global-set-key (kbd "C-x C-g") 'goto-address-at-point)
+  ;; ;; end macro
+#+END_SRC
+* Packages
+** magit
+#+BEGIN_SRC emacs-lisp
+  (use-package magit
+    :bind (("C-M-g" . magit-status)))
+#+END_SRC
+** git-timemachine
+#+BEGIN_SRC emacs-lisp
+(use-package git-timemachine
+    :bind (("C-x G" . git-timemachine)))
+#+END_SRC
