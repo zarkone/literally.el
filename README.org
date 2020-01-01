@@ -1,6 +1,6 @@
 #+TITLE: My Emacs config
 #+AUTHOR: Anatolii Smolianinov <zarkone@ya.ru>
-** rationale
+** Rationale
 Previously, I used multi-file emacs config: =init.el= loads lots of
 files with corresponding configuration code. For example,
 =setup-clojure.el= contains the code which is related to Clojure
