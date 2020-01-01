@@ -12,6 +12,8 @@ jobs:
         uses: actions/checkout@v1
       - name: Smoke test
         run: |
+          # NOTE: I simulate home directory to check if generated code from org file is placed correctly,
+          #       but launch emacs with `-q` option to catch initialization error and put proper exit code.
           cd ..
           mv literally.el .emacs.d
           env HOME="${PWD}" emacs -q --fg-daemon --eval '(condition-case err (progn (load-file "./.emacs.d/init.el") (kill-emacs)) (error (message "error: %s" err) (kill-emacs -1)))'
