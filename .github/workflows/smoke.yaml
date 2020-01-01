@@ -2,6 +2,7 @@ name: cd
 on: push
 jobs:
   build:
+    runs-on: ubuntu-latest
     steps:
       - name: Install emacs
         uses: purcell/setup-emacs@v1
