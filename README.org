@@ -1,5 +1,10 @@
 #+TITLE: My Emacs config
 #+AUTHOR: Anatolii Smolianinov <zarkone@ya.ru>
+
+My emacs config
+#+CAPTION: literally.el config screenshot
+[[./scrot.png]]
+
 ** Rationale
 Previously, I used multi-file emacs config: =init.el= loads lots of
 files with corresponding configuration code. For example,
