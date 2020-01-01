@@ -101,3 +101,58 @@
 (use-package git-timemachine
     :bind (("C-x G" . git-timemachine)))
 #+END_SRC
+** company
+#+BEGIN_SRC emacs-lisp
+  (use-package company
+    :ensure nil
+    :config
+    (global-company-mode 1))
+#+END_SRC
+** helm
+#+BEGIN_SRC emacs-lisp
+  (use-package helm
+    :bind-keymap ("C-i" . helm-execute-persistent-action)
+    :bind (("C-x b" . helm-mini)
+           ("C-x C-f" . helm-find-files)
+           ("M-x" . helm-M-x)
+           ("M-y" . helm-show-kill-ring)
+           ("C-M-h" . kill-region-or-backward-kill-word)
+           ("C-c M-o" . helm-occur)
+           ("C-x C-r" . helm-recentf)
+           )
+    :config
+    (helm-mode t)
+    (setq helm-buffers-fuzzy-matching t
+          helm-recentf-fuzzy-match t
+          helm-M-x-fuzzy-match t))
+#+END_SRC
+*** helm plugins
+#+BEGIN_SRC emacs-lisp
+  (use-package helm-company)
+  (use-package helm-rg
+    :bind (("C-x C-p" . helm-projectile-rg)))
+  (use-package helm-projectile
+    :bind (("C-x C-b" . helm-projectile-switch-to-buffer)))
+#+END_SRC
+** expand-region
+#+BEGIN_SRC emacs-lisp
+  (use-package expand-region
+    :bind (("C-x x" . er/expand-region)))
+#+END_SRC
+** buffer-move
+#+BEGIN_SRC emacs-lisp
+  (use-package buffer-move
+    :bind (("C-s-k" . buf-move-up)
+           ("C-s-j" . buf-move-down)
+           ("C-s-h" . buf-move-left)
+           ("C-s-l" . buf-move-right)))
+#+END_SRC
+** projectile
+#+BEGIN_SRC emacs-lisp
+  (use-package projectile
+    :hook (after-init . projectile-global-mode)
+    :bind-keymap (("C-c C-p" . projectile-command-map))
+    :custom (projectile-completion-system 'helm)
+    :config
+    (setq-default projectile-mode-line " P"))
+#+END_SRC
