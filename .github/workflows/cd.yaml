@@ -16,4 +16,4 @@ jobs:
           #       but launch emacs with `-q` option to catch initialization error and put proper exit code.
           cd ..
           mv literally.el .emacs.d
-          env HOME="${PWD}" emacs -q --fg-daemon --eval '(condition-case err (progn (load-file "./.emacs.d/init.el") (kill-emacs)) (error (message "error: %s" err) (kill-emacs -1)))'=
+          env HOME="$PWD" emacs -q --fg-daemon --eval '(condition-case err (progn (load-file "./.emacs.d/init.el") (kill-emacs)) (error (message "error: %s" err) (kill-emacs -1)))'
