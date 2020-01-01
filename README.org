@@ -1,6 +1,6 @@
 #+TITLE: My Emacs config
 #+AUTHOR: Anatolii Smolianinov <zarkone@ya.ru>
-
+** rationale
 Previously, I used multi-file emacs config: =init.el= loads lots of
 files with corresponding configuration code. For example,
 =setup-clojure.el= contains the code which is related to Clojure
@@ -29,7 +29,7 @@ solutions and approaches.
 
 See [[file:literally.org]] for actual configuration description
 
-* Acknowledgments
+** Acknowledgments
 
 Thanks https://github.com/angrybacon/dotemacs -- very nice-organized
 emacs config, used as a skeleton.
