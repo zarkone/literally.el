@@ -4,6 +4,8 @@
 #+CAPTION: literally.el config screenshot
 [[./scrot.png]]
 
+See [[file:literally.org][configuration in .org format]] for details.
+
 ** Rationale
 Previously, I used multi-file emacs config: =init.el= loads lots of
 files with corresponding configuration code. For example,
