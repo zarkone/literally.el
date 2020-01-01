@@ -1,7 +1,7 @@
 * Global functions and key bindings
 
 ** comment-or-uncomment-region-or-line
-Better =.comment-dwim.=
+Better =comment-dwim=
 
 #+BEGIN_SRC emacs-lisp
 (defun me/comment-or-uncomment-region-or-line ()
