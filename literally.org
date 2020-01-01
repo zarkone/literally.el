@@ -1,6 +1,6 @@
 * Global functions and key bindings
 
-** My Functions
+** Custom Functions
 #+BEGIN_SRC emacs-lisp
   (defun me/comment-or-uncomment-region-or-line ()
     "Comments or uncomments the region or the current line if there's no active region."
@@ -65,7 +65,7 @@
      (point-max)))
   (global-set-key (kbd "C-x C-k DEL") 'me/kill-till-end)
 #+END_SRC
-** My KBD Macro
+** Cutupm KBD Macro
 Removed all macroses to functions ATM; decided to leave =defkbdmacro= here for
 future refrence.
 #+BEGIN_SRC emacs-lisp
@@ -148,25 +148,26 @@ future refrence.
     (setq-default inhibit-x-resources t))
 #+END_SRC
 * Packages
-** magit
-#+BEGIN_SRC emacs-lisp
-  (use-package magit
-    :bind (("C-M-g" . magit-status)))
-#+END_SRC
-** git-timemachine
-#+BEGIN_SRC emacs-lisp
-  (use-package git-timemachine
-    :bind (("C-x G" . git-timemachine)))
-#+END_SRC
 ** company
 #+BEGIN_SRC emacs-lisp
   (use-package company
     :diminish ""
     :hook (after-init . global-company-mode))
 #+END_SRC
+** expand-region
+#+BEGIN_SRC emacs-lisp
+  (use-package expand-region
+    :bind (("C-x x" . er/expand-region)))
+#+END_SRC
+** git-timemachine
+#+BEGIN_SRC emacs-lisp
+  (use-package git-timemachine
+    :bind (("C-x G" . git-timemachine)))
+#+END_SRC
 ** helm
 #+BEGIN_SRC emacs-lisp
   (use-package helm
+    :diminish ""
     :commands (helm)
     :bind-keymap ("C-i" . helm-execute-persistent-action)
     :bind (("C-x b" . helm-mini)
@@ -190,16 +191,10 @@ future refrence.
   (use-package helm-projectile
     :bind (("C-x C-b" . helm-projectile-switch-to-buffer)))
 #+END_SRC
-** expand-region
+** magit
 #+BEGIN_SRC emacs-lisp
-  (use-package expand-region
-    :bind (("C-x x" . er/expand-region)))
-#+END_SRC
-** yasnippet
-#+BEGIN_SRC emacs-lisp
-  (use-package yasnippet
-    :diminish yas-minor-mode
-    :hook (after-init . yas-global-mode))
+  (use-package magit
+    :bind (("C-M-g" . magit-status)))
 #+END_SRC
 ** projectile
 #+BEGIN_SRC emacs-lisp
@@ -212,4 +207,10 @@ future refrence.
     :custom (projectile-completion-system 'helm)
     :config
     (setq-default projectile-mode-line " P"))
+#+END_SRC
+** yasnippet
+#+BEGIN_SRC emacs-lisp
+  (use-package yasnippet
+    :diminish yas-minor-mode
+    :hook (after-init . yas-global-mode))
 #+END_SRC
