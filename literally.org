@@ -67,7 +67,7 @@
 #+END_SRC
 ** Custom KBD Macro
 Removed all macroses to functions ATM; decided to leave =defkbdmacro= here for
-future refrence.
+future reference.
 #+BEGIN_SRC emacs-lisp
   (defmacro defkbdmacro (name keyseq-string &optional docstring)
     `(fset (quote ,name)
