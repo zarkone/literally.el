@@ -1,5 +1,19 @@
 * Global functions and key bindings
 
+** behavior
+Some defaults and glo
+#+BEGIN_SRC emacs-lisp
+(setq-default word-wrap nil)
+(setq-default truncate-lines t)
+(setq browse-url-browser-function 'browse-url-chrome)
+
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+(put 'narrow-to-region 'disabled nil)
+(put 'narrow-to-page 'disabled nil)
+(put 'downcase-region 'disabled nil)
+
+#+END_SRC
 ** My Functions
 #+BEGIN_SRC emacs-lisp
 (defun me/comment-or-uncomment-region-or-line ()
@@ -98,15 +112,13 @@
 #+END_SRC
 ** git-timemachine
 #+BEGIN_SRC emacs-lisp
-(use-package git-timemachine
+  (use-package git-timemachine
     :bind (("C-x G" . git-timemachine)))
 #+END_SRC
 ** company
 #+BEGIN_SRC emacs-lisp
   (use-package company
-    :ensure nil
-    :config
-    (global-company-mode 1))
+    :hook (after-init . global-company-mode))
 #+END_SRC
 ** helm
 #+BEGIN_SRC emacs-lisp
@@ -146,6 +158,11 @@
            ("C-s-j" . buf-move-down)
            ("C-s-h" . buf-move-left)
            ("C-s-l" . buf-move-right)))
+#+END_SRC
+** yasnippet
+#+BEGIN_SRC emacs-lisp
+  (use-package yasnippet
+    :hook (after-init . yas-global-mode))
 #+END_SRC
 ** projectile
 #+BEGIN_SRC emacs-lisp
