@@ -14,4 +14,4 @@ jobs:
         run: |
           cd ..
           mv literally.el .emacs.d
-          env HOME="${PWD}" emacs --fg-daemon --eval '(kill-emacs)'
+          env HOME="${PWD}" emacs --fg-daemon --eval '(progn (message "Successful Emacs init! Exit...") (kill-emacs))'
