@@ -137,6 +137,8 @@ future refrence.
 (blink-cursor-mode 1)
 (setq ring-bell-function 'ignore)
 (setq-default indicate-buffer-boundaries 'left)
+(use-package diminish)
+
 #+END_SRC
 ** Color Theme
 #+BEGIN_SRC emacs-lisp
@@ -165,17 +167,19 @@ future refrence.
 ** company
 #+BEGIN_SRC emacs-lisp
   (use-package company
+    :diminish ""
     :hook (after-init . global-company-mode))
 #+END_SRC
 ** helm
 #+BEGIN_SRC emacs-lisp
   (use-package helm
+    :commands (helm)
     :bind-keymap ("C-i" . helm-execute-persistent-action)
     :bind (("C-x b" . helm-mini)
            ("C-x C-f" . helm-find-files)
            ("M-x" . helm-M-x)
            ("M-y" . helm-show-kill-ring)
-           ("C-M-h" . kill-region-or-backward-kill-word)
+           ("C-M-h" . me/kill-region-or-backward-kill-word)
            ("C-c M-o" . helm-occur)
            ("C-x C-r" . helm-recentf)
            )
@@ -209,11 +213,15 @@ future refrence.
 ** yasnippet
 #+BEGIN_SRC emacs-lisp
   (use-package yasnippet
+    :diminish yas-minor-mode
     :hook (after-init . yas-global-mode))
 #+END_SRC
 ** projectile
 #+BEGIN_SRC emacs-lisp
   (use-package projectile
+    :diminish ""
+    :demand t
+    :after (helm)
     :hook (after-init . projectile-global-mode)
     :bind-keymap (("C-c C-p" . projectile-command-map))
     :custom (projectile-completion-system 'helm)
