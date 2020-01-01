@@ -175,8 +175,7 @@ future refrence.
            ("M-y" . helm-show-kill-ring)
            ("C-M-h" . me/kill-region-or-backward-kill-word)
            ("C-c M-o" . helm-occur)
-           ("C-x C-r" . helm-recentf)
-           )
+           ("C-x C-r" . helm-recentf))
     :config
     (helm-mode t)
     (setq helm-buffers-fuzzy-matching t
