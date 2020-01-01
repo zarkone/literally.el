@@ -1,0 +1,14 @@
+name: cd
+on: push
+jobs:
+  build:
+    steps:
+      - name: Install emacs
+        uses: purcell/setup-emacs@v1
+        with:
+          version: 26.3
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Smoke test
+        run: |
+          env HOME="${PWD}/literally.el" emacs --fg-daemon --debug-init --eval '(kill-emacs)'
