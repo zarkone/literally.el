@@ -104,6 +104,32 @@ Some defaults and glo
         save-place-file (concat user-emacs-directory ".places")
         backup-directory-alist `(("." . ,(concat user-emacs-directory ".backups"))))
 #+END_SRC
+* Appearance
+** Disable all GUI
+#+BEGIN_SRC emacs-lisp
+(menu-bar-mode 0)
+(scroll-bar-mode 0)
+(tool-bar-mode 0)
+(tooltip-mode 0)
+(global-hl-line-mode 1)
+
+(blink-cursor-mode 1)
+(setq ring-bell-function 'ignore)
+(setq-default indicate-buffer-boundaries 'left)
+#+END_SRC
+** Color Theme
+#+BEGIN_SRC emacs-lisp
+  (setq custom-safe-themes t)
+  (use-package eziam-dark-theme
+    :ensure eziam-theme
+    :init (load-theme 'eziam-dark t)
+    :config
+    (set-face-background 'default "black")
+    (set-face-background 'fringe (face-attribute 'default :background))
+    ;; TODO: system-install font
+    (set-face-attribute 'default nil :height 105 :font "Hack")
+    (setq-default inhibit-x-resources t))
+#+END_SRC
 * Packages
 ** magit
 #+BEGIN_SRC emacs-lisp
