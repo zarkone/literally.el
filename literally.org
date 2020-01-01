@@ -78,7 +78,7 @@ future refrence.
 #+END_SRC
 ** Global vars, hooks and key bindings
 #+BEGIN_SRC emacs-lisp
-  (use-package emacs
+  (use-packageasdf emacs
     :hook (before-save . delete-trailing-whitespace)
 
     :init
