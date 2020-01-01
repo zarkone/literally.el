@@ -65,7 +65,7 @@
      (point-max)))
   (global-set-key (kbd "C-x C-k DEL") 'me/kill-till-end)
 #+END_SRC
-** Cutupm KBD Macro
+** Custom KBD Macro
 Removed all macroses to functions ATM; decided to leave =defkbdmacro= here for
 future refrence.
 #+BEGIN_SRC emacs-lisp
