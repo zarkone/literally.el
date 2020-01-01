@@ -12,6 +12,4 @@ jobs:
         uses: actions/checkout@v1
       - name: Smoke test
         run: |
-          cd ..
-          mv literally.el .emacs.d
-          env HOME="${PWD}" emacs --fg-daemon --eval '(progn (message "Successful Emacs init! Exit...") (kill-emacs))'
+          env HOME="${PWD}" emacs --fg-daemon --eval '(condition-case err (progn (load-file "./init.el") (kill-emacs)) (error (message "error: %s" err) (kill-emacs -1)))'
