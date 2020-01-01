@@ -195,14 +195,6 @@ future refrence.
   (use-package expand-region
     :bind (("C-x x" . er/expand-region)))
 #+END_SRC
-** buffer-move
-#+BEGIN_SRC emacs-lisp
-  (use-package buffer-move
-    :bind (("C-s-k" . buf-move-up)
-           ("C-s-j" . buf-move-down)
-           ("C-s-h" . buf-move-left)
-           ("C-s-l" . buf-move-right)))
-#+END_SRC
 ** yasnippet
 #+BEGIN_SRC emacs-lisp
   (use-package yasnippet
