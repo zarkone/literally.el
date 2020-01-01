@@ -1,8 +1,6 @@
 * Global functions and key bindings
 
-** comment-or-uncomment-region-or-line
-Better =comment-dwim=
-
+** my functions
 #+BEGIN_SRC emacs-lisp
 (defun me/comment-or-uncomment-region-or-line ()
   "Comments or uncomments the region or the current line if there's no active region."
@@ -13,20 +11,13 @@ Better =comment-dwim=
       (setq beg (line-beginning-position) end (line-end-position)))
     (comment-or-uncomment-region beg end)
     (next-line)))
-
 (define-key prog-mode-map (kbd "C-;") 'me/comment-or-uncomment-region-or-line)
-#+END_SRC
 
-** switch-to-previous-buffer
-#+BEGIN_SRC emacs-lisp
 (defun me/switch-to-previous-buffer ()
   (interactive)
   (switch-to-buffer (other-buffer (current-buffer) 1)))
-
 (global-set-key (kbd "<C-tab>") 'me/switch-to-previous-buffer)
-#+END_SRC
-** kill-region-or-backward-kill-word
-#+BEGIN_SRC emacs-lisp
+
 (defun me/kill-region-or-backward-kill-word (&optional arg region)
   "`kill-region' if the region is active, otherwise `backward-kill-word'"
   (interactive
@@ -34,11 +25,8 @@ Better =comment-dwim=
   (if region
       (kill-region (region-beginning) (region-end))
     (backward-kill-word arg)))
-
 (global-set-key (kbd "C-w") 'me/kill-region-or-backward-kill-word)
-#+END_SRC
-** my-put-file-name-on-clipboard
-#+BEGIN_SRC
+
 (defun me/my-put-file-name-on-clipboard ()
   "Put the current file name on the clipboard"
   (interactive)
