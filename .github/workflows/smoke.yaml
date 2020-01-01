@@ -14,4 +14,4 @@ jobs:
         run: |
           cd ..
           mv literally.el .emacs.d
-          env HOME="${PWD}" emacs --fg-daemon --debug-init --eval '(kill-emacs)'
+          env HOME="${PWD}" emacs --debug-init --eval '(kill-emacs)'
