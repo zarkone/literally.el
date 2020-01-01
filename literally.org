@@ -120,10 +120,6 @@ future refrence.
            ("s-h" . windmove-left)
            ("s-l" . windmove-right)))
 #+END_SRC
-** Better defaults
-#+BEGIN_SRC emacs-lisp
-
-#+END_SRC
 * Appearance
 ** Disable all GUI
 #+BEGIN_SRC emacs-lisp
