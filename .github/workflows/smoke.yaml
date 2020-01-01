@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Install emacs
-        uses: purcell/setup-emacs@v1
+        uses: purcell/setup-emacs@master
         with:
           version: 26.3
       - name: Checkout
