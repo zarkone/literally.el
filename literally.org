@@ -88,9 +88,6 @@ future refrence.
     (put 'narrow-to-region 'disabled nil)
     (put 'narrow-to-page 'disabled nil)
     (put 'downcase-region 'disabled nil)
-
-
-
     (setq-default indent-tabs-mode nil
                   word-wrap nil
                   truncate-lines t)
