@@ -96,6 +96,7 @@ future refrence.
           browse-url-browser-function 'browse-url-chrome
           uniquify-buffer-name-style 'forward
           save-interprogram-paste-before-kill t
+          compilation-always-kill  t
           apropos-do-all t
           mouse-yank-at-point t
           save-place-file (concat user-emacs-directory ".places")
@@ -108,6 +109,7 @@ future refrence.
            ("C--" . undo)
            ("<C-return>" . save-buffer)
            ("C-x RET RET" . compile)
+           ("C-x M-m" . recompile)
            ("C-M-;" . replace-regexp)
            ("C-x H" . help)
            ("C-c M-." . insdate-insert-current-date)
