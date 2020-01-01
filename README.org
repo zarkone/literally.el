@@ -1,7 +1,6 @@
 #+TITLE: My Emacs config
 #+AUTHOR: Anatolii Smolianinov <zarkone@ya.ru>
 
-My emacs config
 #+CAPTION: literally.el config screenshot
 [[./scrot.png]]
 
