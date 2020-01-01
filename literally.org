@@ -133,7 +133,6 @@ future refrence.
 (setq ring-bell-function 'ignore)
 (setq-default indicate-buffer-boundaries 'left)
 (use-package diminish)
-
 #+END_SRC
 ** Color Theme
 #+BEGIN_SRC emacs-lisp
