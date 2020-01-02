@@ -90,8 +90,9 @@ future reference.
   (use-package emacs
     :hook ((before-save . delete-trailing-whitespace)
            (emacs-lisp-mode . enable-paredit-mode))
-
-    :chords (("[]" . "[]\C-b")
+    :chords (("k[" . delete-whitespace)
+             ("i0" . me/switch-to-previous-buffer)
+             ("[]" . "[]\C-b")
              ("<>" . "<>\C-b")
              ("''" . "''\C-b")
              ("\"\"" . "\"\"\C-b")
