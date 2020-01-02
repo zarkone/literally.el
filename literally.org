@@ -310,6 +310,5 @@ future reference.
     (rust-format-on-save t)
     (compile-command "cargo build")
     :bind (:map rust-mode-map
-                ("TAB" . company-indent-or-complete-common))
-    )
+                ("TAB" . company-indent-or-complete-common)))
 #+END_SRC
