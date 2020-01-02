@@ -97,6 +97,21 @@ future reference.
              ("\"\"" . "\"\"\C-b")
              ("()" . "()\C-b")
              ("{}" . "{}\C-b"))
+    :custom
+    (indent-tabs-mode nil)
+    (truncate-lines t)
+    (word-wrap nil)
+    (x-select-enable-clipboard t)
+    (x-select-enable-primary t)
+    (browse-url-browser-function 'browse-url-chrome)
+    (uniquify-buffer-name-style 'forward)
+    (save-interprogram-paste-before-kill t)
+    (compilation-always-kill  t)
+    (apropos-do-all t)
+    (mouse-yank-at-point t)
+    (save-place-file (concat user-emacs-directory ".places"))
+    (backup-directory-alist `(("." . ,(concat user-emacs-directory ".backups"))))
+
     :init
     (show-paren-mode 1)
     (helm-mode t)
@@ -105,19 +120,6 @@ future reference.
     (put 'narrow-to-region 'disabled nil)
     (put 'narrow-to-page 'disabled nil)
     (put 'downcase-region 'disabled nil)
-    (setq-default indent-tabs-mode nil
-                  word-wrap nil
-                  truncate-lines t)
-    (setq x-select-enable-clipboard t
-          x-select-enable-primary t
-          browse-url-browser-function 'browse-url-chrome
-          uniquify-buffer-name-style 'forward
-          save-interprogram-paste-before-kill t
-          compilation-always-kill  t
-          apropos-do-all t
-          mouse-yank-at-point t
-          save-place-file (concat user-emacs-directory ".places")
-          backup-directory-alist `(("." . ,(concat user-emacs-directory ".backups"))))
 
     (define-key key-translation-map (kbd "C-h") (kbd "<DEL>"))
 
@@ -173,13 +175,15 @@ future reference.
   (setq custom-safe-themes t)
   (use-package eziam-dark-theme
     :ensure eziam-theme
+    :custom
+    (inhibit-x-resources t)
+
     :init (load-theme 'eziam-dark t)
     :config
     (set-face-background 'default "black")
     (set-face-background 'fringe (face-attribute 'default :background))
     ;; TODO: system-install font
-    (set-face-attribute 'default nil :height 105 :font "Hack")
-    (setq-default inhibit-x-resources t))
+    (set-face-attribute 'default nil :height 105 :font "Hack"))
 #+END_SRC
 * Packages
 ** company
@@ -202,22 +206,22 @@ future reference.
 #+END_SRC
 ** helm
 #+BEGIN_SRC emacs-lisp
-    (use-package helm
-      :diminish ""
-      :commands (helm helm-mode)
-      :bind (("C-x b" . helm-mini)
-             ("C-x C-f" . helm-find-files)
-             ("M-x" . helm-M-x)
-             ("M-y" . helm-show-kill-ring)
-             ("C-M-h" . me/kill-region-or-backward-kill-word)
-             ("C-c M-o" . helm-occur)
-             ("C-x C-r" . helm-recentf)
-             :map helm-map
-             ("C-i" . helm-execute-persistent-action))
-      :config
-      (setq helm-buffers-fuzzy-matching t
-            helm-recentf-fuzzy-match t
-            helm-M-x-fuzzy-match t))
+  (use-package helm
+    :diminish ""
+    :commands (helm helm-mode)
+    :custom
+    (helm-buffers-fuzzy-matching t)
+    (helm-recentf-fuzzy-match t)
+    (helm-M-x-fuzzy-match t)
+    :bind (("C-x b" . helm-mini)
+           ("C-x C-f" . helm-find-files)
+           ("M-x" . helm-M-x)
+           ("M-y" . helm-show-kill-ring)
+           ("C-M-h" . me/kill-region-or-backward-kill-word)
+           ("C-c M-o" . helm-occur)
+           ("C-x C-r" . helm-recentf)
+           :map helm-map
+           ("C-i" . helm-execute-persistent-action)))
 #+END_SRC
 *** helm plugins
 #+BEGIN_SRC emacs-lisp
@@ -245,9 +249,9 @@ future reference.
     :after (helm)
     :hook (after-init . projectile-global-mode)
     :bind-keymap (("C-c C-p" . projectile-command-map))
-    :custom (projectile-completion-system 'helm)
-    :config
-    (setq-default projectile-mode-line " P"))
+    :custom
+    (projectile-completion-system 'helm)
+    (projectile-mode-line " P"))
 #+END_SRC
 ** yasnippet
 #+BEGIN_SRC emacs-lisp
@@ -277,25 +281,18 @@ future reference.
    #+end_src
 ** Go
    #+begin_src emacs-lisp
-     (defun display-go-coverage ()
-       "Displays coverage information for the current buffer in Go mode."
-       (interactive)
-       (shell-command "go test -coverprofile cover.out")
-       (go-coverage "cover.out")
-       (shell-command "rm cover.out"))
-
      (use-package go-mode
        :hook ((go-mode . lsp)
               (before-save-hook . gofmt-before-save))
-       :bind (:map go-mode-map
-                   ("C-c c" . display-go-coverage))
+       :custom
+       (company-lsp-async t)
+       (go-coverage-display-buffer-func 'display-buffer-same-window)
+       (gofmt-command "goimports")
+       (compile-command "go build -v")
+
        :config
        (use-package go-snippets)
        (setenv "GO111MODULE" "on")
-       (setq company-lsp-async t)
-       (setq go-coverage-display-buffer-func 'display-buffer-same-window)
-       (setq gofmt-command "goimports")
-       (setq compile-command "go build -v")
        (lsp-register-custom-settings
         '(("gopls.completeUnimported" t t)
           ("gopls.staticcheck" t t))))
