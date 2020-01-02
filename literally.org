@@ -255,3 +255,48 @@ future reference.
     :diminish yas-minor-mode
     :hook (after-init . yas-global-mode))
 #+END_SRC
+* Prog modes
+** lsp
+   #+begin_src emacs-lisp
+     (use-package company-lsp
+       :config
+       (push 'company-lsp company-backends))
+
+     (use-package lsp-mode
+       :commands (lsp lsp-register-custom-settings)
+       ;; reformat code and add missing (or remove old) imports
+       :hook ((before-save . lsp-format-buffer)
+              (before-save . lsp-organize-imports))
+       :bind (("C-c d" . lsp-describe-thing-at-point)
+              ("C-c e n" . flymake-goto-next-error)
+              ("C-c e p" . flymake-goto-prev-error)
+              ("C-c e r" . lsp-find-references)
+              ("C-c e R" . lsp-rename)
+              ("C-c e i" . lsp-find-implementation)
+              ("C-c e t" . lsp-find-type-definition)))
+   #+end_src
+** Go
+   #+begin_src emacs-lisp
+     (defun display-go-coverage ()
+       "Displays coverage information for the current buffer in Go mode."
+       (interactive)
+       (shell-command "go test -coverprofile cover.out")
+       (go-coverage "cover.out")
+       (shell-command "rm cover.out"))
+
+     (use-package go-mode
+       :hook ((go-mode . lsp)
+              (before-save-hook . gofmt-before-save))
+       :bind (:map go-mode-map
+                   ("C-c c" . display-go-coverage))
+       :config
+       (use-package go-snippets)
+       (setenv "GO111MODULE" "on")
+       (setq company-lsp-async t)
+       (setq go-coverage-display-buffer-func 'display-buffer-same-window)
+       (setq gofmt-command "goimports")
+       (setq compile-command "go build -v")
+       (lsp-register-custom-settings
+        '(("gopls.completeUnimported" t t)
+          ("gopls.staticcheck" t t))))
+   #+end_src
