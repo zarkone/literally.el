@@ -240,6 +240,7 @@ future reference.
 ** paredit
    #+begin_src emacs-lisp
      (use-package paredit
+       :diminish ""
        :commands (enable-paredit-mode))
    #+end_src
 ** projectile
@@ -272,7 +273,8 @@ future reference.
        ;; reformat code and add missing (or remove old) imports
        :hook ((before-save . lsp-format-buffer)
               (before-save . lsp-organize-imports))
-       :bind (("C-c d" . lsp-describe-thing-at-point)
+       :bind (:map lsp-mode-map
+              ("C-c d" . lsp-describe-thing-at-point)
               ("C-c e n" . flymake-goto-next-error)
               ("C-c e p" . flymake-goto-prev-error)
               ("C-c e r" . lsp-find-references)
@@ -298,3 +300,16 @@ future reference.
         '(("gopls.completeUnimported" t t)
           ("gopls.staticcheck" t t))))
    #+end_src
+** Rust
+#+BEGIN_SRC emacs-lisp
+  (use-package rust-mode
+    :hook ((rust-mode . lsp)
+           (before-save-hook . rust-format-buffer))
+    :custom
+    (indent-tabs-mode nil)
+    (rust-format-on-save t)
+    (compile-command "cargo build")
+    :bind (:map rust-mode-map
+                ("TAB" . company-indent-or-complete-common))
+    )
+#+END_SRC
