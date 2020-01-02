@@ -83,10 +83,20 @@ future reference.
 #+END_SRC
 ** Global vars, hooks and key bindings
 #+BEGIN_SRC emacs-lisp
+  (use-package use-package-chords
+    :demand t
+    :config (key-chord-mode 1))
+
   (use-package emacs
     :hook ((before-save . delete-trailing-whitespace)
            (emacs-lisp-mode . enable-paredit-mode))
 
+    :chords (("[]" . "[]\C-b")
+             ("<>" . "<>\C-b")
+             ("''" . "''\C-b")
+             ("\"\"" . "\"\"\C-b")
+             ("()" . "()\C-b")
+             ("{}" . "{}\C-b"))
     :init
     (show-paren-mode 1)
     (helm-mode t)
