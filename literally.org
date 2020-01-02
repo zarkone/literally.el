@@ -170,22 +170,23 @@ future reference.
 #+END_SRC
 ** helm
 #+BEGIN_SRC emacs-lisp
-  (use-package helm
-    :diminish ""
-    :commands (helm)
-    :bind-keymap ("C-i" . helm-execute-persistent-action)
-    :bind (("C-x b" . helm-mini)
-           ("C-x C-f" . helm-find-files)
-           ("M-x" . helm-M-x)
-           ("M-y" . helm-show-kill-ring)
-           ("C-M-h" . me/kill-region-or-backward-kill-word)
-           ("C-c M-o" . helm-occur)
-           ("C-x C-r" . helm-recentf))
-    :config
-    (helm-mode t)
-    (setq helm-buffers-fuzzy-matching t
-          helm-recentf-fuzzy-match t
-          helm-M-x-fuzzy-match t))
+    (use-package helm
+      :diminish ""
+      :commands (helm)
+      :bind (("C-x b" . helm-mini)
+             ("C-x C-f" . helm-find-files)
+             ("M-x" . helm-M-x)
+             ("M-y" . helm-show-kill-ring)
+             ("C-M-h" . me/kill-region-or-backward-kill-word)
+             ("C-c M-o" . helm-occur)
+             ("C-x C-r" . helm-recentf)
+             :map helm-map
+             ("C-i" . helm-execute-persistent-action))
+      :config
+      (helm-mode t)
+      (setq helm-buffers-fuzzy-matching t
+            helm-recentf-fuzzy-match t
+            helm-M-x-fuzzy-match t))
 #+END_SRC
 *** helm plugins
 #+BEGIN_SRC emacs-lisp
