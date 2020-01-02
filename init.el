@@ -20,6 +20,8 @@
 
   ;; Use latest Org
   (use-package org :ensure org-plus-contrib
+    :bind (:map org-mode-map
+                ("<C-return>" . save-buffer))
     :config
     (use-package org-tempo
       :demand t

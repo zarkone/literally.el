@@ -163,6 +163,11 @@ future reference.
   (setq-default indicate-buffer-boundaries 'left)
   (use-package diminish)
 #+END_SRC
+** Highlight git changes in fringes
+   #+begin_src emacs-lisp
+     (use-package diff-hl
+       :hook (after-init . global-diff-hl-mode))
+   #+end_src
 ** Color Theme
 #+BEGIN_SRC emacs-lisp
   (setq custom-safe-themes t)
@@ -181,7 +186,6 @@ future reference.
 #+BEGIN_SRC emacs-lisp
   (use-package company
     :diminish ""
-    :hook (after-init . global-company-mode)
     :config
     (push 'company-elisp company-backends)
     (global-company-mode 1))
