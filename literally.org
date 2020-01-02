@@ -218,6 +218,11 @@ future reference.
   (use-package magit
     :bind (("C-M-g" . magit-status)))
 #+END_SRC
+** paredit
+   #+begin_src emacs-lisp
+     (use-package paredit
+       :commands (enable-paredit-mode))
+   #+end_src
 ** projectile
 #+BEGIN_SRC emacs-lisp
   (use-package projectile
