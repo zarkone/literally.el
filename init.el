@@ -19,7 +19,11 @@
    use-package-always-ensure t)
 
   ;; Use latest Org
-  (use-package org :ensure org-plus-contrib)
+  (use-package org :ensure org-plus-contrib
+    :config
+    (use-package org-tempo
+      :demand t
+      :ensure nil))
 
   ;; Tangle configuration
   (org-babel-load-file (expand-file-name "literally.org" user-emacs-directory))
