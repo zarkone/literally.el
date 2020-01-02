@@ -11,12 +11,10 @@
         (setq beg (line-beginning-position) end (line-end-position)))
       (comment-or-uncomment-region beg end)
       (next-line)))
-  (define-key prog-mode-map (kbd "C-;") 'me/comment-or-uncomment-region-or-line)
 
   (defun me/switch-to-previous-buffer ()
     (interactive)
     (switch-to-buffer (other-buffer (current-buffer) 1)))
-  (global-set-key (kbd "<C-tab>") 'me/switch-to-previous-buffer)
 
   (defun me/kill-region-or-backward-kill-word (&optional arg region)
     "`kill-region' if the region is active, otherwise `backward-kill-word'"
@@ -38,7 +36,6 @@
           (insert filename)
           (clipboard-kill-region (point-min) (point-max)))
         (message filename))))
-  (global-set-key (kbd "C-x M-w") 'me/my-put-file-name-on-clipboard)
 
   (defun me/duplicate-line ()
     "Duplicate current line."
@@ -50,21 +47,29 @@
     (next-line 1)
     (yank))
 
-  (global-set-key (kbd "C-M-y") 'me/duplicate-line)
-
-  (defun me/dired-open-this-dir ()
-    "Open Dired here."
-    (dired (expand-file-name ".")))
-  (global-set-key (kbd "C-x C-d") 'me/dired-open-this-dir)
-
   (defun me/kill-till-end ()
     "Deletes everything from point to end of file"
     (interactive)
     (delete-region
      (point)
      (point-max)))
-  (global-set-key (kbd "C-x C-k DEL") 'me/kill-till-end)
+
+  (defun delete-whitespace (&optional backward-only)
+    "Delete all spaces, tabs and newlinesaround point.
+  If BACKWARD-ONLY is non-nil, only delete them before point."
+    (interactive "*P")
+    (let ((orig-pos (point)))
+      (delete-region
+       (if backward-only
+           orig-pos
+         (progn
+           (skip-chars-forward " \t\n")
+           (constrain-to-field nil orig-pos t)))
+       (progn
+         (skip-chars-backward " \t\n")
+         (constrain-to-field nil orig-pos)))))
 #+END_SRC
+
 ** Custom KBD Macro
 Removed all macroses to functions ATM; decided to leave =defkbdmacro= here for
 future reference.
@@ -79,10 +84,12 @@ future reference.
 ** Global vars, hooks and key bindings
 #+BEGIN_SRC emacs-lisp
   (use-package emacs
-    :hook (before-save . delete-trailing-whitespace)
+    :hook ((before-save . delete-trailing-whitespace)
+           (emacs-lisp-mode . enable-paredit-mode))
 
     :init
     (show-paren-mode 1)
+    (helm-mode t)
 
     :config
     (put 'narrow-to-region 'disabled nil)
@@ -107,6 +114,7 @@ future reference.
     :bind (("M-[" . other-window)
            ([remap text-scale-decrease] . undo)
            ("C--" . undo)
+           ("C-x C-d" . dired-jump)
            ("<C-return>" . save-buffer)
            ("C-x RET RET" . compile)
            ("C-x M-m" . recompile)
@@ -115,12 +123,19 @@ future reference.
            ("C-c M-." . insdate-insert-current-date)
            ("C-x C-g" . goto-address-at-point)
            ("M-/" . hippie-expand)
+           ("M-\\" . delete-whitespace)
+           ("C-x C-k DEL" . me/kill-till-end)
+           ("C-M-y" . me/duplicate-line)
+           ("C-x M-w" . me/my-put-file-name-on-clipboard)
            ("C-s" . isearch-forward-regexp)
            ("C-r" . isearch-backward-regexp)
            ("s-k" . windmove-up)
            ("s-j" . windmove-down)
            ("s-h" . windmove-left)
-           ("s-l" . windmove-right)))
+           ("s-l" . windmove-right)
+
+           :map prog-mode-map
+           ("C-;" . me/comment-or-uncomment-region-or-line)))
 #+END_SRC
 * Appearance
 ** Disable all GUI
@@ -156,7 +171,10 @@ future reference.
 #+BEGIN_SRC emacs-lisp
   (use-package company
     :diminish ""
-    :hook (after-init . global-company-mode))
+    :hook (after-init . global-company-mode)
+    :config
+    (push 'company-elisp company-backends)
+    (global-company-mode 1))
 #+END_SRC
 ** expand-region
 #+BEGIN_SRC emacs-lisp
@@ -172,7 +190,7 @@ future reference.
 #+BEGIN_SRC emacs-lisp
     (use-package helm
       :diminish ""
-      :commands (helm)
+      :commands (helm helm-mode)
       :bind (("C-x b" . helm-mini)
              ("C-x C-f" . helm-find-files)
              ("M-x" . helm-M-x)
@@ -183,7 +201,6 @@ future reference.
              :map helm-map
              ("C-i" . helm-execute-persistent-action))
       :config
-      (helm-mode t)
       (setq helm-buffers-fuzzy-matching t
             helm-recentf-fuzzy-match t
             helm-M-x-fuzzy-match t))
