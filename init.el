@@ -1,13 +1,14 @@
 (let ((gc-cons-threshold most-positive-fixnum))
-
   ;; Set repositories
   (require 'package)
   (setq-default
-   custom-file "/dev/null" ;; set custom file but never load it; config custom with use-package instead
+   custom-file "~/.emacs.d/.custom-vars" ;; set custom file but never load it; config custom with use-package instead
    load-prefer-newer t
    package-enable-at-startup nil)
   (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
   (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+  ;; MacOS package not found workaround
+  (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
   (package-initialize)
 
   ;; Install dependencies

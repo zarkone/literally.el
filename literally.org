@@ -133,6 +133,7 @@ future reference.
            ("C--" . undo)
            ("C-x C-d" . dired-jump)
            ("<C-return>" . save-buffer)
+           ("C-x o" . me/switch-to-previous-buffer)
            ("C-x RET RET" . compile)
            ("C-x M-m" . recompile)
            ("C-M-;" . replace-regexp)
@@ -162,6 +163,11 @@ future reference.
        (osx-pseudo-daemon-mode 1)
        (mac-option-modifier 'super)
        (mac-command-modifier 'meta))
+
+     (use-package exec-path-from-shell
+       :init
+       (when (memq window-system '(mac ns x))
+         (exec-path-from-shell-initialize)))
 
    #+end_src
 ** Disable all GUI
@@ -204,9 +210,10 @@ future reference.
 #+BEGIN_SRC emacs-lisp
   (use-package company
     :diminish ""
+    :init
+    (global-company-mode +1)
     :config
-    (push 'company-elisp company-backends)
-    (global-company-mode 1))
+    (push 'company-elisp company-backends))
 #+END_SRC
 ** expand-region
 #+BEGIN_SRC emacs-lisp
@@ -241,7 +248,8 @@ future reference.
 #+BEGIN_SRC emacs-lisp
   (use-package helm-company)
   (use-package helm-rg
-    :bind (("C-x C-p" . helm-projectile-rg)))
+    :bind (("C-x C-p" . helm-projectile-rg)
+           ("C-x DEL" . helm-projectile)))
   (use-package helm-projectile
     :bind (("C-x C-b" . helm-projectile-switch-to-buffer)))
 #+END_SRC
@@ -283,8 +291,14 @@ future reference.
      (use-package lsp-mode
        :commands (lsp lsp-register-custom-settings)
        ;; reformat code and add missing (or remove old) imports
-       :hook ((before-save . lsp-format-buffer)
-              (before-save . lsp-organize-imports))
+       :init
+       (add-hook 'lsp-mode-hook
+                    ;; TODO: add macro or fn for `when find minor-mode ...`
+                    #'(lambda ()
+                        (when (memember 'lsp-mode minor-mode-list)
+                          (lsp-format-buffer)
+                          (lsp-organize-imports))))
+
        :bind (("C-c d" . lsp-describe-thing-at-point)
               ("C-c e n" . flymake-goto-next-error)
               ("C-c e p" . flymake-goto-prev-error)
@@ -310,4 +324,36 @@ future reference.
        (lsp-register-custom-settings
         '(("gopls.completeUnimported" t t)
           ("gopls.staticcheck" t t))))
+   #+end_src
+** Clojure
+   #+begin_src emacs-lisp
+     (defun cider-save-and-compile-and-load-file ()
+       "Save file, then compile and load it"
+       (interactive)
+       (save-buffer)
+       (call-interactively 'cider-load-buffer))
+
+     (use-package cider
+       :commands (cider-mode)
+       :hook ((cider-mode . eldoc-mode))
+       ;; :custom
+       ;; (cider-mode-line " cider")
+
+       :bind (:map cider-mode-map
+                   ("C-c C-k" . cider-save-and-compile-and-load-file)
+                   ("C-c C-i" . cider-interrupt)))
+
+     (use-package flycheck-clj-kondo)
+
+     (use-package clj-refactor
+       :commands (clj-refactor-mode)
+       :config
+       (cljr-add-keybindings-with-prefix "C-c C-j"))
+
+     (use-package clojure-mode
+       :hook ((clojure-mode . cider-mode)
+              (clojure-mode . flycheck-mode)
+              (clojure-mode . clj-refactor-mode))
+       :config
+       (require 'flycheck-clj-kondo))
    #+end_src
