@@ -2,6 +2,11 @@
 
 ** Custom Functions
 #+BEGIN_SRC emacs-lisp
+  (defun emacs-reload ()
+    "reloads emacs config"
+    (interactive)
+    (org-babel-load-file (expand-file-name "literally.org" user-emacs-directory)))
+
   (defun me/comment-or-uncomment-region-or-line ()
     "Comments or uncomments the region or the current line if there's no active region."
     (interactive)
@@ -150,6 +155,15 @@ future reference.
            ("C-;" . me/comment-or-uncomment-region-or-line)))
 #+END_SRC
 * Appearance
+** OSX
+   #+begin_src emacs-lisp
+     (use-package osx-pseudo-daemon
+       :custom
+       (osx-pseudo-daemon-mode 1)
+       (mac-option-modifier 'super)
+       (mac-command-modifier 'meta))
+
+   #+end_src
 ** Disable all GUI
 #+BEGIN_SRC emacs-lisp
   (when window-system
