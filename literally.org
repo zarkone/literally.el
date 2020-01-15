@@ -281,6 +281,19 @@ future reference.
     :diminish yas-minor-mode
     :hook (after-init . yas-global-mode))
 #+END_SRC
+** restclient
+#+BEGIN_SRC emacs-lisp
+  (use-package restclient)
+#+END_SRC
+** buf-move
+#+BEGIN_SRC emacs-lisp
+  (use-package buffer-move
+    :bind (("C-s-k" . buf-move-up)
+           ("C-s-j" . buf-move-down)
+           ("C-s-h" . buf-move-left)
+           ("C-s-l" . buf-move-right)))
+#+END_SRC
+
 * Prog modes
 ** lsp
    #+begin_src emacs-lisp
@@ -352,6 +365,7 @@ future reference.
 
      (use-package clojure-mode
        :hook ((clojure-mode . cider-mode)
+              (clojure-mode . enable-paredit-mode)
               (clojure-mode . flycheck-mode)
               (clojure-mode . clj-refactor-mode))
        :config
