@@ -125,13 +125,14 @@ future reference.
     (put 'narrow-to-region 'disabled nil)
     (put 'narrow-to-page 'disabled nil)
     (put 'downcase-region 'disabled nil)
-
+    (global-unset-key (kbd "M-ESC ESC"))
     (define-key key-translation-map (kbd "C-h") (kbd "<DEL>"))
 
     :bind (("M-[" . other-window)
            ([remap text-scale-decrease] . undo)
            ("C--" . undo)
            ("C-x C-d" . dired-jump)
+           ("M-o" . occur)
            ("<C-return>" . save-buffer)
            ("C-x o" . me/switch-to-previous-buffer)
            ("C-x RET RET" . compile)
@@ -147,6 +148,7 @@ future reference.
            ("C-x M-w" . me/my-put-file-name-on-clipboard)
            ("C-s" . isearch-forward-regexp)
            ("C-r" . isearch-backward-regexp)
+           ("C-x M-v" . visual-line-mode)
            ("s-k" . windmove-up)
            ("s-j" . windmove-down)
            ("s-h" . windmove-left)
