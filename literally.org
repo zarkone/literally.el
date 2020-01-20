@@ -283,13 +283,19 @@ future reference.
     :diminish yas-minor-mode
     :hook (after-init . yas-global-mode))
 #+END_SRC
+** yaml
+#+BEGIN_SRC emacs-lisp
+  (use-package yaml-mode)
+#+END_SRC
+
 ** web-mode
 #+BEGIN_SRC emacs-lisp
   (use-package web-mode
     :custom
     (indent-tabs-mode nil)
     (web-mode-markup-indent-offset 2)
-    (web-mode-script-padding 2)
+    (web-mode-script-padding 0)
+    (web-mode-code-indent-offset 2)
     (web-mode-sc)
     :init
     (add-to-list 'auto-mode-alist '("\\.vue\\'" . web-mode))
