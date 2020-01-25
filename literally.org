@@ -120,7 +120,6 @@ future reference.
 
     :init
     (show-paren-mode 1)
-    (helm-mode t)
 
     :config
     (put 'narrow-to-region 'disabled nil)
@@ -232,7 +231,8 @@ future reference.
 #+BEGIN_SRC emacs-lisp
   (use-package helm
     :diminish ""
-    :commands (helm helm-mode)
+    :commands helm
+    :hook (after-init . helm-mode)
     :custom
     (helm-buffers-fuzzy-matching t)
     (helm-recentf-fuzzy-match t)
@@ -364,8 +364,7 @@ future reference.
 ** Rust
 #+BEGIN_SRC emacs-lisp
   (use-package rust-mode
-    :hook ((rust-mode . lsp)
-           (before-save-hook . rust-format-buffer))
+    :hook ((rust-mode . lsp))
     :custom
     (indent-tabs-mode nil)
     (rust-format-on-save t)
