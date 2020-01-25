@@ -2,6 +2,11 @@
 
 ** Custom Functions
 #+BEGIN_SRC emacs-lisp
+  (defun emacs-reload ()
+    "reloads emacs config"
+    (interactive)
+    (org-babel-load-file (expand-file-name "literally.org" user-emacs-directory)))
+
   (defun me/comment-or-uncomment-region-or-line ()
     "Comments or uncomments the region or the current line if there's no active region."
     (interactive)
@@ -121,14 +126,16 @@ future reference.
     (put 'narrow-to-region 'disabled nil)
     (put 'narrow-to-page 'disabled nil)
     (put 'downcase-region 'disabled nil)
-
+    (global-unset-key (kbd "M-ESC ESC"))
     (define-key key-translation-map (kbd "C-h") (kbd "<DEL>"))
 
     :bind (("M-[" . other-window)
            ([remap text-scale-decrease] . undo)
            ("C--" . undo)
            ("C-x C-d" . dired-jump)
+           ("M-o" . occur)
            ("<C-return>" . save-buffer)
+           ("C-x o" . me/switch-to-previous-buffer)
            ("C-x RET RET" . compile)
            ("C-x M-m" . recompile)
            ("C-M-;" . replace-regexp)
@@ -142,6 +149,7 @@ future reference.
            ("C-x M-w" . me/my-put-file-name-on-clipboard)
            ("C-s" . isearch-forward-regexp)
            ("C-r" . isearch-backward-regexp)
+           ("C-x M-v" . visual-line-mode)
            ("s-k" . windmove-up)
            ("s-j" . windmove-down)
            ("s-h" . windmove-left)
@@ -151,6 +159,20 @@ future reference.
            ("C-;" . me/comment-or-uncomment-region-or-line)))
 #+END_SRC
 * Appearance
+** OSX
+   #+begin_src emacs-lisp
+     (use-package osx-pseudo-daemon
+       :custom
+       (osx-pseudo-daemon-mode 1)
+       (mac-option-modifier 'super)
+       (mac-command-modifier 'meta))
+
+     (use-package exec-path-from-shell
+       :init
+       (when (memq window-system '(mac ns x))
+         (exec-path-from-shell-initialize)))
+
+   #+end_src
 ** Disable all GUI
 #+BEGIN_SRC emacs-lisp
   (when window-system
@@ -191,9 +213,10 @@ future reference.
 #+BEGIN_SRC emacs-lisp
   (use-package company
     :diminish ""
+    :init
+    (global-company-mode +1)
     :config
-    (push 'company-elisp company-backends)
-    (global-company-mode 1))
+    (push 'company-elisp company-backends))
 #+END_SRC
 ** expand-region
 #+BEGIN_SRC emacs-lisp
@@ -228,7 +251,8 @@ future reference.
 #+BEGIN_SRC emacs-lisp
   (use-package helm-company)
   (use-package helm-rg
-    :bind (("C-x C-p" . helm-projectile-rg)))
+    :bind (("C-x C-p" . helm-projectile-rg)
+           ("C-x DEL" . helm-projectile)))
   (use-package helm-projectile
     :bind (("C-x C-b" . helm-projectile-switch-to-buffer)))
 #+END_SRC
@@ -261,6 +285,38 @@ future reference.
     :diminish yas-minor-mode
     :hook (after-init . yas-global-mode))
 #+END_SRC
+** yaml
+#+BEGIN_SRC emacs-lisp
+  (use-package yaml-mode)
+#+END_SRC
+
+** web-mode
+#+BEGIN_SRC emacs-lisp
+  (use-package web-mode
+    :custom
+    (indent-tabs-mode nil)
+    (web-mode-markup-indent-offset 2)
+    (web-mode-script-padding 0)
+    (web-mode-code-indent-offset 2)
+    (web-mode-sc)
+    :init
+    (add-to-list 'auto-mode-alist '("\\.vue\\'" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode)))
+#+END_SRC
+
+** restclient
+#+BEGIN_SRC emacs-lisp
+  (use-package restclient)
+#+END_SRC
+** buf-move
+#+BEGIN_SRC emacs-lisp
+  (use-package buffer-move
+    :bind (("C-s-k" . buf-move-up)
+           ("C-s-j" . buf-move-down)
+           ("C-s-h" . buf-move-left)
+           ("C-s-l" . buf-move-right)))
+#+END_SRC
+
 * Prog modes
 ** lsp
    #+begin_src emacs-lisp
@@ -271,10 +327,15 @@ future reference.
      (use-package lsp-mode
        :commands (lsp lsp-register-custom-settings)
        ;; reformat code and add missing (or remove old) imports
-       :hook ((before-save . lsp-format-buffer)
-              (before-save . lsp-organize-imports))
-       :bind (:map lsp-mode-map
-              ("C-c d" . lsp-describe-thing-at-point)
+       :init
+       (add-hook 'lsp-mode-hook
+                 ;; TODO: add macro or fn for `when find minor-mode ...`
+                 #'(lambda ()
+                     (when (memember 'lsp-mode minor-mode-list)
+                       (lsp-format-buffer)
+                       (lsp-organize-imports))))
+
+       :bind (("C-c d" . lsp-describe-thing-at-point)
               ("C-c e n" . flymake-goto-next-error)
               ("C-c e p" . flymake-goto-prev-error)
               ("C-c e r" . lsp-find-references)
@@ -312,3 +373,36 @@ future reference.
     :bind (:map rust-mode-map
                 ("TAB" . company-indent-or-complete-common)))
 #+END_SRC
+** Clojure
+   #+begin_src emacs-lisp
+     (defun cider-save-and-compile-and-load-file ()
+       "Save file, then compile and load it"
+       (interactive)
+       (save-buffer)
+       (call-interactively 'cider-load-buffer))
+
+     (use-package cider
+       :commands (cider-mode)
+       :hook ((cider-mode . eldoc-mode))
+       ;; :custom
+       ;; (cider-mode-line " cider")
+
+       :bind (:map cider-mode-map
+                   ("C-c C-k" . cider-save-and-compile-and-load-file)
+                   ("C-c C-i" . cider-interrupt)))
+
+     (use-package flycheck-clj-kondo)
+
+     (use-package clj-refactor
+       :commands (clj-refactor-mode)
+       :config
+       (cljr-add-keybindings-with-prefix "C-c C-j"))
+
+     (use-package clojure-mode
+       :hook ((clojure-mode . cider-mode)
+              (clojure-mode . enable-paredit-mode)
+              (clojure-mode . flycheck-mode)
+              (clojure-mode . clj-refactor-mode))
+       :config
+       (require 'flycheck-clj-kondo))
+   #+end_src
