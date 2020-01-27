@@ -217,6 +217,11 @@ future reference.
     :config
     (push 'company-elisp company-backends))
 #+END_SRC
+** dockerfile
+   #+begin_src emacs-lisp
+     (use-package dockerfile-mode
+       :init (add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-mode)))
+   #+end_src
 ** expand-region
 #+BEGIN_SRC emacs-lisp
   (use-package expand-region
@@ -329,7 +334,7 @@ future reference.
        (add-hook 'lsp-mode-hook
                     ;; TODO: add macro or fn for `when find minor-mode ...`
                     #'(lambda ()
-                        (when (memember 'lsp-mode minor-mode-list)
+                        (when (member 'lsp-mode minor-mode-list)
                           (lsp-format-buffer)
                           (lsp-organize-imports))))
 
