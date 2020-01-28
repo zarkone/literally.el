@@ -397,3 +397,11 @@ future reference.
        :config
        (require 'flycheck-clj-kondo))
    #+end_src
+** Haskell
+   #+begin_src emacs-lisp
+     (use-package lsp-haskell)
+     (use-package haskell-mode
+       :custom
+       (lsp-haskell-process-path-hie "hie-wrapper")
+       :hook ((haskell-mode . lsp)))
+   #+end_src
