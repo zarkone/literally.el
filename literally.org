@@ -299,6 +299,7 @@ future reference.
     :custom
     (indent-tabs-mode nil)
     (web-mode-markup-indent-offset 2)
+    (web-mode-js-indent-offset 2)
     (web-mode-script-padding 0)
     (web-mode-code-indent-offset 2)
     (web-mode-sc)
@@ -396,6 +397,15 @@ future reference.
               (clojure-mode . clj-refactor-mode))
        :config
        (require 'flycheck-clj-kondo))
+   #+end_src
+
+** js
+   #+begin_src emacs-lisp
+     (use-package js-mode
+       :custom
+       (js-indent-level 2)
+       :ensure nil
+       :hook ((ruby-mode . flymake-mode)))
    #+end_src
 
 ** Ruby
