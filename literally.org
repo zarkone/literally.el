@@ -217,6 +217,11 @@ future reference.
     :config
     (push 'company-elisp company-backends))
 #+END_SRC
+** dockerfile
+   #+begin_src emacs-lisp
+     (use-package dockerfile-mode
+       :init (add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-mode)))
+   #+end_src
 ** expand-region
 #+BEGIN_SRC emacs-lisp
   (use-package expand-region
@@ -296,6 +301,7 @@ future reference.
     :custom
     (indent-tabs-mode nil)
     (web-mode-markup-indent-offset 2)
+    (web-mode-js-indent-offset 2)
     (web-mode-script-padding 0)
     (web-mode-code-indent-offset 2)
     (web-mode-sc)
@@ -329,11 +335,11 @@ future reference.
        ;; reformat code and add missing (or remove old) imports
        :init
        (add-hook 'lsp-mode-hook
-                 ;; TODO: add macro or fn for `when find minor-mode ...`
-                 #'(lambda ()
-                     (when (memember 'lsp-mode minor-mode-list)
-                       (lsp-format-buffer)
-                       (lsp-organize-imports))))
+                    ;; TODO: add macro or fn for `when find minor-mode ...`
+                    #'(lambda ()
+                        (when (member 'lsp-mode minor-mode-list)
+                          (lsp-format-buffer)
+                          (lsp-organize-imports))))
 
        :bind (("C-c d" . lsp-describe-thing-at-point)
               ("C-c e n" . flymake-goto-next-error)
@@ -404,4 +410,36 @@ future reference.
               (clojure-mode . clj-refactor-mode))
        :config
        (require 'flycheck-clj-kondo))
+   #+end_src
+
+** js
+   #+begin_src emacs-lisp
+     (use-package js-mode
+       :custom
+       (js-indent-level 2)
+       :ensure nil
+       :hook ((ruby-mode . flymake-mode)))
+   #+end_src
+
+** Ruby
+   #+begin_src emacs-lisp
+     (use-package ruby-mode
+       :hook ((ruby-mode . flymake-mode)))
+   #+end_src
+
+*** HAML
+       #+begin_src emacs-lisp
+         (use-package haml-mode
+           :hook ((haml-mode . flycheck-mode)))
+   #+end_src
+
+*** inf-ruby
+   #+begin_src emacs-lisp
+     (use-package inf-ruby)
+   #+end_src
+
+*** SASS
+   #+begin_src emacs-lisp
+     (use-package sass-mode
+       )
    #+end_src
