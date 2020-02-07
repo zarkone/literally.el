@@ -104,6 +104,7 @@ future reference.
              ("()" . "()\C-b")
              ("{}" . "{}\C-b"))
     :custom
+    (dired-listing-switches "-alGh --group-directories-first")
     (indent-tabs-mode nil)
     (truncate-lines t)
     (word-wrap nil)
@@ -369,8 +370,11 @@ future reference.
    #+end_src
 ** Rust
 #+BEGIN_SRC emacs-lisp
+  (use-package cargo)
+  (use-package flycheck-rust)
   (use-package rust-mode
-    :hook ((rust-mode . lsp))
+    :hook ((rust-mode . lsp)
+           (rust-mode . flycheck))
     :custom
     (indent-tabs-mode nil)
     (rust-format-on-save t)
