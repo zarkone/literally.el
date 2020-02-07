@@ -373,8 +373,9 @@ future reference.
   (use-package cargo)
   (use-package flycheck-rust)
   (use-package rust-mode
-    :hook ((rust-mode . lsp)
-           (rust-mode . flycheck))
+    :hook ((flycheck-mode . flycheck-rust-setup)
+           (rust-mode . lsp)
+           (rust-mode . flycheck-mode))
     :custom
     (indent-tabs-mode nil)
     (rust-format-on-save t)
