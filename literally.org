@@ -104,7 +104,7 @@ future reference.
              ("()" . "()\C-b")
              ("{}" . "{}\C-b"))
     :custom
-    (dired-listing-switches "-alGh --group-directories-first")
+    (dired-listing-switches "-alGh")
     (indent-tabs-mode nil)
     (truncate-lines t)
     (word-wrap nil)
