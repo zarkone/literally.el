@@ -111,7 +111,6 @@ future reference.
     (word-wrap nil)
     (x-select-enable-clipboard t)
     (x-select-enable-primary t)
-    (browse-url-browser-function 'browse-url-chrome)
     (uniquify-buffer-name-style 'forward)
     (save-interprogram-paste-before-kill t)
     (compilation-always-kill  t)
@@ -122,6 +121,10 @@ future reference.
 
     :init
     (show-paren-mode 1)
+    (setq-default browse-url-browser-function
+                  (cl-case system-type
+                    ((darwin macos) 'browse-url-default-macosx-browser)
+                    (t 'browse-url-chrome)))
 
     :config
     (put 'narrow-to-region 'disabled nil)
