@@ -104,6 +104,7 @@ future reference.
              ("()" . "()\C-b")
              ("{}" . "{}\C-b"))
     :custom
+    (safe-local-variable-values '((url-max-redirections . 0)))
     (dired-listing-switches "-alGh")
     (indent-tabs-mode nil)
     (truncate-lines t)
@@ -331,11 +332,13 @@ future reference.
      (use-package company-lsp
        :config
        (push 'company-lsp company-backends))
-
+     (use-package lsp-ui)
      (use-package lsp-mode
+       :hook ((lsp-mode . lsp-ui-mode))
        :commands (lsp lsp-register-custom-settings)
        ;; reformat code and add missing (or remove old) imports
        :custom
+       (lsp-keymap-prefix "s-p")
        (lsp-prefer-flymake nil)
        :init
        (add-hook 'lsp-mode-hook
