@@ -213,6 +213,12 @@ future reference.
     (set-face-attribute 'default nil :height 105 :font "Hack"))
 #+END_SRC
 * Packages
+** fish
+#+BEGIN_SRC emacs-lisp
+  (use-package fish-mode
+    :hook ((before-save . fish_indent-before-save)))
+#+END_SRC
+
 ** company
 #+BEGIN_SRC emacs-lisp
   (use-package company
@@ -428,14 +434,23 @@ future reference.
        :config
        (require 'flycheck-clj-kondo))
    #+end_src
+** ts
+#+begin_src emacs-lisp
+  (use-package typescript-mode)
+  (use-package tide
+    :ensure t
+    :after (typescript-mode company flycheck)
+    :hook ((typescript-mode . tide-setup)
+           (typescript-mode . tide-hl-identifier-mode)
+           (before-save . tide-format-before-save)))
+#+end_src
 
 ** js
    #+begin_src emacs-lisp
      (use-package js-mode
        :custom
        (js-indent-level 2)
-       :ensure nil
-       :hook ((ruby-mode . flymake-mode)))
+       :ensure nil)
    #+end_src
 
 ** Ruby
