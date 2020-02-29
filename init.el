@@ -7,8 +7,11 @@
    package-enable-at-startup nil)
   (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
   (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+
   ;; MacOS package not found workaround
-  (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+  (when (eq system-type 'darwin)
+    (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"))
+
   (package-initialize)
 
   ;; Install dependencies
