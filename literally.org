@@ -12,7 +12,6 @@
                (when on-random-port
                  " 0")))))
 
-  (concat "foo" nil)
   (defun emacs-reload ()
     "reloads emacs config"
     (interactive)
@@ -452,6 +451,8 @@ future reference.
   (use-package tide
     :ensure t
     :after (typescript-mode company flycheck)
+    :custom
+    (typescript-indent-level 2)
     :hook ((typescript-mode . tide-setup)
            (typescript-mode . tide-hl-identifier-mode)
            (before-save . tide-format-before-save)))
@@ -469,6 +470,10 @@ future reference.
    #+begin_src emacs-lisp
      (use-package ruby-mode
        :hook ((ruby-mode . flymake-mode)))
+
+     (use-package rvm
+       :config
+       (rvm-use-default))
    #+end_src
 
 *** HAML
