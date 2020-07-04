@@ -165,10 +165,10 @@ future reference.
            ("C-s" . isearch-forward-regexp)
            ("C-r" . isearch-backward-regexp)
            ("C-x M-v" . visual-line-mode)
-           ("s-k" . windmove-up)
-           ("s-j" . windmove-down)
-           ("s-h" . windmove-left)
-           ("s-l" . windmove-right)
+           ("C-c p" . windmove-up)
+           ("C-c n" . windmove-down)
+           ("C-c b" . windmove-left)
+           ("C-c f" . windmove-right)
 
            :map prog-mode-map
            ("C-;" . me/comment-or-uncomment-region-or-line)))
@@ -221,9 +221,14 @@ future reference.
     (set-face-background 'default "black")
     (set-face-background 'fringe (face-attribute 'default :background))
     ;; TODO: system-install font
-    (set-face-attribute 'default nil :height 105 :font "Hack"))
+    (set-face-attribute 'default nil :height 90 :font "DejaVu Sans Mono"))
 #+END_SRC
 * Packages
+** nix
+#+BEGIN_SRC emacs-lisp
+  (use-package nix-mode)
+#+END_SRC
+
 ** fish
 #+BEGIN_SRC emacs-lisp
   (use-package fish-mode
@@ -491,4 +496,9 @@ future reference.
    #+begin_src emacs-lisp
      (use-package sass-mode
        )
+   #+end_src
+** haskell
+      #+begin_src emacs-lisp
+        (use-package haskell-mode)
+
    #+end_src
