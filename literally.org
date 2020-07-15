@@ -153,8 +153,8 @@ future reference.
 
     :bind (("M-[" . other-window)
            ([remap text-scale-decrease] . undo)
-           ("C-x %" . delete-other-windows-vertically)
-           ("C-x #" . vertical-three-windows-layout)
+           ("C-x M-5" . delete-other-windows-vertically)
+           ("C-x M-3" . vertical-three-windows-layout)
            ("C--" . undo)
            ("C-x M-s" . run-static-server)
            ("C-x C-d" . dired-jump)
