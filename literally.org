@@ -2,6 +2,14 @@
 
 ** Custom Functions
 #+BEGIN_SRC emacs-lisp
+  (defun vertical-three-windows-layout ()
+    "Vertical, three window layout"
+    (interactive)
+    (delete-other-windows)
+    (split-window-horizontally)
+    (split-window-horizontally)
+    (balance-windows))
+
   (defun run-static-server (&optional on-random-port)
     "Run static server in current dir, with default port (8000).
   With prefix arg, run at random free port"
@@ -145,6 +153,8 @@ future reference.
 
     :bind (("M-[" . other-window)
            ([remap text-scale-decrease] . undo)
+           ("C-x %" . delete-other-windows-vertically)
+           ("C-x #" . vertical-three-windows-layout)
            ("C--" . undo)
            ("C-x M-s" . run-static-server)
            ("C-x C-d" . dired-jump)
@@ -224,6 +234,11 @@ future reference.
     (set-face-attribute 'default nil :height 105 :font "Hack"))
 #+END_SRC
 * Packages
+** browse-at-remote
+   #+begin_src emacs-lisp
+     (use-package browse-at-remote
+       :bind (("C-x M-e" . browse-at-remote)))
+   #+end_src
 ** fish
 #+BEGIN_SRC emacs-lisp
   (use-package fish-mode
@@ -286,7 +301,8 @@ future reference.
 ** magit
 #+BEGIN_SRC emacs-lisp
   (use-package magit
-    :bind (("C-M-g" . magit-status)))
+    :bind (("C-M-g" . magit-status)
+           ("C-x M-g" . magit-blame)))
 #+END_SRC
 ** paredit
    #+begin_src emacs-lisp
