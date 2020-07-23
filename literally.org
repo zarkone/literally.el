@@ -264,6 +264,11 @@ future reference.
   (use-package expand-region
     :bind (("C-x x" . er/expand-region)))
 #+END_SRC
+** git-link
+#+BEGIN_SRC emacs-lisp
+  (use-package git-link
+    :bind (("C-x M-l" . git-link)))
+#+END_SRC
 ** git-timemachine
 #+BEGIN_SRC emacs-lisp
   (use-package git-timemachine
@@ -470,6 +475,8 @@ future reference.
     :custom
     (typescript-indent-level 2)
     :hook ((typescript-mode . tide-setup)
+           (typescript-mode . eldoc-mode)
+           (typescript-mode . flycheck-mode)
            (typescript-mode . tide-hl-identifier-mode)
            (before-save . tide-format-before-save)))
 #+end_src
