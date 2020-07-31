@@ -484,6 +484,20 @@ future reference.
        :ensure nil)
    #+end_src
 
+** ps
+#+begin_src emacs-lisp
+  (use-package purescript-mode)
+
+  (defun pcs-enable ()
+    (psc-ide-mode)
+    (company-mode)
+    (flycheck-mode)
+    (turn-on-purescript-indentation))
+
+  (use-package psc-ide
+    :hook (purescript-mode . pcs-enable))
+#+end_src
+
 ** Ruby
    #+begin_src emacs-lisp
      (use-package ruby-mode
