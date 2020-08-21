@@ -134,7 +134,7 @@ future reference.
     (setq-default browse-url-browser-function
                   (cl-case system-type
                     ((darwin macos) 'browse-url-default-macosx-browser)
-                    (t 'browse-url-chrome)))
+                    (t 'browse-url-firefox)))
 
     :config
     (put 'narrow-to-region 'disabled nil)
@@ -211,17 +211,13 @@ future reference.
 ** Color Theme
 #+BEGIN_SRC emacs-lisp
   (setq custom-safe-themes t)
-  (use-package eziam-dark-theme
-    :ensure eziam-theme
+  (use-package dracula-theme
     :custom
     (inhibit-x-resources t)
 
-    :init (load-theme 'eziam-dark t)
+    :init (load-theme 'dracula t)
     :config
-    (set-face-background 'default "black")
-    (set-face-background 'fringe (face-attribute 'default :background))
-    ;; TODO: system-install font
-    (set-face-attribute 'default nil :height 90 :font "DejaVu Sans Mono"))
+    (set-face-attribute 'default nil :height 105 :font "Ubuntu Mono"))
 #+END_SRC
 * Packages
 ** nix
@@ -360,7 +356,7 @@ future reference.
      (use-package lsp-ui)
      (use-package lsp-mode
        :hook ((lsp-mode . lsp-ui-mode))
-       :commands (lsp lsp-register-custom-settings)
+       :commands (lsp lsp-register-custom-settings lsp-deferred)
        ;; reformat code and add missing (or remove old) imports
        :custom
        (lsp-keymap-prefix "s-p")
@@ -460,6 +456,8 @@ future reference.
     (typescript-indent-level 2)
     :hook ((typescript-mode . tide-setup)
            (typescript-mode . tide-hl-identifier-mode)
+           (typescript-mode . eldoc-mode)
+           (typescript-mode . flycheck-mode)
            (before-save . tide-format-before-save)))
 #+end_src
 
@@ -502,3 +500,6 @@ future reference.
         (use-package haskell-mode)
 
    #+end_src
+* TODO
+** telega
+** mu4e
