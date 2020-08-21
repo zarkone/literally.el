@@ -2,6 +2,14 @@
 
 ** Custom Functions
 #+BEGIN_SRC emacs-lisp
+  (defun vertical-three-windows-layout ()
+    "Vertical, three window layout"
+    (interactive)
+    (delete-other-windows)
+    (split-window-horizontally)
+    (split-window-horizontally)
+    (balance-windows))
+
   (defun run-static-server (&optional on-random-port)
     "Run static server in current dir, with default port (8000).
   With prefix arg, run at random free port"
@@ -145,6 +153,8 @@ future reference.
 
     :bind (("M-[" . other-window)
            ([remap text-scale-decrease] . undo)
+           ("C-x M-5" . delete-other-windows-vertically)
+           ("C-x M-3" . vertical-three-windows-layout)
            ("C--" . undo)
            ("C-x M-s" . run-static-server)
            ("C-x C-d" . dired-jump)
@@ -225,6 +235,11 @@ future reference.
   (use-package nix-mode)
 #+END_SRC
 
+** browse-at-remote
+#+begin_src emacs-lisp
+  (use-package browse-at-remote
+    :bind (("C-x M-e" . browse-at-remote)))
+#+end_src
 ** fish
 #+BEGIN_SRC emacs-lisp
   (use-package fish-mode
@@ -287,7 +302,8 @@ future reference.
 ** magit
 #+BEGIN_SRC emacs-lisp
   (use-package magit
-    :bind (("C-M-g" . magit-status)))
+    :bind (("C-M-g" . magit-status)
+           ("C-x M-g" . magit-blame)))
 #+END_SRC
 ** paredit
    #+begin_src emacs-lisp
@@ -455,6 +471,8 @@ future reference.
     :custom
     (typescript-indent-level 2)
     :hook ((typescript-mode . tide-setup)
+           (typescript-mode . eldoc-mode)
+           (typescript-mode . flycheck-mode)
            (typescript-mode . tide-hl-identifier-mode)
            (typescript-mode . eldoc-mode)
            (typescript-mode . flycheck-mode)
@@ -468,6 +486,20 @@ future reference.
        (js-indent-level 2)
        :ensure nil)
    #+end_src
+
+** ps
+#+begin_src emacs-lisp
+  (use-package purescript-mode)
+
+  (defun pcs-enable ()
+    (psc-ide-mode)
+    (company-mode)
+    (flycheck-mode)
+    (turn-on-purescript-indentation))
+
+  (use-package psc-ide
+    :hook (purescript-mode . pcs-enable))
+#+end_src
 
 ** Ruby
    #+begin_src emacs-lisp
