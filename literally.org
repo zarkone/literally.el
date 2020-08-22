@@ -136,7 +136,7 @@ future reference.
     (mouse-yank-at-point t)
     (save-place-file (concat user-emacs-directory ".places"))
     (backup-directory-alist `(("." . ,(concat user-emacs-directory ".backups"))))
-
+    (default-input-method 'russian-computer)
     :init
     (show-paren-mode 1)
     (setq-default browse-url-browser-function
@@ -354,6 +354,11 @@ future reference.
 #+BEGIN_SRC emacs-lisp
   (use-package restclient)
 #+END_SRC
+** telega
+#+BEGIN_SRC emacs-lisp
+  (use-package telega)
+#+END_SRC
+
 ** buf-move
 #+BEGIN_SRC emacs-lisp
   (use-package buffer-move
