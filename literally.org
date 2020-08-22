@@ -139,6 +139,7 @@ future reference.
     (default-input-method 'russian-computer)
     :init
     (show-paren-mode 1)
+
     (setq-default browse-url-browser-function
                   (cl-case system-type
                     ((darwin macos) 'browse-url-default-macosx-browser)
@@ -538,5 +539,7 @@ future reference.
         (use-package haskell-mode)
 
    #+end_src
+
 * TODO
 ** mu4e
+   http://cachestocaches.com/2017/3/complete-guide-email-emacs-using-mu-and-/
