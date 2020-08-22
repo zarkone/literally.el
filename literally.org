@@ -355,6 +355,13 @@ future reference.
 #+BEGIN_SRC emacs-lisp
   (use-package restclient)
 #+END_SRC
+** mu4e
+#+BEGIN_SRC emacs-lisp
+;; Installed mu via nixos; it automatically adds it to load path.
+;; But still need to require it manually.
+;; TODO: mailboxes are in mess
+(require 'mu4e)
+#+END_SRC
 ** telega
 #+BEGIN_SRC emacs-lisp
   (use-package telega
@@ -539,7 +546,3 @@ future reference.
         (use-package haskell-mode)
 
    #+end_src
-
-* TODO
-** mu4e
-   http://cachestocaches.com/2017/3/complete-guide-email-emacs-using-mu-and-/
