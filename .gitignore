@@ -1,2 +1,14 @@
+%backup%~
+.backups/
+.custom-vars
+.lsp-session-v1
+auto-save-list/
+bookmarks
+eshell/
+projectile-bookmarks.eld
+recentf
+tramp
+transient/
 /literally.el
 /elpa/
+/#recentf#
