@@ -356,7 +356,8 @@ future reference.
 #+END_SRC
 ** telega
 #+BEGIN_SRC emacs-lisp
-  (use-package telega)
+  (use-package telega
+    :bind (("C-x M-t" . telega)))
 #+END_SRC
 
 ** buf-move
@@ -538,5 +539,4 @@ future reference.
 
    #+end_src
 * TODO
-** telega
 ** mu4e
