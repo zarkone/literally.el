@@ -2,6 +2,14 @@
 
 ** Custom Functions
 #+BEGIN_SRC emacs-lisp
+
+  (defun font-names-list ()
+    "Get list of names of installed fonts,which can be used to set font."
+    (seq-filter (lambda (font)
+                  (when-let ((info (font-info font)))
+                    (string-match-p "spacing=100" (aref info 1))))
+                (font-family-list)))
+
   (defun vertical-three-windows-layout ()
     "Vertical, three window layout"
     (interactive)
@@ -357,10 +365,10 @@ future reference.
 #+END_SRC
 ** mu4e
 #+BEGIN_SRC emacs-lisp
-;; Installed mu via nixos; it automatically adds it to load path.
-;; But still need to require it manually.
-;; TODO: mailboxes are in mess
-(require 'mu4e)
+  ;; Installed mu via nixos; it automatically adds it to load path.
+  ;; But still need to require it manually.
+  (require 'mu4e)
+  (setq-default user-mail-address "zarkonesmall@gmail.com")
 #+END_SRC
 ** telega
 #+BEGIN_SRC emacs-lisp
