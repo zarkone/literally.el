@@ -236,6 +236,7 @@ future reference.
 
     :init (load-theme 'dracula t)
     :config
+    (set-face-attribute 'mode-line nil :box '(:line-width 1 :color "#664466"))
     (set-face-attribute 'default nil :height 105 :font "Ubuntu Mono"))
 #+END_SRC
 * Packages
@@ -246,8 +247,13 @@ future reference.
 
 ** browse-at-remote
 #+begin_src emacs-lisp
+  (defun yank-remote-and-msg ()
+    (interactive)
+    (message (bar-to-clipboard)))
+
   (use-package browse-at-remote
-    :bind (("C-x M-e" . browse-at-remote)))
+    :bind (("C-x M-e" . browse-at-remote)
+           ("C-x M-r" . yank-remote-and-msg)))
 #+end_src
 ** fish
 #+BEGIN_SRC emacs-lisp
@@ -367,6 +373,7 @@ future reference.
 #+BEGIN_SRC emacs-lisp
   ;; Installed mu via nixos; it automatically adds it to load path.
   ;; But still need to require it manually.
+  ;; TODO: send http://cachestocaches.com/2017/3/complete-guide-email-emacs-using-mu-and-/#using-mu4e-to-send-mail
   (require 'mu4e)
   (setq-default user-mail-address "zarkonesmall@gmail.com")
 #+END_SRC
