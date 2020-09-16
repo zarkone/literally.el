@@ -469,14 +469,17 @@ future reference.
    #+end_src
 ** ts
 #+begin_src emacs-lisp
-  (use-package typescript-mode)
   (use-package tide
     :ensure t
+    :commands (tide-setup tide-hl-identifier-mode tide-format-before-save)
     :after (typescript-mode company flycheck)
     :custom
-    (typescript-indent-level 2)
+    (typescript-indent-level 4))
+
+  (use-package typescript-mode
+    :custom
+    (flycheck-check-syntax-automatically '(save mode-enabled))
     :hook ((typescript-mode . tide-setup)
-           (typescript-mode . eldoc-mode)
            (typescript-mode . flycheck-mode)
            (typescript-mode . tide-hl-identifier-mode)
            (before-save . tide-format-before-save)))
@@ -506,8 +509,9 @@ future reference.
 
 ** Ruby
    #+begin_src emacs-lisp
+     (use-package flymake-ruby)
      (use-package ruby-mode
-       :hook ((ruby-mode . flymake-mode)))
+       :hook ((ruby-mode . flymake-ruby-load)))
 
      (use-package rvm
        :config
