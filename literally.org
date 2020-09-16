@@ -221,17 +221,23 @@ future reference.
 ** Color Theme
 #+BEGIN_SRC emacs-lisp
   (setq custom-safe-themes t)
-  (use-package eziam-dark-theme
-    :ensure eziam-theme
+
+  (use-package dracula-theme
     :custom
     (inhibit-x-resources t)
 
-    :init (load-theme 'eziam-dark t)
+    :init (load-theme 'dracula t)
     :config
-    (set-face-background 'default "black")
-    (set-face-background 'fringe (face-attribute 'default :background))
     ;; TODO: system-install font
-    (set-face-attribute 'default nil :height 105 :font "Hack"))
+    (set-face-attribute 'default nil :height 115 :font "Hack")
+    (set-face-background 'fringe (face-attribute 'default :background))
+    ;; (set-face-attribute 'vertical-border nil :foreground "black")
+
+    (set-face-attribute 'region nil :background "#727")
+    (set-face-attribute 'region nil :foreground "#fff")
+
+    (set-cursor-color "#aa00ff")
+    )
 #+END_SRC
 * Packages
 ** browse-at-remote
