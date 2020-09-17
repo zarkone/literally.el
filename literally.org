@@ -188,6 +188,16 @@ future reference.
 * Appearance
 ** OSX
    #+begin_src emacs-lisp
+     (defun me/switch-modifiers ()
+       "Switch modifiers in macos when I plug HHKB"
+       (interactive)
+       (if (eq mac-option-modifier 'super)
+           (setq mac-option-modifier 'meta)
+         (setq mac-option-modifier 'super))
+       (if (eq mac-command-modifier 'super)
+           (setq mac-command-modifier 'meta)
+         (setq mac-command-modifier 'super)))
+
      (use-package osx-pseudo-daemon
        :custom
        (osx-pseudo-daemon-mode 1)
@@ -198,7 +208,6 @@ future reference.
        :init
        (when (memq window-system '(mac ns x))
          (exec-path-from-shell-initialize)))
-
    #+end_src
 ** Disable all GUI
 #+BEGIN_SRC emacs-lisp
