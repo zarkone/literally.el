@@ -2,13 +2,14 @@
 
 ** Custom Functions
 #+BEGIN_SRC emacs-lisp
-  (defun vertical-three-windows-layout ()
-    "Vertical, three window layout"
+  (defun insert-anatolii-todo ()
+    "Inserts commented TODO: Anatolii"
     (interactive)
-    (delete-other-windows)
-    (split-window-horizontally)
-    (split-window-horizontally)
-    (balance-windows))
+    (let ((todo-text "TODO: Anatolii"))
+      (insert todo-text)
+      (forward-line)
+      (comment-line -1)
+      (forward-line)))
 
   (defun run-static-server (&optional on-random-port)
     "Run static server in current dir, with default port (8000).
@@ -156,6 +157,7 @@ future reference.
            ("C-x M-5" . delete-other-windows-vertically)
            ("C-x M-3" . vertical-three-windows-layout)
            ("C--" . undo)
+           ("C-c C-;" . insert-anatolii-todo)
            ("C-x M-s" . run-static-server)
            ("C-x C-d" . dired-jump)
            ("M-o" . occur)
@@ -252,29 +254,25 @@ future reference.
       (dolist (char-regexp alist)
         (set-char-table-range composition-function-table (car char-regexp)
                               `([,(cdr char-regexp) 0 font-shape-gstring])))))
-  (use-package dracula-theme
+  (use-package modus-vivendi-theme
     :custom
     (inhibit-x-resources t)
 
-    :init (load-theme 'dracula t)
+    :init (load-theme 'modus-vivendi t)
     :config
     ;; TODO: system-install font
-    (set-face-attribute 'default nil :height 115 :font "Fira Code")
+    (set-face-attribute 'default nil :height 125 :font "Droid Sans Mono SW")
 
-    (when (window-system)
-      (enable-ligatures))
+    ;; (when (window-system)
+    ;;  (enable-ligatures))
 
-    (use-package fira-code-mode
-      :custom (fira-code-mode-disabled-ligatures '("[]" "x")) ; ligatures you don't want
-      :hook prog-mode)
     (set-face-background 'fringe (face-attribute 'default :background))
     ;; (set-face-attribute 'vertical-border nil :foreground "black")
 
     (set-face-attribute 'region nil :background "#727")
     (set-face-attribute 'region nil :foreground "#fff")
 
-    (set-cursor-color "#aa00ff")
-    )
+    (set-cursor-color "#aa00ff"))
 #+END_SRC
 * Packages
 ** browse-at-remote
@@ -511,7 +509,7 @@ future reference.
     :commands (tide-setup tide-hl-identifier-mode tide-format-before-save)
     :after (typescript-mode company flycheck)
     :custom
-    (typescript-indent-level 4))
+    (typescript-indent-level 2))
 
   (use-package typescript-mode
     :custom
