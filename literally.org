@@ -230,13 +230,13 @@ future reference.
 ** Color Theme
 #+BEGIN_SRC emacs-lisp
   (setq custom-safe-themes t)
-  (use-package dracula-theme
+  (use-package modus-vivendi-theme
     :custom
     (inhibit-x-resources t)
 
-    :init (load-theme 'dracula t)
+    :init (load-theme 'modus-vivendi t)
     :config
-    (set-face-attribute 'mode-line nil :box '(:line-width 1 :color "#664466"))
+    ;; (set-face-attribute 'mode-line nil :box '(:line-width 1 :color "#664466"))
     (set-face-attribute 'default nil :height 105 :font "Ubuntu Mono"))
 #+END_SRC
 * Packages
