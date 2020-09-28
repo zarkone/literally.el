@@ -305,6 +305,8 @@ future reference.
            :map helm-map
            ("C-i" . helm-execute-persistent-action)))
 #+END_SRC
+*** TODO helm-cd-path
+    implement (or find) helm autocomplete for dirs from ~$CDPATH~
 *** helm plugins
 #+BEGIN_SRC emacs-lisp
   (use-package helm-company)
