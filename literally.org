@@ -230,14 +230,22 @@ future reference.
 ** Color Theme
 #+BEGIN_SRC emacs-lisp
   (setq custom-safe-themes t)
+
+  (use-package fira-code-mode
+    :config
+    (fira-code-mode t))
+
   (use-package modus-vivendi-theme
     :custom
     (inhibit-x-resources t)
 
     :init (load-theme 'modus-vivendi t)
     :config
+    (set-face-attribute 'cursor nil :background "#d1d")
+    (set-face-attribute 'default nil :height 95 :font "Fira Code")
     ;; (set-face-attribute 'mode-line nil :box '(:line-width 1 :color "#664466"))
-    (set-face-attribute 'default nil :height 105 :font "Ubuntu Mono"))
+    ;; (set-face-attribute 'default nil :height 105 :font "Ubuntu Mono")
+    )
 #+END_SRC
 * Packages
 ** nix
@@ -495,18 +503,19 @@ future reference.
    #+end_src
 ** ts
 #+begin_src emacs-lisp
-  (use-package typescript-mode)
   (use-package tide
     :ensure t
+    :commands (tide-setup tide-hl-identifier-mode tide-format-before-save)
     :after (typescript-mode company flycheck)
     :custom
-    (typescript-indent-level 2)
+    (typescript-indent-level 2))
+
+  (use-package typescript-mode
+    :custom
+    (flycheck-check-syntax-automatically '(save mode-enabled))
     :hook ((typescript-mode . tide-setup)
-           (typescript-mode . eldoc-mode)
            (typescript-mode . flycheck-mode)
            (typescript-mode . tide-hl-identifier-mode)
-           (typescript-mode . eldoc-mode)
-           (typescript-mode . flycheck-mode)
            (before-save . tide-format-before-save)))
 #+end_src
 
