@@ -232,8 +232,7 @@ future reference.
   (setq custom-safe-themes t)
 
   (use-package fira-code-mode
-    :config
-    (fira-code-mode t))
+    :hook prog-mode)
 
   (use-package modus-vivendi-theme
     :custom
@@ -242,8 +241,11 @@ future reference.
     :init (load-theme 'modus-vivendi t)
     :config
     (set-face-attribute 'cursor nil :background "#d1d")
-    (set-face-attribute 'default nil :height 95 :font "Fira Code")
-    ;; (set-face-attribute 'mode-line nil :box '(:line-width 1 :color "#664466"))
+    ;; (set-face-attribute 'default nil :height 95 :font "Fira Code")
+    (set-face-attribute 'default nil :height 100 :font "JetBrains Mono")
+    (set-face-attribute 'default nil :height 95 :font "JetBrains Mono")
+    ;; (global-fira-code-mode t)
+     (set-face-attribute 'mode-line nil :box '(:line-width 1 :color "#664466"))
     ;; (set-face-attribute 'default nil :height 105 :font "Ubuntu Mono")
     )
 #+END_SRC
@@ -390,7 +392,9 @@ future reference.
 ** telega
 #+BEGIN_SRC emacs-lisp
   (use-package telega
-    :bind (("C-x M-t" . telega)))
+    :bind (("C-x M-t" . telega))
+    :config
+    (telega-mode-line-mode t))
 #+END_SRC
 
 ** buf-move
