@@ -387,8 +387,47 @@ future reference.
   ;; Installed mu via nixos; it automatically adds it to load path.
   ;; But still need to require it manually.
   (require 'mu4e)
+  (setq mu4e-xapix-signature
+        (format "<#part type=text/html><html><body><p>%s</p></body></html><#/part>"
+                (with-temp-buffer
+                  (insert-file-contents "~/.emacs.d/xapix-signature.html")
+                  (buffer-string))))
 
-  ;; TODO: contexts
+  (setq mu4e-contexts
+        `( ,(make-mu4e-context
+             :name "Private"
+             :enter-func (lambda () (mu4e-message "Entering Private context"))
+             :match-func
+             (lambda (msg)
+               (when msg
+                 (string-match-p "^/Gmail" (mu4e-message-field msg :maildir))))
+
+             :vars '((user-mail-address . "zarkonesmall@gmail.com")
+                     (smtpmail-smtp-user . "zarkonesmall@gmail.com")
+                     (user-full-name . "Anatolii Smolianinov")
+                     (mu4e-compose-signature . "Anatolii Smolianinov")))
+           ,(make-mu4e-context
+             :name "Xapix"
+             :enter-func (lambda () (mu4e-message "Switch to the Xapix context"))
+             ;; no leave-func
+             ;; we match based on the maildir of the message
+             ;; this matches maildir /Arkham and its sub-directories
+             :match-func (lambda (msg)
+                           (when msg
+                             (string-match-p "^/Xapix" (mu4e-message-field msg :maildir))))
+             :vars `((user-mail-address . "anatoly@xapix.io")
+                     (smtpmail-smtp-user . "anatoly@xapix.io")
+                     (user-full-name . "Anatolii Smolianinov")
+                     ;; TODO: xapix sign https://dataswamp.org/~solene/2016-06-07-13.html
+                     (mu4e-compose-signature . ,mu4e-xapix-signature
+
+                                             )))
+           ))
+
+  ;; start with the first (default) context;
+  ;; default is to ask-if-none (ask when there's no context yet, and none match)
+  (setq mu4e-context-policy 'pick-first)
+
   (use-package my-fake-mu4e
     :ensure nil
     :custom
@@ -399,12 +438,9 @@ future reference.
     (smtpmail-smtp-service 587)
     (smtpmail-stream-type 'starttls)
     (mail-user-agent 'mu4e-user-agent)
-    (user-mail-address "zarkonesmall@gmail.com")
-    (user-full-name  "Anatolii Smolianinov")
-    (mu4e-compose-signature "Anatolii Smolianinov")
+    :bind (("C-x M-u" . mu4e)))
 
-    :bind (("C-x M-u" . mu4e))
-    )
+  ;; TODO: notifications, unread amount
 #+END_SRC
 ** telega
 #+BEGIN_SRC emacs-lisp
