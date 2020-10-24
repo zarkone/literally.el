@@ -386,25 +386,25 @@ future reference.
 #+BEGIN_SRC emacs-lisp
   ;; Installed mu via nixos; it automatically adds it to load path.
   ;; But still need to require it manually.
-  ;; TODO: send http://cachestocaches.com/2017/3/complete-guide-email-emacs-using-mu-and-/#using-mu4e-to-send-mail
   (require 'mu4e)
-  (setq
-          user-mail-address "zarkonesmall@gmail.com"
-          user-full-name  "Anatolii Smolianinov"
-          mu4e-compose-signature
-           (concat
-            "Anatolii Smolianinov"
-            ))
-  (setq mail-user-agent 'mu4e-user-agent)
 
-  (setq message-send-mail-function 'smtpmail-send-it
-        smtpmail-stream-type 'starttls
-        smtpmail-default-smtp-server "smtp.gmail.com"
-        smtpmail-smtp-server "smtp.gmail.com"
-        smtpmail-smtp-service 587)
+  ;; TODO: contexts
+  (use-package my-fake-mu4e
+    :ensure nil
+    :custom
+    (message-kill-buffer-on-exit t)
+    (message-send-mail-function 'smtpmail-send-it)
+    (smtpmail-default-smtp-server "smtp.gmail.com")
+    (smtpmail-smtp-server "smtp.gmail.com")
+    (smtpmail-smtp-service 587)
+    (smtpmail-stream-type 'starttls)
+    (mail-user-agent 'mu4e-user-agent)
+    (user-mail-address "zarkonesmall@gmail.com")
+    (user-full-name  "Anatolii Smolianinov")
+    (mu4e-compose-signature "Anatolii Smolianinov")
 
-  ;; don't keep message buffers around
-  (setq message-kill-buffer-on-exit t)
+    :bind (("C-x M-u" . mu4e))
+    )
 #+END_SRC
 ** telega
 #+BEGIN_SRC emacs-lisp
