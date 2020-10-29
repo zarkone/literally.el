@@ -120,7 +120,10 @@ future reference.
 
   (use-package emacs
     :hook ((before-save . delete-trailing-whitespace)
-           (emacs-lisp-mode . enable-paredit-mode))
+           (emacs-lisp-mode . enable-paredit-mode)
+           (org-mode . auto-fill-mode)
+           (org-mode . flyspell-mode)
+           )
     :chords (("k[" . delete-whitespace)
              ("i0" . me/switch-to-previous-buffer)
              ("[]" . "[]\C-b")
@@ -151,7 +154,7 @@ future reference.
     (setq-default browse-url-browser-function
                   (cl-case system-type
                     ((darwin macos) 'browse-url-default-macosx-browser)
-                    (t 'browse-url-firefox)))
+                    (t 'browse-url-chrome)))
 
     :config
     (put 'narrow-to-region 'disabled nil)
@@ -428,9 +431,19 @@ future reference.
   ;; default is to ask-if-none (ask when there's no context yet, and none match)
   (setq mu4e-context-policy 'pick-first)
 
+  (use-package mu4e-alert
+    :ensure t
+    :custom
+    (mu4e-alert-style 'notifications)
+    :config
+    (mu4e-alert-enable-notifications)
+    (mu4e-alert-enable-mode-line-display))
+
   (use-package my-fake-mu4e
     :ensure nil
     :custom
+    (mu4e-hide-index-messages t)
+    (mu4e-update-interval nil)
     (message-kill-buffer-on-exit t)
     (message-send-mail-function 'smtpmail-send-it)
     (smtpmail-default-smtp-server "smtp.gmail.com")
@@ -447,6 +460,7 @@ future reference.
   (use-package telega
     :bind (("C-x M-t" . telega))
     :config
+    (telega-notifications-mode t)
     (telega-mode-line-mode t))
 #+END_SRC
 
