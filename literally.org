@@ -133,6 +133,7 @@ future reference.
              ("()" . "()\C-b")
              ("{}" . "{}\C-b"))
     :custom
+    (auth-sources '((:source "/home/zarkone/.emacs.d/secrets/.authinfo.gpg")))
     (safe-local-variable-values '((url-max-redirections . 0)))
     (dired-listing-switches "-alGh")
     (indent-tabs-mode nil)
@@ -154,7 +155,7 @@ future reference.
     (setq-default browse-url-browser-function
                   (cl-case system-type
                     ((darwin macos) 'browse-url-default-macosx-browser)
-                    (t 'browse-url-chrome)))
+                    (t 'browse-url-firefox)))
 
     :config
     (put 'narrow-to-region 'disabled nil)
@@ -246,7 +247,7 @@ future reference.
     (set-face-attribute 'cursor nil :background "#d1d")
     (set-face-attribute 'fringe nil :foreground "green")
     (set-face-attribute 'vertical-border nil :foreground "#664466")
-    (set-face-attribute 'default nil :height 100 :font "JetBrains Mono")
+    (set-face-attribute 'default nil :height 110 :font "JetBrains Mono")
     ;; (global-fira-code-mode t)
     (set-face-attribute 'mode-line nil :box '(:line-width 1 :color "#664466"))
     ;; (set-face-attribute 'default nil :height 105 :font "Ubuntu Mono")
@@ -254,6 +255,12 @@ future reference.
     )
 #+END_SRC
 * Packages
+** langtool
+   #+begin_src emacs-lisp
+     (use-package langtool
+       :custom
+       (langtool-language-tool-server-jar "/home/zarkone/Downloads/LanguageTool-5.1/languagetool-server.jar"))
+   #+end_src
 ** nix
 #+BEGIN_SRC emacs-lisp
   (use-package nix-mode)
