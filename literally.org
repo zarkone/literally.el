@@ -333,7 +333,9 @@ future reference.
   (use-package helm-company)
   (use-package helm-rg
     :bind (("C-x C-p" . helm-projectile-rg)
-           ("C-x DEL" . helm-projectile)))
+           ("C-x DEL" . helm-projectile))
+    :custom
+    (helm-projectile-set-input-automatically nil))
   (use-package helm-projectile
     :bind (("C-x C-b" . helm-projectile-switch-to-buffer)))
 #+END_SRC
