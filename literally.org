@@ -515,6 +515,9 @@ future reference.
        :custom
        (lsp-keymap-prefix "s-p")
        (lsp-prefer-flymake nil)
+       (read-process-output-max 8092)
+       (gc-cons-threshold 1800000)
+
        :init
        (add-hook 'lsp-mode-hook
                     ;; TODO: add macro or fn for `when find minor-mode ...`
@@ -601,6 +604,7 @@ future reference.
        (require 'flycheck-clj-kondo))
    #+end_src
 ** ts
+*** COMMENT with tide
 #+begin_src emacs-lisp
   (use-package tide
     :ensure t
@@ -617,6 +621,18 @@ future reference.
            (typescript-mode . tide-hl-identifier-mode)
            (before-save . tide-format-before-save)))
 #+end_src
+
+*** with lsp
+#+begin_src emacs-lisp
+  (use-package typescript-mode
+    :custom
+    (typescript-indent-level 2)
+    (flycheck-check-syntax-automatically '(save mode-enabled))
+    :hook ((typescript-mode . lsp)
+           (before-save . lsp-format-buffer)
+           (typescript-mode . flycheck-mode)))
+#+end_src
+
 
 ** js
    #+begin_src emacs-lisp
