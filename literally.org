@@ -119,13 +119,28 @@ future reference.
     :config (key-chord-mode 1))
 
   (defun gui-tweaks ()
+    (interactive)
     (when menu-bar-mode
       (menu-bar-mode 0)
       (scroll-bar-mode 0)
       (tool-bar-mode 0)
       (tooltip-mode 0))
     (set-face-attribute 'cursor nil :background "#d1d")
-    (set-face-attribute 'default nil :height 100 :font "JetBrains Mono"))
+    (set-face-attribute 'fringe nil :foreground "green")
+    (set-face-attribute 'vertical-border nil :foreground "#212")
+    (set-face-attribute 'default nil :height 100 :font "JetBrains Mono")
+    (set-face-attribute 'region nil :background "#757")
+    (set-face-attribute 'hl-line nil :background "#212")
+
+    (set-face-attribute 'mode-line nil
+                        :background "#212"
+                        :foreground "green"
+                        :box '(:line-width 1 :color "#212"))
+    (set-face-attribute 'mode-line-inactive nil
+                        :background "#212"
+                        :foreground "purple"
+                        :box '(:line-width 1 :color "#212"))
+    )
 
   (use-package emacs
     :hook ((before-save . delete-trailing-whitespace)
@@ -254,12 +269,8 @@ future reference.
 
     :init (load-theme 'modus-vivendi t)
     :config
-    (set-face-attribute 'cursor nil :background "#d1d")
-    (set-face-attribute 'fringe nil :foreground "green")
-    (set-face-attribute 'vertical-border nil :foreground "#664466")
-    (set-face-attribute 'default nil :height 110 :font "JetBrains Mono")
+    (gui-tweaks)
     ;; (global-fira-code-mode t)
-    (set-face-attribute 'mode-line nil :box '(:line-width 1 :color "#664466"))
     ;; (set-face-attribute 'default nil :height 105 :font "Ubuntu Mono")
     ;; (set-face-attribute 'default nil :height 95 :font "Fira Code")
     )
