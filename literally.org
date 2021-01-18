@@ -267,6 +267,7 @@ future reference.
   (setq custom-safe-themes t)
 
   (use-package fira-code-mode
+    :custom (fira-code-mode-disabled-ligatures '("[]" "<>" "x"))
     :hook prog-mode)
 
   (use-package modus-vivendi-theme
