@@ -10,6 +10,12 @@
                     (string-match-p "spacing=100" (aref info 1))))
                 (font-family-list)))
 
+  (defun zarkone/insert-current-date ()
+    "Insert current date here."
+    (interactive)
+    (insert
+     (shell-command-to-string "date")))
+
   (defun vertical-three-windows-layout ()
     "Vertical, three window layout"
     (interactive)
@@ -203,7 +209,7 @@ future reference.
            ("C-x M-m" . recompile)
            ("C-M-;" . replace-regexp)
            ("C-x H" . help)
-           ("C-c M-." . insdate-insert-current-date)
+           ("C-c M-." . zarkone/insert-current-date)
            ("C-x C-g" . goto-address-at-point)
            ("M-/" . hippie-expand)
            ("M-\\" . delete-whitespace)
