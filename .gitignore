@@ -16,3 +16,5 @@ transient/
 /network-security.data
 /nov-places
 /url/
+/.cache/
+/emojis/
