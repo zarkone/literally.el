@@ -612,6 +612,8 @@ future reference.
    #+end_src
 ** ts
 *** COMMENT with tide
+    tide is here for now, but seems like LSP works much better
+    for me
 #+begin_src emacs-lisp
   (use-package tide
     :ensure t
@@ -639,7 +641,6 @@ future reference.
            (before-save . lsp-format-buffer)
            (typescript-mode . flycheck-mode)))
 #+end_src
-
 
 ** js
    #+begin_src emacs-lisp
