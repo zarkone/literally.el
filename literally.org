@@ -179,6 +179,7 @@ future reference.
     (mouse-yank-at-point t)
     (save-place-file (concat user-emacs-directory ".places"))
     (backup-directory-alist `(("." . ,(concat user-emacs-directory ".backups"))))
+    (warning-suppress-types '((comp)))
     (default-input-method 'russian-computer)
     :init
     (show-paren-mode 1)
@@ -266,9 +267,36 @@ future reference.
 #+BEGIN_SRC emacs-lisp
   (setq custom-safe-themes t)
 
-  (use-package fira-code-mode
-    :custom (fira-code-mode-disabled-ligatures '("[]" "<>" "x"))
-    :hook prog-mode)
+  ;; (use-package fira-code-mode
+  ;;   :custom (fira-code-mode-disabled-ligatures '("[]" "<>" "x"))
+  ;;   :hook prog-mode)
+
+  (load-file "/home/zarkone/.emacs.d/ligature.el/ligature.el")
+  (use-package ligature
+    :load-path "/home/zarkone/.emacs.d/ligature.el"
+    :config
+    ;; Enable the "www" ligature in every possible major mode
+    (ligature-set-ligatures 't '("www"))
+    ;; Enable traditional ligature support in eww-mode, if the
+    ;; `variable-pitch' face supports it
+    (ligature-set-ligatures 'eww-mode '("ff" "fi" "ffi"))
+    ;; Enable all Cascadia Code ligatures in programming modes
+    (ligature-set-ligatures 'prog-mode '("|||>" "<|||" "<==>" "<!--" "####" "~~>" "***" "||=" "||>"
+                                         ":::" "::=" "=:=" "===" "==>" "=!=" "=>>" "=<<" "=/=" "!=="
+                                         "!!." ">=>" ">>=" ">>>" ">>-" ">->" "->>" "-->" "---" "-<<"
+                                         "<~~" "<~>" "<*>" "<||" "<|>" "<$>" "<==" "<=>" "<=<" "<->"
+                                         "<--" "<-<" "<<=" "<<-" "<<<" "<+>" "</>" "###" "#_(" "..<"
+                                         "..." "+++" "/==" "///" "_|_" "www" "&&" "^=" "~~" "~@" "~="
+                                         "~>" "~-" "**" "*>" "*/" "||" "|}" "|]" "|=" "|>" "|-" "{|"
+                                         "[|" "]#" "::" ":=" ":>" ":<" "$>" "==" "=>" "!=" "!!" ">:"
+                                         ">=" ">>" ">-" "-~" "-|" "->" "--" "-<" "<~" "<*" "<|" "<:"
+                                         "<$" "<=" "<>" "<-" "<<" "<+" "</" "#{" "#[" "#:" "#=" "#!"
+                                         "##" "#(" "#?" "#_" "%%" ".=" ".-" ".." ".?" "+>" "++" "?:"
+                                         "?=" "?." "??" ";;" "/*" "/=" "/>" "//" "__" "~~" "(*" "*)"
+                                         "://"))
+    ;; Enables ligature checks globally in all buffers. You can also do it
+    ;; per mode with `ligature-mode'.
+    (global-ligature-mode t))
 
   (use-package modus-vivendi-theme
     :custom
@@ -397,9 +425,15 @@ future reference.
     :diminish yas-minor-mode
     :hook (after-init . yas-global-mode))
 #+END_SRC
-** yaml
+** COMMENT yaml
 #+BEGIN_SRC emacs-lisp
+  ;; (use-package yaml-mode
+  ;;   :custom
+  ;;   (yaml-indent-offset 2)
+  ;;   :hook ((yaml-mode . lsp)))
+
   (use-package yaml-mode)
+
 #+END_SRC
 
 ** web-mode
@@ -515,23 +549,26 @@ future reference.
        :config
        (push 'company-lsp company-backends))
      (use-package lsp-ui)
+
      (use-package lsp-mode
-       :hook ((lsp-mode . lsp-ui-mode))
+       :hook ((lsp-mode . lsp-ui-mode)
+              (lsp-mode . lsp-enable-which-key-integration))
        :commands (lsp lsp-register-custom-settings lsp-deferred)
        ;; reformat code and add missing (or remove old) imports
        :custom
-       (lsp-keymap-prefix "s-p")
+       (lsp-keymap-prefix "C-c l")
        (lsp-prefer-flymake nil)
        (read-process-output-max 8092)
        (gc-cons-threshold 1800000)
-
+       :config
+       (define-key lsp-mode-map (kbd "C-c l") lsp-command-map)
        :init
        (add-hook 'lsp-mode-hook
-                    ;; TODO: add macro or fn for `when find minor-mode ...`
-                    #'(lambda ()
-                        (when (member 'lsp-mode minor-mode-list)
-                          (lsp-format-buffer)
-                          (lsp-organize-imports))))
+                 ;; TODO: add macro or fn for `when find minor-mode ...`
+                 #'(lambda ()
+                     (when (member 'lsp-mode minor-mode-list)
+                       (lsp-format-buffer)
+                       (lsp-organize-imports))))
 
        :bind (("C-c d" . lsp-describe-thing-at-point)
               ("C-c e n" . flymake-goto-next-error)

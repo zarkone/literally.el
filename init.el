@@ -26,6 +26,10 @@
   (use-package org :ensure org-plus-contrib
     :bind (:map org-mode-map
                 ("<C-return>" . save-buffer))
+    :custom
+    (org-todo-keyword-faces
+     '(("TODO" . org-warning) 
+       ("WAIT" . (:foreground "purple" :weight bold))))
     :config
     (use-package org-tempo
       :demand t

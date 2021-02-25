@@ -1,0 +1,3 @@
+[submodule "ligature.el"]
+	path = ligature.el
+	url = https://github.com/mickeynp/ligature.el
