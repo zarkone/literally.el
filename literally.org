@@ -320,6 +320,7 @@ future reference.
 ** nix
 #+BEGIN_SRC emacs-lisp
   (use-package nix-mode)
+
 #+END_SRC
 
 ** browse-at-remote
@@ -425,14 +426,13 @@ future reference.
     :diminish yas-minor-mode
     :hook (after-init . yas-global-mode))
 #+END_SRC
-** COMMENT yaml
+** yaml
 #+BEGIN_SRC emacs-lisp
-  ;; (use-package yaml-mode
-  ;;   :custom
-  ;;   (yaml-indent-offset 2)
-  ;;   :hook ((yaml-mode . lsp)))
-
-  (use-package yaml-mode)
+  (use-package highlight-indentation)
+  (use-package yaml-mode
+    :custom
+    (yaml-indent-offset 2)
+    :hook ((yaml-mode . highlight-indentation-mode)))
 
 #+END_SRC
 
@@ -548,6 +548,7 @@ future reference.
      (use-package company-lsp
        :config
        (push 'company-lsp company-backends))
+
      (use-package lsp-ui)
 
      (use-package lsp-mode
@@ -562,7 +563,13 @@ future reference.
        (gc-cons-threshold 1800000)
        :config
        (define-key lsp-mode-map (kbd "C-c l") lsp-command-map)
+       (lsp-register-client
+        (make-lsp-client :new-connection (lsp-stdio-connection '("rnix-lsp"))
+                         :major-modes '(nix-mode)
+                         :server-id 'nix))
        :init
+       (add-to-list 'exec-path "/home/zarkone/.emacs.d/elixir-ls")
+       (add-to-list 'lsp-language-id-configuration '(nix-mode . "nix"))
        (add-hook 'lsp-mode-hook
                  ;; TODO: add macro or fn for `when find minor-mode ...`
                  #'(lambda ()
@@ -578,6 +585,7 @@ future reference.
               ("C-c e i" . lsp-find-implementation)
               ("C-c e t" . lsp-find-type-definition)))
    #+end_src
+
 ** Go
    #+begin_src emacs-lisp
      (use-package go-mode
@@ -727,6 +735,13 @@ future reference.
      (use-package sass-mode
        )
    #+end_src
+** elixir
+   #+begin_src emacs-lisp
+     (use-package elixir-mode)
+     (use-package elixir-yasnippets)
+
+   #+end_src
+
 ** haskell
       #+begin_src emacs-lisp
         (use-package haskell-mode)
