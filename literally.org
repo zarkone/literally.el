@@ -319,7 +319,8 @@ future reference.
    #+end_src
 ** nix
 #+BEGIN_SRC emacs-lisp
-  (use-package nix-mode)
+  (use-package nix-mode
+    :hook ((nix-mode . lsp)))
 
 #+END_SRC
 
@@ -563,13 +564,13 @@ future reference.
        (gc-cons-threshold 1800000)
        :config
        (define-key lsp-mode-map (kbd "C-c l") lsp-command-map)
+       (add-to-list 'lsp-language-id-configuration '(nix-mode . "nix"))
        (lsp-register-client
         (make-lsp-client :new-connection (lsp-stdio-connection '("rnix-lsp"))
                          :major-modes '(nix-mode)
                          :server-id 'nix))
        :init
        (add-to-list 'exec-path "/home/zarkone/.emacs.d/elixir-ls")
-       (add-to-list 'lsp-language-id-configuration '(nix-mode . "nix"))
        (add-hook 'lsp-mode-hook
                  ;; TODO: add macro or fn for `when find minor-mode ...`
                  #'(lambda ()
@@ -649,6 +650,8 @@ future reference.
 
      (use-package clojure-mode
        :hook ((clojure-mode . cider-mode)
+              ;; requires clojure-lsp
+              (clojure-mode . lsp)
               (clojure-mode . enable-paredit-mode)
               (clojure-mode . flycheck-mode)
               (clojure-mode . clj-refactor-mode))
