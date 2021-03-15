@@ -631,6 +631,8 @@ future reference.
        (save-buffer)
        (call-interactively 'cider-load-buffer))
 
+     (use-package rainbow-mode)
+
      (use-package cider
        :commands (cider-mode)
        :hook ((cider-mode . eldoc-mode))
@@ -652,6 +654,7 @@ future reference.
        :hook ((clojure-mode . cider-mode)
               ;; requires clojure-lsp
               (clojure-mode . lsp)
+              (clojure-mode . rainbow-delimiters-mode)
               (clojure-mode . enable-paredit-mode)
               (clojure-mode . flycheck-mode)
               (clojure-mode . clj-refactor-mode))
