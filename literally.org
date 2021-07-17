@@ -10,6 +10,11 @@
                     (string-match-p "spacing=100" (aref info 1))))
                 (font-family-list)))
 
+  (defun me/prev-window ()
+    "Other-window, backward"
+    (interactive)
+    (other-window -1))
+
   (defun zarkone/insert-current-date ()
     "Insert current date here."
     (interactive)
@@ -124,6 +129,10 @@ future reference.
     :demand t
     :config (key-chord-mode 1))
 
+  (defun set-cursor-hook (frame)
+    (modify-frame-parameters
+     frame (list (cons 'cursor-color "#d2d"))))
+
   (defun gui-tweaks ()
     (interactive)
     (when menu-bar-mode
@@ -131,11 +140,17 @@ future reference.
       (scroll-bar-mode 0)
       (tool-bar-mode 0)
       (tooltip-mode 0))
-    (set-face-attribute 'cursor nil :background "#d1d")
+    (set-face-attribute 'cursor nil :background "#d2d")
     (set-face-attribute 'fringe nil :foreground "green")
     (set-face-attribute 'vertical-border nil :foreground "#212")
-    (set-face-attribute 'default nil :height 100 :font "JetBrains Mono")
-    (set-face-attribute 'region nil :background "#757")
+
+    ;; (set-face-attribute 'default nil :height 115 :font "Ubuntu Mono")
+    (set-face-attribute 'default nil :height 110 :font "Iosevka")
+    ;; (set-face-attribute 'default nil :height 105 :font "Iosevka Extended")
+    ;; (set-face-attribute 'default nil :height 100 :font "JetBrains Mono")
+    ;; (set-face-attribute 'default nil :height 105 :font "Cascadia Code")
+
+    (set-face-attribute 'region nil :background "#557")
     (set-face-attribute 'hl-line nil :background "#212")
 
     (set-face-attribute 'mode-line nil
@@ -153,7 +168,6 @@ future reference.
            (emacs-lisp-mode . enable-paredit-mode)
            (org-mode . auto-fill-mode)
            (org-mode . flyspell-mode)
-           (after-make-frame . gui-tweaks)
            )
     :chords (("k[" . delete-whitespace)
              ("i0" . me/switch-to-previous-buffer)
@@ -194,9 +208,11 @@ future reference.
     (put 'narrow-to-page 'disabled nil)
     (put 'downcase-region 'disabled nil)
     (global-unset-key (kbd "M-ESC ESC"))
+    (add-hook 'after-make-frame-functions 'set-cursor-hook)
     (define-key key-translation-map (kbd "C-h") (kbd "<DEL>"))
     (gui-tweaks)
-    :bind (("M-[" . other-window)
+    :bind (("M-]" . other-window)
+           ("M-[" . me/prev-window)
            ([remap text-scale-decrease] . undo)
            ("C-x M-5" . delete-other-windows-vertically)
            ("C-x M-3" . vertical-three-windows-layout)
@@ -292,6 +308,7 @@ future reference.
                                          ">=" ">>" ">-" "-~" "-|" "->" "--" "-<" "<~" "<*" "<|" "<:"
                                          "<$" "<=" "<>" "<-" "<<" "<+" "</" "#{" "#[" "#:" "#=" "#!"
                                          "##" "#(" "#?" "#_" "%%" ".=" ".-" ".." ".?" "+>" "++" "?:"
+                                         "|||"
                                          "?=" "?." "??" ";;" "/*" "/=" "/>" "//" "__" "~~" "(*" "*)"
                                          "://"))
     ;; Enables ligature checks globally in all buffers. You can also do it
@@ -430,11 +447,12 @@ future reference.
 ** yaml
 #+BEGIN_SRC emacs-lisp
   (use-package highlight-indentation)
+  (use-package smart-shift)
   (use-package yaml-mode
     :custom
     (yaml-indent-offset 2)
-    :hook ((yaml-mode . highlight-indentation-mode)))
-
+    :hook ((yaml-mode . highlight-indentation-mode)
+           (yaml-mode . smart-shift-mode)))
 #+END_SRC
 
 ** web-mode
@@ -462,6 +480,9 @@ future reference.
   ;; Installed mu via nixos; it automatically adds it to load path.
   ;; But still need to require it manually.
   (require 'mu4e)
+
+  (setq mu4e-maildir-shortcuts
+        '((:maildir "/sent"      :key  ?s)))
   (setq mu4e-xapix-signature
         (format "<#part type=text/html><html><body><p>%s</p></body></html><#/part>"
                 (with-temp-buffer
@@ -494,14 +515,16 @@ future reference.
                      (smtpmail-smtp-user . "anatoly@xapix.io")
                      (user-full-name . "Anatolii Smolianinov")
                      ;; TODO: xapix sign https://dataswamp.org/~solene/2016-06-07-13.html
-                     (mu4e-compose-signature . ,mu4e-xapix-signature
-
-                                             )))
-           ))
+                     (mu4e-compose-signature . ,mu4e-xapix-signature)))))
 
   ;; start with the first (default) context;
   ;; default is to ask-if-none (ask when there's no context yet, and none match)
   (setq mu4e-context-policy 'pick-first)
+  (setq mu4e-bookmarks
+        (add-to-list 'mu4e-bookmarks
+                     '(:name  "Flagged messages"
+                       :query "flag:flagged"
+                       :key ?f)))
 
   (use-package mu4e-alert
     :ensure t
@@ -523,7 +546,8 @@ future reference.
     (smtpmail-smtp-service 587)
     (smtpmail-stream-type 'starttls)
     (mail-user-agent 'mu4e-user-agent)
-    :bind (("C-x M-u" . mu4e)))
+    :bind (("C-x M-u" . mu4e)
+           ("C-c C-a" . mu4e-view-attachment-action)))
 #+END_SRC
 ** telega
 #+BEGIN_SRC emacs-lisp
@@ -541,6 +565,24 @@ future reference.
            ("C-s-j" . buf-move-down)
            ("C-s-h" . buf-move-left)
            ("C-s-l" . buf-move-right)))
+#+END_SRC
+** markdown
+#+BEGIN_SRC emacs-lisp
+  (use-package markdown-mode
+    :ensure t
+    :commands (markdown-mode gfm-mode)
+    :mode (("README\\.md\\'" . gfm-mode)
+           ("\\.md\\'" . markdown-mode)
+           ("\\.markdown\\'" . markdown-mode))
+    :init (setq-default markdown-open-command "multimarkdown"))
+#+END_SRC
+
+** direnv
+#+BEGIN_SRC emacs-lisp
+  (use-package direnv
+   :config
+   (direnv-mode))
+
 #+END_SRC
 
 * Prog modes
@@ -619,8 +661,9 @@ future reference.
     (rust-format-on-save t)
     (compile-command "cargo build")
     :bind (:map rust-mode-map
-                ;; ("C-c C-c" . rust-run)
-                ;; ("C-c C-t" . rust-test)
+                ("C-c C-m" . rust-run)
+                ("C-j" . newline)
+                ("C-c C-t" . rust-test)
                 ("TAB" . company-indent-or-complete-common)))
 #+END_SRC
 ** Clojure
@@ -631,7 +674,7 @@ future reference.
        (save-buffer)
        (call-interactively 'cider-load-buffer))
 
-     (use-package rainbow-mode)
+     ;; (use-package rainbow-mode)
 
      (use-package cider
        :commands (cider-mode)
@@ -641,7 +684,11 @@ future reference.
 
        :bind (:map cider-mode-map
                    ("C-c C-k" . cider-save-and-compile-and-load-file)
-                   ("C-c C-i" . cider-interrupt)))
+                   ("")
+                   ("C-c C-i" . cider-interrupt)
+                   :map cider-repl-mode-map
+                   ("C-c C-l" . cider-repl-clear-buffer)
+                   ))
 
      (use-package flycheck-clj-kondo)
 
@@ -651,10 +698,12 @@ future reference.
        (cljr-add-keybindings-with-prefix "C-c C-j"))
 
      (use-package clojure-mode
-       :hook ((clojure-mode . cider-mode)
+
+       :hook (
               ;; requires clojure-lsp
-              (clojure-mode . lsp)
-              (clojure-mode . rainbow-delimiters-mode)
+              ;; (clojure-mode . lsp)
+              (clojure-mode . cider-mode)
+              ;; (clojure-mode . rainbow-delimiters-mode)
               (clojure-mode . enable-paredit-mode)
               (clojure-mode . flycheck-mode)
               (clojure-mode . clj-refactor-mode))
@@ -689,7 +738,6 @@ future reference.
     (typescript-indent-level 2)
     (flycheck-check-syntax-automatically '(save mode-enabled))
     :hook ((typescript-mode . lsp)
-           (before-save . lsp-format-buffer)
            (typescript-mode . flycheck-mode)))
 #+end_src
 
