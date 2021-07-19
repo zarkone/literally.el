@@ -7,7 +7,7 @@ jobs:
       - name: Install emacs
         uses: purcell/setup-emacs@master
         with:
-          version: emacs-snapshot
+          version: snapshot
       - name: Checkout
         uses: actions/checkout@v2
         with:
