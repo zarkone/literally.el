@@ -7,9 +7,11 @@ jobs:
       - name: Install emacs
         uses: purcell/setup-emacs@master
         with:
-          version: 26.3
+          version: emacs-snapshot
       - name: Checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
       - name: Smoke test
         run: |
           # NOTE: I simulate home directory to check if generated code from org file is placed correctly,
