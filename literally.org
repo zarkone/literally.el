@@ -2,7 +2,6 @@
 
 ** Custom Functions
 #+BEGIN_SRC emacs-lisp
-
   (defun font-names-list ()
     "Get list of names of installed fonts,which can be used to set font."
     (seq-filter (lambda (font)
@@ -125,10 +124,6 @@ future reference.
 #+END_SRC
 ** Global vars, hooks and key bindings
 #+BEGIN_SRC emacs-lisp
-  (use-package use-package-chords
-    :demand t
-    :config (key-chord-mode 1))
-
   (defun set-cursor-hook (frame)
     (modify-frame-parameters
      frame (list (cons 'cursor-color "#d2d"))))
@@ -139,37 +134,19 @@ future reference.
       (menu-bar-mode 0)
       (scroll-bar-mode 0)
       (tool-bar-mode 0)
-      (tooltip-mode 0))
-    (set-face-attribute 'cursor nil :background "#d2d")
-    (set-face-attribute 'fringe nil :foreground "green")
-    (set-face-attribute 'vertical-border nil :foreground "#212")
+      (tooltip-mode 0)))
 
-    ;; (set-face-attribute 'default nil :height 115 :font "Ubuntu Mono")
-    (set-face-attribute 'default nil :height 110 :font "Iosevka")
-    ;; (set-face-attribute 'default nil :height 105 :font "Iosevka Extended")
-    ;; (set-face-attribute 'default nil :height 100 :font "JetBrains Mono")
-    ;; (set-face-attribute 'default nil :height 105 :font "Cascadia Code")
-
-    (set-face-attribute 'region nil :background "#557")
-    (set-face-attribute 'hl-line nil :background "#212")
-
-    (set-face-attribute 'mode-line nil
-                        :background "#212"
-                        :foreground "green"
-                        :box '(:line-width 1 :color "#212"))
-    (set-face-attribute 'mode-line-inactive nil
-                        :background "#212"
-                        :foreground "purple"
-                        :box '(:line-width 1 :color "#212"))
-    )
+  (use-package use-package-chords
+    :demand t
+    :config (key-chord-mode 1))
 
   (use-package emacs
     :hook ((before-save . delete-trailing-whitespace)
            (emacs-lisp-mode . enable-paredit-mode)
            (org-mode . auto-fill-mode)
-           (org-mode . flyspell-mode)
-           )
+           (org-mode . flyspell-mode))
     :chords (("k[" . delete-whitespace)
+             ("4r" . replace-regexp)
              ("i0" . me/switch-to-previous-buffer)
              ("[]" . "[]\C-b")
              ("<>" . "<>\C-b")
@@ -211,17 +188,18 @@ future reference.
     (add-hook 'after-make-frame-functions 'set-cursor-hook)
     (define-key key-translation-map (kbd "C-h") (kbd "<DEL>"))
     (gui-tweaks)
-    :bind (("M-]" . other-window)
-           ("M-[" . me/prev-window)
-           ([remap text-scale-decrease] . undo)
+    :bind (
            ("C-x M-5" . delete-other-windows-vertically)
            ("C-x M-3" . vertical-three-windows-layout)
-           ("C--" . undo)
+           ("M-u" . undo)
+           ("C-_" . upcase-word)
            ("C-x M-s" . run-static-server)
            ("C-x C-d" . dired-jump)
-           ("M-o" . occur)
-           ("<C-return>" . save-buffer)
            ("C-x o" . me/switch-to-previous-buffer)
+           ("C-c M-o" . occur)
+           ("<C-return>" . save-buffer)
+           ("C-x M-o" . helm-occur)
+           ("M-o" . other-window)
            ("C-x RET RET" . compile)
            ("C-x M-m" . recompile)
            ("C-M-;" . replace-regexp)
@@ -242,7 +220,11 @@ future reference.
            ("C-c f" . windmove-right)
 
            :map prog-mode-map
-           ("C-;" . me/comment-or-uncomment-region-or-line)))
+           ("M-;" . me/comment-or-uncomment-region-or-line)
+           ("C-x ;" . me/comment-or-uncomment-region-or-line)
+
+           )
+    )
 #+END_SRC
 * Appearance
 ** OSX
@@ -283,49 +265,11 @@ future reference.
 #+BEGIN_SRC emacs-lisp
   (setq custom-safe-themes t)
 
-  ;; (use-package fira-code-mode
-  ;;   :custom (fira-code-mode-disabled-ligatures '("[]" "<>" "x"))
-  ;;   :hook prog-mode)
-
-  (load-file "/home/zarkone/.emacs.d/ligature.el/ligature.el")
-  (use-package ligature
-    :load-path "/home/zarkone/.emacs.d/ligature.el"
-    :config
-    ;; Enable the "www" ligature in every possible major mode
-    (ligature-set-ligatures 't '("www"))
-    ;; Enable traditional ligature support in eww-mode, if the
-    ;; `variable-pitch' face supports it
-    (ligature-set-ligatures 'eww-mode '("ff" "fi" "ffi"))
-    ;; Enable all Cascadia Code ligatures in programming modes
-    (ligature-set-ligatures 'prog-mode '("|||>" "<|||" "<==>" "<!--" "####" "~~>" "***" "||=" "||>"
-                                         ":::" "::=" "=:=" "===" "==>" "=!=" "=>>" "=<<" "=/=" "!=="
-                                         "!!." ">=>" ">>=" ">>>" ">>-" ">->" "->>" "-->" "---" "-<<"
-                                         "<~~" "<~>" "<*>" "<||" "<|>" "<$>" "<==" "<=>" "<=<" "<->"
-                                         "<--" "<-<" "<<=" "<<-" "<<<" "<+>" "</>" "###" "#_(" "..<"
-                                         "..." "+++" "/==" "///" "_|_" "www" "&&" "^=" "~~" "~@" "~="
-                                         "~>" "~-" "**" "*>" "*/" "||" "|}" "|]" "|=" "|>" "|-" "{|"
-                                         "[|" "]#" "::" ":=" ":>" ":<" "$>" "==" "=>" "!=" "!!" ">:"
-                                         ">=" ">>" ">-" "-~" "-|" "->" "--" "-<" "<~" "<*" "<|" "<:"
-                                         "<$" "<=" "<>" "<-" "<<" "<+" "</" "#{" "#[" "#:" "#=" "#!"
-                                         "##" "#(" "#?" "#_" "%%" ".=" ".-" ".." ".?" "+>" "++" "?:"
-                                         "|||"
-                                         "?=" "?." "??" ";;" "/*" "/=" "/>" "//" "__" "~~" "(*" "*)"
-                                         "://"))
-    ;; Enables ligature checks globally in all buffers. You can also do it
-    ;; per mode with `ligature-mode'.
-    (global-ligature-mode t))
 
   (use-package modus-vivendi-theme
-    :custom
-    (inhibit-x-resources t)
-
     :init (load-theme 'modus-vivendi t)
     :config
-    (gui-tweaks)
-    ;; (global-fira-code-mode t)
-    ;; (set-face-attribute 'default nil :height 105 :font "Ubuntu Mono")
-    ;; (set-face-attribute 'default nil :height 95 :font "Fira Code")
-    )
+    (gui-tweaks))
 #+END_SRC
 * Packages
 ** langtool
@@ -417,8 +361,7 @@ future reference.
 ** magit
 #+BEGIN_SRC emacs-lisp
   (use-package magit
-    :bind (("C-M-g" . magit-status)
-           ("C-x M-g" . magit-blame)))
+    :bind (("C-x g" . magit-status)))
 #+END_SRC
 ** paredit
    #+begin_src emacs-lisp
@@ -801,4 +744,3 @@ future reference.
         (use-package haskell-mode)
 
    #+end_src
-(gui-tweaks)
