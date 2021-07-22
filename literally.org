@@ -498,7 +498,21 @@ future reference.
     :bind (("C-x M-t" . telega))
     :config
     (telega-notifications-mode t)
-    (telega-mode-line-mode t))
+    (telega-mode-line-mode t)
+    (setcdr (assq t org-file-apps-gnu) 'browse-url-xdg-open)
+    (setq telega-open-file-function 'org-open-file)
+    (setq telega-open-message-as-file '(animation photo video audio video-note voice-note))
+    (setq-default
+     org-file-apps
+     '((auto-mode . emacs)
+       (directory . emacs)
+       ("\\.mm\\'" . default)
+       ("\\.jpg\\'" . default)
+       ("\\.png\\'" . default)
+       ("\\.gif\\'" . default)
+       ("\\.x?html?\\'" . default)
+       ("\\.pdf\\'" . default)))
+    )
 #+END_SRC
 
 ** buf-move
