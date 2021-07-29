@@ -191,8 +191,8 @@ future reference.
     :bind (
            ("C-x M-5" . delete-other-windows-vertically)
            ("C-x M-3" . vertical-three-windows-layout)
-           ("M-u" . undo)
-           ("C-]" . undo)
+           ("C-u" . undo)
+           ("M-u" . universal-argument)
            ("C-_" . upcase-word)
            ("C-x M-s" . run-static-server)
            ("C-x C-d" . dired-jump)
