@@ -490,8 +490,15 @@ future reference.
 #+END_SRC
 ** telega
 #+BEGIN_SRC emacs-lisp
+
+  (defun disable-company-mode ()
+    (company-mode -1))
+
   (use-package telega
     :bind (("C-x M-t" . telega))
+    :hook ((telega-chat-mode . disable-company-mode))
+    :custom
+    (telega-video-player-command "mpv")
     :config
     (telega-notifications-mode t)
     (telega-mode-line-mode t)
