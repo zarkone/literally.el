@@ -124,10 +124,6 @@ future reference.
 #+END_SRC
 ** Global vars, hooks and key bindings
 #+BEGIN_SRC emacs-lisp
-  (defun set-cursor-hook (frame)
-    (modify-frame-parameters
-     frame (list (cons 'cursor-color "#d2d"))))
-
   (defun gui-tweaks ()
     (interactive)
     (when menu-bar-mode
@@ -185,7 +181,6 @@ future reference.
     (put 'narrow-to-page 'disabled nil)
     (put 'downcase-region 'disabled nil)
     (global-unset-key (kbd "M-ESC ESC"))
-    (add-hook 'after-make-frame-functions 'set-cursor-hook)
     (define-key key-translation-map (kbd "C-h") (kbd "<DEL>"))
     (gui-tweaks)
     :bind (
