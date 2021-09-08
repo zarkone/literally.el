@@ -430,8 +430,8 @@ future reference.
 
   (setq mu4e-contexts
         `( ,(make-mu4e-context
-             :name "Private"
-             :enter-func (lambda () (mu4e-message "Entering Private context"))
+             :name "Zarkonesmall"
+             :enter-func (lambda () (mu4e-message "Entering Zarkonesmall context"))
              :match-func
              (lambda (msg)
                (when msg
@@ -442,19 +442,20 @@ future reference.
                      (user-full-name . "Anatolii Smolianinov")
                      (mu4e-compose-signature . "Anatolii Smolianinov")))
            ,(make-mu4e-context
-             :name "Xapix"
-             :enter-func (lambda () (mu4e-message "Switch to the Xapix context"))
+             :name "Pitch"
+             :enter-func (lambda () (mu4e-message "Switch to the Pitch context"))
              ;; no leave-func
              ;; we match based on the maildir of the message
              ;; this matches maildir /Arkham and its sub-directories
              :match-func (lambda (msg)
                            (when msg
-                             (string-match-p "^/Xapix" (mu4e-message-field msg :maildir))))
-             :vars `((user-mail-address . "anatoly@xapix.io")
-                     (smtpmail-smtp-user . "anatoly@xapix.io")
+                             (string-match-p "^/Pitch" (mu4e-message-field msg :maildir))))
+             :vars `((user-mail-address . "anatolii@pitch.io")
+                     (smtpmail-smtp-user . "anatolii@pitch.io")
                      (user-full-name . "Anatolii Smolianinov")
-                     ;; TODO: xapix sign https://dataswamp.org/~solene/2016-06-07-13.html
-                     (mu4e-compose-signature . ,mu4e-xapix-signature)))))
+                     ;; TODO: pitch sign https://dataswamp.org/~solene/2016-06-07-13.html
+                     ;; (mu4e-compose-signature . ,mu4e-pitch-signature)
+                     (mu4e-compose-signature . "Anatolii Smolianinov")))))
 
   ;; start with the first (default) context;
   ;; default is to ask-if-none (ask when there's no context yet, and none match)
