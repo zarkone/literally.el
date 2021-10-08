@@ -1,8 +1,7 @@
-* Global functions and key bindings
+ Global functions and key bindings
 
 ** Custom Functions
 #+BEGIN_SRC emacs-lisp
-
   (defun font-names-list ()
     "Get list of names of installed fonts,which can be used to set font."
     (seq-filter (lambda (font)
@@ -129,47 +128,14 @@ future reference.
     :demand t
     :config (key-chord-mode 1))
 
-  (defun set-cursor-hook (frame)
-    (modify-frame-parameters
-     frame (list (cons 'cursor-color "#d2d"))))
-
-  (defun gui-tweaks ()
-    (interactive)
-    (when menu-bar-mode
-      (menu-bar-mode 0)
-      (scroll-bar-mode 0)
-      (tool-bar-mode 0)
-      (tooltip-mode 0))
-    (set-face-attribute 'cursor nil :background "#d2d")
-    (set-face-attribute 'fringe nil :foreground "green")
-    (set-face-attribute 'vertical-border nil :foreground "#212")
-
-    ;; (set-face-attribute 'default nil :height 115 :font "Ubuntu Mono")
-    (set-face-attribute 'default nil :height 110 :font "Iosevka")
-    ;; (set-face-attribute 'default nil :height 105 :font "Iosevka Extended")
-    ;; (set-face-attribute 'default nil :height 100 :font "JetBrains Mono")
-    ;; (set-face-attribute 'default nil :height 105 :font "Cascadia Code")
-
-    (set-face-attribute 'region nil :background "#557")
-    (set-face-attribute 'hl-line nil :background "#212")
-
-    (set-face-attribute 'mode-line nil
-                        :background "#212"
-                        :foreground "green"
-                        :box '(:line-width 1 :color "#212"))
-    (set-face-attribute 'mode-line-inactive nil
-                        :background "#212"
-                        :foreground "purple"
-                        :box '(:line-width 1 :color "#212"))
-    )
-
   (use-package emacs
     :hook ((before-save . delete-trailing-whitespace)
            (emacs-lisp-mode . enable-paredit-mode)
            (org-mode . auto-fill-mode)
-           (org-mode . flyspell-mode)
-           )
+           (org-mode . flyspell-mode))
     :chords (("k[" . delete-whitespace)
+             ("3r" . replace-regexp)
+             ("jk" . save-buffer)
              ("i0" . me/switch-to-previous-buffer)
              ("[]" . "[]\C-b")
              ("<>" . "<>\C-b")
@@ -184,8 +150,8 @@ future reference.
     (indent-tabs-mode nil)
     (truncate-lines t)
     (word-wrap nil)
-    (x-select-enable-clipboard t)
-    (x-select-enable-primary t)
+    (select-enable-clipboard t)
+    (select-enable-primary nil)
     (uniquify-buffer-name-style 'forward)
     (save-interprogram-paste-before-kill t)
     (compilation-always-kill  t)
@@ -195,33 +161,30 @@ future reference.
     (backup-directory-alist `(("." . ,(concat user-emacs-directory ".backups"))))
     (warning-suppress-types '((comp)))
     (default-input-method 'russian-computer)
+    (browse-url-browser-function 'browse-url-firefox)
     :init
     (show-paren-mode 1)
-
-    (setq-default browse-url-browser-function
-                  (cl-case system-type
-                    ((darwin macos) 'browse-url-default-macosx-browser)
-                    (t 'browse-url-firefox)))
+    (menu-bar-mode 0)
 
     :config
     (put 'narrow-to-region 'disabled nil)
     (put 'narrow-to-page 'disabled nil)
     (put 'downcase-region 'disabled nil)
     (global-unset-key (kbd "M-ESC ESC"))
-    (add-hook 'after-make-frame-functions 'set-cursor-hook)
     (define-key key-translation-map (kbd "C-h") (kbd "<DEL>"))
-    (gui-tweaks)
-    :bind (("M-]" . other-window)
-           ("M-[" . me/prev-window)
-           ([remap text-scale-decrease] . undo)
+    :bind (
            ("C-x M-5" . delete-other-windows-vertically)
            ("C-x M-3" . vertical-three-windows-layout)
-           ("C--" . undo)
+           ("C-u" . undo)
+           ("M-u" . universal-argument)
+           ("C-_" . upcase-word)
            ("C-x M-s" . run-static-server)
            ("C-x C-d" . dired-jump)
-           ("M-o" . occur)
-           ("<C-return>" . save-buffer)
            ("C-x o" . me/switch-to-previous-buffer)
+           ("C-c M-o" . occur)
+           ("<C-return>" . save-buffer)
+           ("C-x M-o" . helm-occur)
+           ("M-o" . other-window)
            ("C-x RET RET" . compile)
            ("C-x M-m" . recompile)
            ("C-M-;" . replace-regexp)
@@ -242,7 +205,10 @@ future reference.
            ("C-c f" . windmove-right)
 
            :map prog-mode-map
-           ("C-;" . me/comment-or-uncomment-region-or-line)))
+           ("C-x ;" . me/comment-or-uncomment-region-or-line)
+
+           )
+    )
 #+END_SRC
 * Appearance
 ** OSX
@@ -283,48 +249,11 @@ future reference.
 #+BEGIN_SRC emacs-lisp
   (setq custom-safe-themes t)
 
-  ;; (use-package fira-code-mode
-  ;;   :custom (fira-code-mode-disabled-ligatures '("[]" "<>" "x"))
-  ;;   :hook prog-mode)
-
-  (load-file "/home/zarkone/.emacs.d/ligature.el/ligature.el")
-  (use-package ligature
-    :load-path "/home/zarkone/.emacs.d/ligature.el"
-    :config
-    ;; Enable the "www" ligature in every possible major mode
-    (ligature-set-ligatures 't '("www"))
-    ;; Enable traditional ligature support in eww-mode, if the
-    ;; `variable-pitch' face supports it
-    (ligature-set-ligatures 'eww-mode '("ff" "fi" "ffi"))
-    ;; Enable all Cascadia Code ligatures in programming modes
-    (ligature-set-ligatures 'prog-mode '("|||>" "<|||" "<==>" "<!--" "####" "~~>" "***" "||=" "||>"
-                                         ":::" "::=" "=:=" "===" "==>" "=!=" "=>>" "=<<" "=/=" "!=="
-                                         "!!." ">=>" ">>=" ">>>" ">>-" ">->" "->>" "-->" "---" "-<<"
-                                         "<~~" "<~>" "<*>" "<||" "<|>" "<$>" "<==" "<=>" "<=<" "<->"
-                                         "<--" "<-<" "<<=" "<<-" "<<<" "<+>" "</>" "###" "#_(" "..<"
-                                         "..." "+++" "/==" "///" "_|_" "www" "&&" "^=" "~~" "~@" "~="
-                                         "~>" "~-" "**" "*>" "*/" "||" "|}" "|]" "|=" "|>" "|-" "{|"
-                                         "[|" "]#" "::" ":=" ":>" ":<" "$>" "==" "=>" "!=" "!!" ">:"
-                                         ">=" ">>" ">-" "-~" "-|" "->" "--" "-<" "<~" "<*" "<|" "<:"
-                                         "<$" "<=" "<>" "<-" "<<" "<+" "</" "#{" "#[" "#:" "#=" "#!"
-                                         "##" "#(" "#?" "#_" "%%" ".=" ".-" ".." ".?" "+>" "++" "?:"
-                                         "|||"
-                                         "?=" "?." "??" ";;" "/*" "/=" "/>" "//" "__" "~~" "(*" "*)"
-                                         "://"))
-    ;; Enables ligature checks globally in all buffers. You can also do it
-    ;; per mode with `ligature-mode'.
-    (global-ligature-mode t))
 
   (use-package modus-vivendi-theme
-    :custom
-    (inhibit-x-resources t)
-
     :init (load-theme 'modus-vivendi t)
     :config
-    (gui-tweaks)
-    ;; (global-fira-code-mode t)
-    ;; (set-face-attribute 'default nil :height 105 :font "Ubuntu Mono")
-    ;; (set-face-attribute 'default nil :height 95 :font "Fira Code")
+    (set-face-background 'mode-line "purple")
     )
 #+END_SRC
 * Packages
@@ -417,8 +346,7 @@ future reference.
 ** magit
 #+BEGIN_SRC emacs-lisp
   (use-package magit
-    :bind (("C-M-g" . magit-status)
-           ("C-x M-g" . magit-blame)))
+    :bind (("C-x g" . magit-status)))
 #+END_SRC
 ** paredit
    #+begin_src emacs-lisp
@@ -491,8 +419,8 @@ future reference.
 
   (setq mu4e-contexts
         `( ,(make-mu4e-context
-             :name "Private"
-             :enter-func (lambda () (mu4e-message "Entering Private context"))
+             :name "Zarkonesmall"
+             :enter-func (lambda () (mu4e-message "Entering Zarkonesmall context"))
              :match-func
              (lambda (msg)
                (when msg
@@ -503,19 +431,20 @@ future reference.
                      (user-full-name . "Anatolii Smolianinov")
                      (mu4e-compose-signature . "Anatolii Smolianinov")))
            ,(make-mu4e-context
-             :name "Xapix"
-             :enter-func (lambda () (mu4e-message "Switch to the Xapix context"))
+             :name "Pitch"
+             :enter-func (lambda () (mu4e-message "Switch to the Pitch context"))
              ;; no leave-func
              ;; we match based on the maildir of the message
              ;; this matches maildir /Arkham and its sub-directories
              :match-func (lambda (msg)
                            (when msg
-                             (string-match-p "^/Xapix" (mu4e-message-field msg :maildir))))
-             :vars `((user-mail-address . "anatoly@xapix.io")
-                     (smtpmail-smtp-user . "anatoly@xapix.io")
+                             (string-match-p "^/Pitch" (mu4e-message-field msg :maildir))))
+             :vars `((user-mail-address . "anatolii@pitch.io")
+                     (smtpmail-smtp-user . "anatolii@pitch.io")
                      (user-full-name . "Anatolii Smolianinov")
-                     ;; TODO: xapix sign https://dataswamp.org/~solene/2016-06-07-13.html
-                     (mu4e-compose-signature . ,mu4e-xapix-signature)))))
+                     ;; TODO: pitch sign https://dataswamp.org/~solene/2016-06-07-13.html
+                     ;; (mu4e-compose-signature . ,mu4e-pitch-signature)
+                     (mu4e-compose-signature . "Anatolii Smolianinov")))))
 
   ;; start with the first (default) context;
   ;; default is to ask-if-none (ask when there's no context yet, and none match)
@@ -534,7 +463,7 @@ future reference.
     ((after-init . mu4e-alert-enable-notifications)
      (after-init . mu4e-alert-enable-mode-line-display)))
 
-  (use-package my-fake-mu4e
+  (use-package mu4e
     :ensure nil
     :custom
     (mu4e-hide-index-messages t)
@@ -551,11 +480,32 @@ future reference.
 #+END_SRC
 ** telega
 #+BEGIN_SRC emacs-lisp
+
+  (defun disable-company-mode ()
+    (company-mode -1))
+
   (use-package telega
     :bind (("C-x M-t" . telega))
+    :hook ((telega-chat-mode . disable-company-mode))
+    :custom
+    (telega-video-player-command "mpv")
     :config
     (telega-notifications-mode t)
-    (telega-mode-line-mode t))
+    (telega-mode-line-mode t)
+    (setcdr (assq t org-file-apps-gnu) 'browse-url-xdg-open)
+    (setq telega-open-file-function 'org-open-file)
+    (setq telega-open-message-as-file '(animation photo video video-note))
+    (setq-default
+     org-file-apps
+     '((auto-mode . emacs)
+       (directory . emacs)
+       ("\\.mm\\'" . default)
+       ("\\.jpg\\'" . default)
+       ("\\.png\\'" . default)
+       ("\\.gif\\'" . default)
+       ("\\.x?html?\\'" . default)
+       ("\\.pdf\\'" . default)))
+    )
 #+END_SRC
 
 ** buf-move
@@ -797,8 +747,15 @@ future reference.
    #+end_src
 
 ** haskell
-      #+begin_src emacs-lisp
-        (use-package haskell-mode)
+  #+begin_src emacs-lisp
+    (use-package haskell-mode)
+  #+end_src
 
+** common lisp
+   #+begin_src emacs-lisp
+     (use-package slime
+       :hook ((lisp-mode . slime-mode)
+              (lisp-mode . paredit-mode))
+       :custom
+       (inferior-lisp-program  "/home/zarkone/.nix-profile/bin/sbcl"))
    #+end_src
-(gui-tweaks)

@@ -23,13 +23,22 @@
    use-package-always-ensure t)
 
   ;; Use latest Org
-  (use-package org :ensure org-plus-contrib
-    :bind (:map org-mode-map
-                ("<C-return>" . save-buffer))
+  (use-package org
+    :ensure org-plus-contrib
+    :bind (("C-x M-a" . org-agenda)
+           :map org-mode-map
+           ("<C-return>" . save-buffer))
     :custom
+    (org-log-done t)
+
+    (org-agenda-files '("/home/zarkone/work/pitch/notes"
+                        "/home/zarkone/work/pitch/notes/analytics"
+                        "/home/zarkone/work/pitch/notes/backend"))
+    (org-todo-keywords '((sequence "TODO" "HOLD" "|" "DONE" "CANCELLED")))
     (org-todo-keyword-faces
-     '(("TODO" . org-warning) 
-       ("WAIT" . (:foreground "purple" :weight bold))))
+     '(("TODO" . org-warning)
+       ("HOLD" . (:foreground "purple" :weight bold))
+       ("CANCELLED" . (:foreground "pink"))))
     :config
     (use-package org-tempo
       :demand t
