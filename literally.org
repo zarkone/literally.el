@@ -1,4 +1,4 @@
-* Global functions and key bindings
+ Global functions and key bindings
 
 ** Custom Functions
 #+BEGIN_SRC emacs-lisp
@@ -124,14 +124,6 @@ future reference.
 #+END_SRC
 ** Global vars, hooks and key bindings
 #+BEGIN_SRC emacs-lisp
-  (defun gui-tweaks ()
-    (interactive)
-    (when menu-bar-mode
-      (menu-bar-mode 0)
-      (scroll-bar-mode 0)
-      (tool-bar-mode 0)
-      (tooltip-mode 0)))
-
   (use-package use-package-chords
     :demand t
     :config (key-chord-mode 1))
@@ -142,7 +134,8 @@ future reference.
            (org-mode . auto-fill-mode)
            (org-mode . flyspell-mode))
     :chords (("k[" . delete-whitespace)
-             ("4r" . replace-regexp)
+             ("3r" . replace-regexp)
+             ("jk" . save-buffer)
              ("i0" . me/switch-to-previous-buffer)
              ("[]" . "[]\C-b")
              ("<>" . "<>\C-b")
@@ -157,8 +150,8 @@ future reference.
     (indent-tabs-mode nil)
     (truncate-lines t)
     (word-wrap nil)
-    (x-select-enable-clipboard t)
-    (x-select-enable-primary t)
+    (select-enable-clipboard t)
+    (select-enable-primary nil)
     (uniquify-buffer-name-style 'forward)
     (save-interprogram-paste-before-kill t)
     (compilation-always-kill  t)
@@ -168,13 +161,10 @@ future reference.
     (backup-directory-alist `(("." . ,(concat user-emacs-directory ".backups"))))
     (warning-suppress-types '((comp)))
     (default-input-method 'russian-computer)
+    (browse-url-browser-function 'browse-url-firefox)
     :init
     (show-paren-mode 1)
-
-    (setq-default browse-url-browser-function
-                  (cl-case system-type
-                    ((darwin macos) 'browse-url-default-macosx-browser)
-                    (t 'browse-url-firefox)))
+    (menu-bar-mode 0)
 
     :config
     (put 'narrow-to-region 'disabled nil)
@@ -182,7 +172,6 @@ future reference.
     (put 'downcase-region 'disabled nil)
     (global-unset-key (kbd "M-ESC ESC"))
     (define-key key-translation-map (kbd "C-h") (kbd "<DEL>"))
-    (gui-tweaks)
     :bind (
            ("C-x M-5" . delete-other-windows-vertically)
            ("C-x M-3" . vertical-three-windows-layout)
@@ -216,7 +205,6 @@ future reference.
            ("C-c f" . windmove-right)
 
            :map prog-mode-map
-           ("M-;" . me/comment-or-uncomment-region-or-line)
            ("C-x ;" . me/comment-or-uncomment-region-or-line)
 
            )
@@ -265,7 +253,8 @@ future reference.
   (use-package modus-vivendi-theme
     :init (load-theme 'modus-vivendi t)
     :config
-    (gui-tweaks))
+    (set-face-background 'mode-line "purple")
+    )
 #+END_SRC
 * Packages
 ** langtool
@@ -474,7 +463,7 @@ future reference.
     ((after-init . mu4e-alert-enable-notifications)
      (after-init . mu4e-alert-enable-mode-line-display)))
 
-  (use-package my-fake-mu4e
+  (use-package mu4e
     :ensure nil
     :custom
     (mu4e-hide-index-messages t)
@@ -758,7 +747,15 @@ future reference.
    #+end_src
 
 ** haskell
-      #+begin_src emacs-lisp
-        (use-package haskell-mode)
+  #+begin_src emacs-lisp
+    (use-package haskell-mode)
+  #+end_src
 
+** common lisp
+   #+begin_src emacs-lisp
+     (use-package slime
+       :hook ((lisp-mode . slime-mode)
+              (lisp-mode . paredit-mode))
+       :custom
+       (inferior-lisp-program  "/home/zarkone/.nix-profile/bin/sbcl"))
    #+end_src
