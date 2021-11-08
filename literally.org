@@ -240,6 +240,15 @@ future reference.
   (setq-default indicate-buffer-boundaries 'left)
   (use-package diminish)
 #+END_SRC
+** Set window title in TERM
+   #+begin_src emacs-lisp
+     (setq-default frame-title-format '("Emacs: %b"))
+
+     (add-hook 'after-make-frame-functions
+               (lambda (frame)
+                 (xterm-set-window-title)
+                 (add-hook 'post-command-hook 'xterm-set-window-title)))
+   #+end_src
 ** Highlight git changes in fringes
    #+begin_src emacs-lisp
      (use-package diff-hl
@@ -248,15 +257,18 @@ future reference.
 ** Color Theme
 #+BEGIN_SRC emacs-lisp
   (setq custom-safe-themes t)
-
-
   (use-package modus-vivendi-theme
     :init (load-theme 'modus-vivendi t)
     :config
-    (set-face-background 'mode-line "purple")
-    )
+    (set-face-background 'mode-line "brightblue"))
 #+END_SRC
 * Packages
+** nyan-cat
+   #+begin_src emacs-lisp
+     (use-package nyan-mode
+       :config
+       (nyan-mode))
+   #+end_src
 ** langtool
    #+begin_src emacs-lisp
      (use-package langtool
@@ -329,6 +341,13 @@ future reference.
            ("C-x C-r" . helm-recentf)
            :map helm-map
            ("C-i" . helm-execute-persistent-action)))
+
+  (use-package counsel
+    :bind (("C-x C-p" . counsel-rg))
+    :custom
+    (ivy-height-alist '((t
+                         lambda (_caller)
+                         (/ (frame-height) 4)))))
 #+END_SRC
 *** TODO helm-cd-path
     implement (or find) helm autocomplete for dirs from ~$CDPATH~
@@ -336,8 +355,7 @@ future reference.
 #+BEGIN_SRC emacs-lisp
   (use-package helm-company)
   (use-package helm-rg
-    :bind (("C-x C-p" . helm-projectile-rg)
-           ("C-x DEL" . helm-projectile))
+    :bind (("C-x DEL" . helm-projectile))
     :custom
     (helm-projectile-set-input-automatically nil))
   (use-package helm-projectile
@@ -454,6 +472,11 @@ future reference.
                      '(:name  "Flagged messages"
                        :query "flag:flagged"
                        :key ?f)))
+  (setq mu4e-bookmarks
+        (add-to-list 'mu4e-bookmarks
+                     '(:name  "Pitch Github Last Week"
+                       :query "list:pitch-app.pitch-io.github.com and date:7d..now"
+                       :key ?g)))
 
   (use-package mu4e-alert
     :ensure t
@@ -507,7 +530,21 @@ future reference.
        ("\\.pdf\\'" . default)))
     )
 #+END_SRC
+** COMMENT matrix.org
+   #+begin_src emacs-lisp
+     ;; Install and load `quelpa-use-package'.
+     (package-install 'quelpa-use-package)
+     (require 'quelpa-use-package)
 
+     ;; (package-install 'plz)
+     ;; Install `plz' HTTP library (not on MELPA yet).
+     (use-package plz
+       :quelpa (plz :fetcher github :repo "alphapapa/plz.el"))
+
+     ;; Install Ement.
+     (use-package ement
+       :quelpa (ement :fetcher github :repo "alphapapa/ement.el"))
+   #+end_src
 ** buf-move
 #+BEGIN_SRC emacs-lisp
   (use-package buffer-move
