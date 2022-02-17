@@ -14,7 +14,7 @@
     (set-face-attribute 'cursor nil :background "#d1d")
     (set-face-attribute 'fringe nil :foreground "green")
     (set-face-attribute 'vertical-border nil :foreground "#212")
-    (set-face-attribute 'default nil :height 130 :font "Iosevka")
+    (set-face-attribute 'default nil :height 120 :font "Jetbrains Mono")
     (set-face-attribute 'region nil :background "dark slate blue")
     (set-face-attribute 'hl-line nil :background "#212")
 
