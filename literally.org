@@ -195,6 +195,17 @@ future reference.
     (warning-suppress-types '((comp)))
     (default-input-method 'russian-computer)
     (browse-url-browser-function 'browse-url-firefox)
+    (safe-local-variable-values '((eval define-clojure-indent
+                                        (reg-cofx :defn)
+                                        (reg-event-db :defn)
+                                        (reg-event-fx :defn)
+                                        (reg-fx :defn)
+                                        (reg-sub :defn)
+                                        (reg-event-domain :defn)
+                                        (reg-block-event-fx :defn)
+                                        (reg-event-domain-fx :defn)
+                                        (this-as 0))
+                                  (url-max-redirections . 0)) nil nil "Customized with use-package emacs")
     :init
     (show-paren-mode 1)
     (menu-bar-mode 0)
