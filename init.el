@@ -5,9 +5,14 @@
    custom-file "~/.emacs.d/.custom-vars" ;; set custom file but never load it; config custom with use-package instead
    load-prefer-newer t
    package-enable-at-startup nil)
-  (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
-  (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
 
+  (setq
+   package-archives
+   '(
+    ;;("gnu" . "https://elpa.gnu.org/packages/")
+     ;;("nongnu" . "https://elpa.nongnu.org/nongnu/")
+    ("melpa" . "http://melpa.org/packages/")))
+  ;; (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
   ;; MacOS package not found workaround
   (when (eq system-type 'darwin)
     (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"))
@@ -24,7 +29,6 @@
 
   ;; Use latest Org
   (use-package org
-    :ensure org-plus-contrib
     :bind (("C-x M-a" . org-agenda)
            :map org-mode-map
            ("<C-return>" . save-buffer))

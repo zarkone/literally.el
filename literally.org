@@ -2,6 +2,39 @@
 
 ** Custom Functions
 #+BEGIN_SRC emacs-lisp
+  (defun gui-tweaks ()
+    (interactive)
+    (when tool-bar-mode
+      (menu-bar-mode 0)
+      (scroll-bar-mode 0)
+      (tool-bar-mode 0)
+      (tooltip-mode 0))
+    (set-face-attribute 'cursor nil :background "#d1d")
+    (set-face-attribute 'cursor nil :background "white")
+    (set-face-attribute 'cursor nil :background "#d1d")
+    (set-face-attribute 'fringe nil :foreground "green")
+    (set-face-attribute 'vertical-border nil :foreground "#212")
+    (set-face-attribute 'default nil :height 130 :font "Iosevka")
+    (set-face-attribute 'region nil :background "dark slate blue")
+    (set-face-attribute 'hl-line nil :background "#212")
+
+    (set-face-attribute 'mode-line nil
+                        :background "dark slate blue"
+                        :foreground "CadetBlue1"
+                        :box '(:line-width 1 :color "#212"))
+    (set-face-attribute 'mode-line-inactive nil
+                        :background "#212"
+                        :foreground "purple"
+                        :box '(:line-width 1 :color "#212")))
+
+
+  (defun my-suspend-frame ()
+    "In a GUI environment, do nothing; otherwise `suspend-frame'."
+    (interactive)
+    (if (display-graphic-p)
+        (message "suspend-frame disabled for graphical displays.")
+      (suspend-frame)))
+
   (defun font-names-list ()
     "Get list of names of installed fonts,which can be used to set font."
     (seq-filter (lambda (font)
@@ -171,16 +204,17 @@ future reference.
     (put 'narrow-to-page 'disabled nil)
     (put 'downcase-region 'disabled nil)
     (global-unset-key (kbd "M-ESC ESC"))
-    (define-key key-translation-map (kbd "C-h") (kbd "<DEL>"))
-    :bind (
-           ("C-x M-5" . delete-other-windows-vertically)
+    (global-unset-key (kbd "C-z"))
+
+    :bind (("C-x M-5" . delete-other-windows-vertically)
            ("C-x M-3" . vertical-three-windows-layout)
-           ("C-u" . undo)
-           ("M-u" . universal-argument)
+           ("C-z C-d" . delete-other-windows)
+           ("C-z C-s" . split-window-below)
+           ("C-z C-z" . my-suspend-frame)
+           ("C-z C-n" . me/switch-to-previous-buffer)
+           ("C-z C-b" . bookmark-jump)
            ("C-_" . upcase-word)
-           ("C-x M-s" . run-static-server)
            ("C-x C-d" . dired-jump)
-           ("C-x o" . me/switch-to-previous-buffer)
            ("C-c M-o" . occur)
            ("<C-return>" . save-buffer)
            ("C-x M-o" . helm-occur)
@@ -246,8 +280,10 @@ future reference.
 
      (add-hook 'after-make-frame-functions
                (lambda (frame)
-                 (xterm-set-window-title)
-                 (add-hook 'post-command-hook 'xterm-set-window-title)))
+                 (nyan-mode 1)
+                 (gui-tweaks)
+                 ))
+
    #+end_src
 ** Highlight git changes in fringes
    #+begin_src emacs-lisp
@@ -257,10 +293,11 @@ future reference.
 ** Color Theme
 #+BEGIN_SRC emacs-lisp
   (setq custom-safe-themes t)
+
   (use-package modus-vivendi-theme
     :init (load-theme 'modus-vivendi t)
     :config
-    (set-face-background 'mode-line "brightblue"))
+    (gui-tweaks))
 #+END_SRC
 * Packages
 ** nyan-cat
@@ -332,7 +369,7 @@ future reference.
     (helm-buffers-fuzzy-matching t)
     (helm-recentf-fuzzy-match t)
     (helm-M-x-fuzzy-match t)
-    :bind (("C-x b" . helm-mini)
+    :bind (("C-z C-t" . helm-mini)
            ("C-x C-f" . helm-find-files)
            ("M-x" . helm-M-x)
            ("M-y" . helm-show-kill-ring)
@@ -342,25 +379,37 @@ future reference.
            :map helm-map
            ("C-i" . helm-execute-persistent-action)))
 
-  (use-package counsel
-    :bind (("C-x C-p" . counsel-rg))
-    :custom
-    (ivy-height-alist '((t
-                         lambda (_caller)
-                         (/ (frame-height) 4)))))
 #+END_SRC
 *** TODO helm-cd-path
     implement (or find) helm autocomplete for dirs from ~$CDPATH~
 *** helm plugins
 #+BEGIN_SRC emacs-lisp
   (use-package helm-company)
-  (use-package helm-rg
-    :bind (("C-x DEL" . helm-projectile))
+
+  (defun zarkone/helm-do-grep-ag ()
+    (interactive)
+    (helm-grep-ag
+     (expand-file-name (vc-find-root default-directory ".git")) nil))
+
+  (use-package helm-ag
+    :bind (("C-x DEL" . helm-projectile)
+           ("C-x C-p" . zarkone/helm-do-grep-ag))
     :custom
+    (helm-grep-ag-command (concat "rg"
+                                  " --color=never"
+                                  " --smart-case"
+                                  " --no-heading"
+                                  " --line-number %s %s %s"))
+    (helm-grep-file-path-style 'relative)
     (helm-projectile-set-input-automatically nil))
   (use-package helm-projectile
     :bind (("C-x C-b" . helm-projectile-switch-to-buffer)))
 #+END_SRC
+** ivy
+   #+begin_src emacs-lisp
+     (use-package ivy-emoji
+       :bind (("C-x M-j" . ivy-emoji)))
+   #+end_src
 ** magit
 #+BEGIN_SRC emacs-lisp
   (use-package magit
@@ -428,7 +477,8 @@ future reference.
   (require 'mu4e)
 
   (setq mu4e-maildir-shortcuts
-        '((:maildir "/sent"      :key  ?s)))
+        '((:maildir "/sent"             :key  ?s)
+          (:maildir "/Gmail/INBOX"      :key  ?g)))
   (setq mu4e-xapix-signature
         (format "<#part type=text/html><html><body><p>%s</p></body></html><#/part>"
                 (with-temp-buffer
@@ -477,14 +527,6 @@ future reference.
                      '(:name  "Pitch Github Last Week"
                        :query "list:pitch-app.pitch-io.github.com and date:7d..now"
                        :key ?g)))
-
-  (use-package mu4e-alert
-    :ensure t
-    :custom
-    (mu4e-alert-style 'notifications)
-    :hook
-    ((after-init . mu4e-alert-enable-notifications)
-     (after-init . mu4e-alert-enable-mode-line-display)))
 
   (use-package mu4e
     :ensure nil
@@ -575,10 +617,6 @@ future reference.
 * Prog modes
 ** lsp
    #+begin_src emacs-lisp
-     (use-package company-lsp
-       :config
-       (push 'company-lsp company-backends))
-
      (use-package lsp-ui)
 
      (use-package lsp-mode
@@ -666,12 +704,11 @@ future reference.
      (use-package cider
        :commands (cider-mode)
        :hook ((cider-mode . eldoc-mode))
-       ;; :custom
-       ;; (cider-mode-line " cider")
+       :init
+       (setq cider-known-endpoints '(("pitch-app/desktop-app" "localhost" "7888")))
 
        :bind (:map cider-mode-map
                    ("C-c C-k" . cider-save-and-compile-and-load-file)
-                   ("")
                    ("C-c C-i" . cider-interrupt)
                    :map cider-repl-mode-map
                    ("C-c C-l" . cider-repl-clear-buffer)
