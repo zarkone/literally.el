@@ -221,6 +221,7 @@ future reference.
            ("C-x M-3" . vertical-three-windows-layout)
            ("C-z C-d" . delete-other-windows)
            ("C-z C-s" . split-window-below)
+           ("C-z C-r" . split-window-right)
            ("C-z C-z" . my-suspend-frame)
            ("C-z C-n" . me/switch-to-previous-buffer)
            ("C-z C-b" . bookmark-jump)
@@ -474,11 +475,6 @@ future reference.
   (setq mu4e-maildir-shortcuts
         '((:maildir "/sent"             :key  ?s)
           (:maildir "/Gmail/INBOX"      :key  ?g)))
-  (setq mu4e-xapix-signature
-        (format "<#part type=text/html><html><body><p>%s</p></body></html><#/part>"
-                (with-temp-buffer
-                  (insert-file-contents "~/.emacs.d/xapix-signature.html")
-                  (buffer-string))))
 
   (setq mu4e-contexts
         `( ,(make-mu4e-context

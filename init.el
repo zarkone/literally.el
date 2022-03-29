@@ -9,7 +9,7 @@
   (setq
    package-archives
    '(
-    ;;("gnu" . "https://elpa.gnu.org/packages/")
+    ("gnu" . "https://elpa.gnu.org/packages/")
      ;;("nongnu" . "https://elpa.nongnu.org/nongnu/")
     ("melpa" . "http://melpa.org/packages/")))
   ;; (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
