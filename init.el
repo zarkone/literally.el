@@ -9,9 +9,9 @@
   (setq
    package-archives
    '(
-    ("gnu" . "https://elpa.gnu.org/packages/")
+     ("gnu" . "https://elpa.gnu.org/packages/")
      ;;("nongnu" . "https://elpa.nongnu.org/nongnu/")
-    ("melpa" . "http://melpa.org/packages/")))
+     ("melpa" . "http://melpa.org/packages/")))
   ;; (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
   ;; MacOS package not found workaround
   (when (eq system-type 'darwin)
@@ -34,7 +34,6 @@
            ("<C-return>" . save-buffer))
     :custom
     (org-log-done t)
-
     (org-agenda-files '("/home/zarkone/work/pitch/notes"
                         "/home/zarkone/work/pitch/notes/analytics"
                         "/home/zarkone/work/pitch/notes/backend"))
@@ -44,6 +43,8 @@
        ("HOLD" . (:foreground "purple" :weight bold))
        ("CANCELLED" . (:foreground "pink"))))
     :config
+    (custom-set-faces
+     '(org-link ((t (:inherit link :underline t :italic t)))))
     (use-package org-tempo
       :demand t
       :ensure nil))
