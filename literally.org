@@ -3,8 +3,6 @@
 ** Custom Functions
 #+BEGIN_SRC emacs-lisp
   (defun redefine-faces-modus ()
-
-
     (set-face-attribute 'cursor nil :background "#d1d")
     (set-face-attribute 'cursor nil :background "white")
     (set-face-attribute 'cursor nil :background "#d1d")
@@ -22,6 +20,7 @@
                         :background "#212"
                         :foreground "purple"
                         :box '(:line-width 1 :color "#212")))
+
   (defun gui-tweaks ()
     (interactive)
     (set-face-attribute 'default nil :height 140 :font "Iosevka")
@@ -30,7 +29,6 @@
       (scroll-bar-mode 0)
       (tool-bar-mode 0)
       (tooltip-mode 0)))
-
 
   (defun my-suspend-frame ()
     "In a GUI environment, do nothing; otherwise `suspend-frame'."
@@ -67,7 +65,7 @@
 
   (defun run-static-server (&optional on-random-port)
     "Run static server in current dir, with default port (8000).
-  With prefix arg, run at random free port"
+    With prefix arg, run at random free port"
     (interactive "P")
     (let ((shell-command "python -m SimpleHTTPServer"))
       (async-shell-command
@@ -134,7 +132,7 @@
 
   (defun delete-whitespace (&optional backward-only)
     "Delete all spaces, tabs and newlinesaround point.
-  If BACKWARD-ONLY is non-nil, only delete them before point."
+    If BACKWARD-ONLY is non-nil, only delete them before point."
     (interactive "*P")
     (let ((orig-pos (point)))
       (delete-region
