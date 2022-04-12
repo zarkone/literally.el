@@ -240,7 +240,7 @@ future reference.
            ("C-c M-." . zarkone/insert-current-date)
            ("C-x C-g" . goto-address-at-point)
            ("M-/" . hippie-expand)
-           ("M-\\" . delete-whitespace)
+           ("M--" . delete-whitespace)
            ("C-x C-k DEL" . me/kill-till-end)
            ("C-M-y" . me/duplicate-line)
            ("C-x M-w" . me/my-put-file-name-on-clipboard)
@@ -253,7 +253,7 @@ future reference.
            ("C-c f" . windmove-right)
 
            :map prog-mode-map
-           ("C-x ;" . me/comment-or-uncomment-region-or-line)
+           ("C-M-c" . me/comment-or-uncomment-region-or-line)
 
            )
     )
