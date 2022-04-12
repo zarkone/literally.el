@@ -489,7 +489,14 @@ future reference.
 
   (setq mu4e-maildir-shortcuts
         '((:maildir "/sent"             :key  ?s)
-          (:maildir "/Gmail/INBOX"      :key  ?g)))
+          (:maildir "/Gmail/INBOX"      :key  ?z)
+          (:maildir "/Pitch/INBOX"      :key  ?p)))
+
+  (setq mu4e-pitch-signature
+        (format "<#part type=text/html><html><body><p>%s</p></body></html><#/part>"
+                (with-temp-buffer
+                  (insert-file-contents "~/.emacs.d/pitch-signature.html")
+                  (buffer-string))))
 
   (setq mu4e-contexts
         `( ,(make-mu4e-context
@@ -516,9 +523,9 @@ future reference.
              :vars `((user-mail-address . "anatolii@pitch.io")
                      (smtpmail-smtp-user . "anatolii@pitch.io")
                      (user-full-name . "Anatolii Smolianinov")
-                     ;; TODO: pitch sign https://dataswamp.org/~solene/2016-06-07-13.html
-                     ;; (mu4e-compose-signature . ,mu4e-pitch-signature)
-                     (mu4e-compose-signature . "Anatolii Smolianinov")))))
+                     ;; TODO: html signature  https://dataswamp.org/~solene/2016-06-07-13.html
+                     (mu4e-compose-signature . ,mu4e-pitch-signature)
+                     ))))
 
   ;; start with the first (default) context;
   ;; default is to ask-if-none (ask when there's no context yet, and none match)
