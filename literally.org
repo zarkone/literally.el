@@ -468,6 +468,19 @@ future reference.
 #+BEGIN_SRC emacs-lisp
   (use-package restclient)
 #+END_SRC
+** gnus
+#+begin_src emacs-lisp
+  (setq gnus-select-method
+   '(nnmaildir "pitch"
+               (directory "~/.nnmaildir/Pitch")))
+
+  (setq gnus-secondary-select-methods
+        '((nnmaildir "pitch"
+                     (directory "~/.nnmaildir/Pitch"))
+          (nnmaildir "zarkonesmall"
+                     (directory "~/.nnmaildir/Gmail"))))
+
+#+end_src
 ** mu4e
 #+BEGIN_SRC emacs-lisp
   ;; Installed mu via nixos; it automatically adds it to load path.
