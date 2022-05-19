@@ -1,4 +1,4 @@
- Global functions and key bindings
+Global functions and key bindings
 
 ** Custom Functions
 #+BEGIN_SRC emacs-lisp
@@ -23,7 +23,7 @@
 
   (defun gui-tweaks ()
     (interactive)
-    (set-face-attribute 'default nil :height 130 :font "Iosevka")
+    (set-face-attribute 'default nil :height 140 :font "Iosevka")
     (when tool-bar-mode
       (menu-bar-mode 0)
       (scroll-bar-mode 0)
@@ -220,7 +220,7 @@ future reference.
     (global-unset-key (kbd "C-z"))
 
     :bind (("C-x M-5" . delete-other-windows-vertically)
-           ("C-x M-3" . vertical-three-windows-layout)
+           ("C-z 3" . vertical-three-windows-layout)
            ("C-z C-d" . delete-other-windows)
            ("C-z C-s" . split-window-below)
            ("C-z C-r" . split-window-right)
@@ -337,8 +337,18 @@ future reference.
 #+BEGIN_SRC emacs-lisp
   (setq custom-safe-themes t)
 
-  (use-package phoenix-dark-mono-theme
-    :init (load-theme 'phoenix-dark-mono t)
+  ;; (use-package phoenix-dark-mono-theme
+  ;;   :init (load-theme 'phoenix-dark-mono t)
+  ;;   :config
+  ;;   (gui-tweaks))
+
+  ;; (use-package modus-operandi-theme
+  ;;   :init (load-theme 'modus-operandi t)
+  ;;   :config
+  ;;   (gui-tweaks))
+
+  (use-package modus-vivendi-theme
+    :init (load-theme 'modus-vivendi t)
     :config
     (gui-tweaks))
 #+END_SRC
@@ -428,6 +438,11 @@ future reference.
 #+BEGIN_SRC emacs-lisp
   (use-package helm-company)
 
+  (use-package counsel
+    :custom
+    (ivy-height 15)
+    :bind (("C-x C-p" . counsel-rg)))
+
   (defun zarkone/helm-do-grep-ag ()
     (interactive)
     (helm-grep-ag
@@ -435,7 +450,7 @@ future reference.
 
   (use-package helm-ag
     :bind (("C-x DEL" . helm-projectile)
-           ("C-x C-p" . zarkone/helm-do-grep-ag))
+           )
     :custom
     (helm-grep-ag-command (concat "rg"
                                   " --color=never"
