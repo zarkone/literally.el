@@ -382,8 +382,7 @@ future reference.
 #+BEGIN_SRC emacs-lisp
   (use-package company
     :diminish ""
-    :init
-    (global-company-mode +1)
+    :hook (prog-mode . company-mode)
     :config
     (push 'company-elisp company-backends))
 #+END_SRC
