@@ -8,8 +8,7 @@
 
   (setq
    package-archives
-   '(
-     ("gnu" . "https://elpa.gnu.org/packages/")
+   '(("gnu" . "https://elpa.gnu.org/packages/")
      ;;("nongnu" . "https://elpa.nongnu.org/nongnu/")
      ("melpa" . "http://melpa.org/packages/")))
   ;; (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
@@ -34,9 +33,7 @@
            ("<C-return>" . save-buffer))
     :custom
     (org-log-done t)
-    (org-agenda-files '("/home/zarkone/work/pitch/notes"
-                        "/home/zarkone/work/pitch/notes/analytics"
-                        "/home/zarkone/work/pitch/notes/backend"))
+    (org-agenda-files '("/home/zarkone/work/pitch/notes"))
     (org-todo-keywords '((sequence "TODO" "HOLD" "|" "DONE" "CANCELLED")))
     (org-todo-keyword-faces
      '(("TODO" . org-warning)

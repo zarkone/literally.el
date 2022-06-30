@@ -2,16 +2,18 @@ Global functions and key bindings
 
 ** Custom Functions
 #+BEGIN_SRC emacs-lisp
-  (defun redefine-faces-modus ()
+  (defun redefine-faces-exotica ()
     (set-face-attribute 'cursor nil :background "#d1d")
     (set-face-attribute 'cursor nil :background "white")
     (set-face-attribute 'cursor nil :background "#d1d")
-    (set-face-attribute 'fringe nil :foreground "green")
+    (set-face-attribute 'fringe nil :foreground "spring green")
     (set-face-attribute 'vertical-border nil :foreground "#212")
 
     (set-face-attribute 'region nil :background "dark slate blue")
-    (set-face-attribute 'hl-line nil :background "#212")
-
+    (set-face-attribute 'hl-line nil :background "#224")
+    (set-face-attribute 'show-paren-match nil
+                        :background "dark slate blue"
+                        :underline nil)
     (set-face-attribute 'mode-line nil
                         :background "dark slate blue"
                         :foreground "CadetBlue1"
@@ -21,129 +23,130 @@ Global functions and key bindings
                         :foreground "purple"
                         :box '(:line-width 1 :color "#212")))
 
-  (defun gui-tweaks ()
-    (interactive)
-    (set-face-attribute 'default nil :height 140 :font "Iosevka")
-    (when tool-bar-mode
-      (menu-bar-mode 0)
-      (scroll-bar-mode 0)
-      (tool-bar-mode 0)
-      (tooltip-mode 0)))
+    (defun gui-tweaks ()
+      (interactive)
+      (set-face-attribute 'default nil :height 140 :font "Iosevka")
+      (redefine-faces-exotica)
+      (when tool-bar-mode
+        (menu-bar-mode 0)
+        (scroll-bar-mode 0)
+        (tool-bar-mode 0)
+        (tooltip-mode 0)))
 
-  (defun my-suspend-frame ()
-    "In a GUI environment, do nothing; otherwise `suspend-frame'."
-    (interactive)
-    (if (display-graphic-p)
-        (message "suspend-frame disabled for graphical displays.")
-      (suspend-frame)))
+    (defun my-suspend-frame ()
+      "In a GUI environment, do nothing; otherwise `suspend-frame'."
+      (interactive)
+      (if (display-graphic-p)
+          (message "suspend-frame disabled for graphical displays.")
+        (suspend-frame)))
 
-  (defun font-names-list ()
-    "Get list of names of installed fonts,which can be used to set font."
-    (seq-filter (lambda (font)
-                  (when-let ((info (font-info font)))
-                    (string-match-p "spacing=100" (aref info 1))))
-                (font-family-list)))
+    (defun font-names-list ()
+      "Get list of names of installed fonts,which can be used to set font."
+      (seq-filter (lambda (font)
+                    (when-let ((info (font-info font)))
+                      (string-match-p "spacing=100" (aref info 1))))
+                  (font-family-list)))
 
-  (defun me/prev-window ()
-    "Other-window, backward"
-    (interactive)
-    (other-window -1))
+    (defun me/prev-window ()
+      "Other-window, backward"
+      (interactive)
+      (other-window -1))
 
-  (defun zarkone/insert-current-date ()
-    "Insert current date here."
-    (interactive)
-    (insert
-     (shell-command-to-string "date")))
+    (defun zarkone/insert-current-date ()
+      "Insert current date here."
+      (interactive)
+      (insert
+       (shell-command-to-string "date")))
 
-  (defun vertical-three-windows-layout ()
-    "Vertical, three window layout"
-    (interactive)
-    (delete-other-windows)
-    (split-window-horizontally)
-    (split-window-horizontally)
-    (balance-windows))
+    (defun vertical-three-windows-layout ()
+      "Vertical, three window layout"
+      (interactive)
+      (delete-other-windows)
+      (split-window-horizontally)
+      (split-window-horizontally)
+      (balance-windows))
 
-  (defun run-static-server (&optional on-random-port)
-    "Run static server in current dir, with default port (8000).
-    With prefix arg, run at random free port"
-    (interactive "P")
-    (let ((shell-command "python -m SimpleHTTPServer"))
-      (async-shell-command
-       (concat shell-command
-               (when on-random-port
-                 " 0")))))
+    (defun run-static-server (&optional on-random-port)
+      "Run static server in current dir, with default port (8000).
+      With prefix arg, run at random free port"
+      (interactive "P")
+      (let ((shell-command "python -m SimpleHTTPServer"))
+        (async-shell-command
+         (concat shell-command
+                 (when on-random-port
+                   " 0")))))
 
-  (defun emacs-reload ()
-    "reloads emacs config"
-    (interactive)
-    (org-babel-load-file (expand-file-name "literally.org" user-emacs-directory)))
+    (defun emacs-reload ()
+      "reloads emacs config"
+      (interactive)
+      (org-babel-load-file (expand-file-name "literally.org" user-emacs-directory)))
 
-  (defun me/comment-or-uncomment-region-or-line ()
-    "Comments or uncomments the region or the current line if there's no active region."
-    (interactive)
-    (let (beg end)
-      (if (region-active-p)
-          (setq beg (region-beginning) end (region-end))
-        (setq beg (line-beginning-position) end (line-end-position)))
-      (comment-or-uncomment-region beg end)
-      (next-line)))
+    (defun me/comment-or-uncomment-region-or-line ()
+      "Comments or uncomments the region or the current line if there's no active region."
+      (interactive)
+      (let (beg end)
+        (if (region-active-p)
+            (setq beg (region-beginning) end (region-end))
+          (setq beg (line-beginning-position) end (line-end-position)))
+        (comment-or-uncomment-region beg end)
+        (next-line)))
 
-  (defun me/switch-to-previous-buffer ()
-    (interactive)
-    (switch-to-buffer (other-buffer (current-buffer) 1)))
+    (defun me/switch-to-previous-buffer ()
+      (interactive)
+      (switch-to-buffer (other-buffer (current-buffer) 1)))
 
-  (defun me/kill-region-or-backward-kill-word (&optional arg region)
-    "`kill-region' if the region is active, otherwise `backward-kill-word'"
-    (interactive
-     (list (prefix-numeric-value current-prefix-arg) (use-region-p)))
-    (if region
-        (kill-region (region-beginning) (region-end))
-      (backward-kill-word arg)))
-  (global-set-key (kbd "C-w") 'me/kill-region-or-backward-kill-word)
+    (defun me/kill-region-or-backward-kill-word (&optional arg region)
+      "`kill-region' if the region is active, otherwise `backward-kill-word'"
+      (interactive
+       (list (prefix-numeric-value current-prefix-arg) (use-region-p)))
+      (if region
+          (kill-region (region-beginning) (region-end))
+        (backward-kill-word arg)))
+    (global-set-key (kbd "C-w") 'me/kill-region-or-backward-kill-word)
 
-  (defun me/my-put-file-name-on-clipboard ()
-    "Put the current file name on the clipboard"
-    (interactive)
-    (let ((filename (if (equal major-mode 'dired-mode)
-                        default-directory
-                      (buffer-file-name))))
-      (when filename
-        (with-temp-buffer
-          (insert filename)
-          (clipboard-kill-region (point-min) (point-max)))
-        (message filename))))
+    (defun me/my-put-file-name-on-clipboard ()
+      "Put the current file name on the clipboard"
+      (interactive)
+      (let ((filename (if (equal major-mode 'dired-mode)
+                          default-directory
+                        (buffer-file-name))))
+        (when filename
+          (with-temp-buffer
+            (insert filename)
+            (clipboard-kill-region (point-min) (point-max)))
+          (message filename))))
 
-  (defun me/duplicate-line ()
-    "Duplicate current line."
-    (interactive)
-    (move-beginning-of-line 1)
-    (kill-line)
-    (yank)
-    (open-line 1)
-    (next-line 1)
-    (yank))
+    (defun me/duplicate-line ()
+      "Duplicate current line."
+      (interactive)
+      (move-beginning-of-line 1)
+      (kill-line)
+      (yank)
+      (open-line 1)
+      (next-line 1)
+      (yank))
 
-  (defun me/kill-till-end ()
-    "Deletes everything from point to end of file"
-    (interactive)
-    (delete-region
-     (point)
-     (point-max)))
-
-  (defun delete-whitespace (&optional backward-only)
-    "Delete all spaces, tabs and newlinesaround point.
-    If BACKWARD-ONLY is non-nil, only delete them before point."
-    (interactive "*P")
-    (let ((orig-pos (point)))
+    (defun me/kill-till-end ()
+      "Deletes everything from point to end of file"
+      (interactive)
       (delete-region
-       (if backward-only
-           orig-pos
+       (point)
+       (point-max)))
+
+    (defun delete-whitespace (&optional backward-only)
+      "Delete all spaces, tabs and newlinesaround point.
+      If BACKWARD-ONLY is non-nil, only delete them before point."
+      (interactive "*P")
+      (let ((orig-pos (point)))
+        (delete-region
+         (if backward-only
+             orig-pos
+           (progn
+             (skip-chars-forward " \t\n")
+             (constrain-to-field nil orig-pos t)))
          (progn
-           (skip-chars-forward " \t\n")
-           (constrain-to-field nil orig-pos t)))
-       (progn
-         (skip-chars-backward " \t\n")
-         (constrain-to-field nil orig-pos)))))
+           (skip-chars-backward " \t\n")
+           (constrain-to-field nil orig-pos)))))
 #+END_SRC
 
 ** Custom KBD Macro
@@ -168,16 +171,6 @@ future reference.
            (emacs-lisp-mode . enable-paredit-mode)
            (org-mode . auto-fill-mode)
            (org-mode . flyspell-mode))
-    :chords (("k[" . delete-whitespace)
-             ("3r" . replace-regexp)
-             ("jk" . save-buffer)
-             ("i0" . me/switch-to-previous-buffer)
-             ("[]" . "[]\C-b")
-             ("<>" . "<>\C-b")
-             ("''" . "''\C-b")
-             ("\"\"" . "\"\"\C-b")
-             ("()" . "()\C-b")
-             ("{}" . "{}\C-b"))
     :custom
     (auth-sources '((:source "/home/zarkone/.emacs.d/secrets/.authinfo.gpg")))
     (safe-local-variable-values '((url-max-redirections . 0)))
@@ -219,6 +212,17 @@ future reference.
     (global-unset-key (kbd "M-ESC ESC"))
     (global-unset-key (kbd "C-z"))
 
+    :chords (("k[" . delete-whitespace)
+             ("3r" . replace-regexp)
+             ("jk" . save-buffer)
+             ("i0" . me/switch-to-previous-buffer)
+             ("[]" . "[]\C-b")
+             ("<>" . "<>\C-b")
+             ("''" . "''\C-b")
+             ("\"\"" . "\"\"\C-b")
+             ("()" . "()\C-b")
+             ("{}" . "{}\C-b"))
+
     :bind (("C-x M-5" . delete-other-windows-vertically)
            ("C-z 3" . vertical-three-windows-layout)
            ("C-z C-d" . delete-other-windows)
@@ -251,6 +255,7 @@ future reference.
            ("C-c n" . windmove-down)
            ("C-c b" . windmove-left)
            ("C-c f" . windmove-right)
+           ("C-<backspace>" . undo)
 
            :map prog-mode-map
            ("C-M-c" . me/comment-or-uncomment-region-or-line)
@@ -337,6 +342,11 @@ future reference.
 #+BEGIN_SRC emacs-lisp
   (setq custom-safe-themes t)
 
+  (use-package exotica-theme
+    :init (load-theme 'exotica t)
+    :config
+    (gui-tweaks))
+
   ;; (use-package phoenix-dark-mono-theme
   ;;   :init (load-theme 'phoenix-dark-mono t)
   ;;   :config
@@ -347,10 +357,10 @@ future reference.
   ;;   :config
   ;;   (gui-tweaks))
 
-  (use-package modus-vivendi-theme
-    :init (load-theme 'modus-vivendi t)
-    :config
-    (gui-tweaks))
+  ;; (use-package modus-vivendi-theme
+  ;;   :init (load-theme 'modus-vivendi t)
+  ;;   :config
+  ;;   (gui-tweaks))
 #+END_SRC
 * Packages
 ** nyan-cat
@@ -392,7 +402,7 @@ future reference.
 #+BEGIN_SRC emacs-lisp
   (use-package company
     :diminish ""
-    :hook (prog-mode . company-mode)
+    :hook ((prog-mode . company-mode))
     :config
     (push 'company-elisp company-backends))
 #+END_SRC
