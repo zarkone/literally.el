@@ -43,7 +43,7 @@ Global functions and key bindings
 
   (defun gui-tweaks ()
     (interactive)
-    (set-face-attribute 'default nil :height 120 :font "Iosevka")
+    (set-face-attribute 'default nil :height 110 :font "Iosevka")
     (redefine-faces-exotica)
     (when tool-bar-mode
       (menu-bar-mode 0)
@@ -297,9 +297,9 @@ future reference.
            :map prog-mode-map
            ("C-M-c" . me/comment-or-uncomment-region-or-line)
 
-           :map nxml-mode-map
-           ("M-." . zarkone/pretty-print-xml-buffer)
-           ("M-," . nxml-where)
+           ;; :map nxml-mode-map
+           ;; ("M-." . zarkone/pretty-print-xml-buffer)
+           ;; ("M-," . nxml-where)
            )
     )
 #+END_SRC
