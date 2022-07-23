@@ -715,8 +715,11 @@ future reference.
 ** direnv
 #+BEGIN_SRC emacs-lisp
   (use-package direnv
-   :config
-   (direnv-mode))
+    :bind (("C-z M-d" . direnv-allow))
+    :custom
+    (direnv-always-show-summary t)
+    :config
+    (direnv-mode))
 
 #+END_SRC
 
