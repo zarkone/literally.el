@@ -2,188 +2,188 @@ Global functions and key bindings
 
 ** Custom Functions
 #+BEGIN_SRC emacs-lisp
-  (defun nxml-where ()
-    "Display the hierarchy of XML elements the point is on as a path."
-    (interactive)
-    (let ((path nil))
-      (save-excursion
-        (save-restriction
-          (widen)
-          (while (and (< (point-min) (point)) ;; Doesn't error if point is at beginning of buffer
-                      (condition-case nil
-                          (progn
-                            (nxml-backward-up-element) ; always returns nil
-                            t)
-                        (error nil)))
-            (setq path (cons (xmltok-start-tag-local-name) path)))
-          (if (called-interactively-p t)
-              (message "/%s" (mapconcat 'identity path "/"))
-            (format "/%s" (mapconcat 'identity path "/")))))))
+    (defun nxml-where ()
+      "Display the hierarchy of XML elements the point is on as a path."
+      (interactive)
+      (let ((path nil))
+        (save-excursion
+          (save-restriction
+            (widen)
+            (while (and (< (point-min) (point)) ;; Doesn't error if point is at beginning of buffer
+                        (condition-case nil
+                            (progn
+                              (nxml-backward-up-element) ; always returns nil
+                              t)
+                          (error nil)))
+              (setq path (cons (xmltok-start-tag-local-name) path)))
+            (if (called-interactively-p t)
+                (message "/%s" (mapconcat 'identity path "/"))
+              (format "/%s" (mapconcat 'identity path "/")))))))
 
-  (defun redefine-faces-exotica ()
-    (set-face-attribute 'cursor nil :background "#d1d")
-    (set-face-attribute 'cursor nil :background "white")
-    (set-face-attribute 'cursor nil :background "#d1d")
-    (set-face-attribute 'fringe nil :foreground "spring green")
-    (set-face-attribute 'vertical-border nil :foreground "#212")
+    (defun redefine-faces-exotica ()
+      (set-face-attribute 'cursor nil :background "#d1d")
+      (set-face-attribute 'cursor nil :background "white")
+      (set-face-attribute 'cursor nil :background "#d1d")
+      (set-face-attribute 'fringe nil :foreground "spring green")
+      (set-face-attribute 'vertical-border nil :foreground "#212")
 
-    (set-face-attribute 'region nil :background "dark slate blue")
-    (set-face-attribute 'hl-line nil :background "#224")
-    (set-face-attribute 'show-paren-match nil
-                        :background "dark slate blue"
-                        :underline nil)
-    (set-face-attribute 'mode-line nil
-                        :background "dark slate blue"
-                        :foreground "CadetBlue1"
-                        :box '(:line-width 1 :color "#212"))
-    (set-face-attribute 'mode-line-inactive nil
-                        :background "#212"
-                        :foreground "purple"
-                        :box '(:line-width 1 :color "#212")))
+      (set-face-attribute 'region nil :background "dark slate blue")
+      (set-face-attribute 'hl-line nil :background "#224")
+      (set-face-attribute 'show-paren-match nil
+                          :background "dark slate blue"
+                          :underline nil)
+      (set-face-attribute 'mode-line nil
+                          :background "dark slate blue"
+                          :foreground "CadetBlue1"
+                          :box '(:line-width 1 :color "#212"))
+      (set-face-attribute 'mode-line-inactive nil
+                          :background "#212"
+                          :foreground "purple"
+                          :box '(:line-width 1 :color "#212")))
 
-  (defun gui-tweaks ()
-    (interactive)
-    (set-face-attribute 'default nil :height 110 :font "Iosevka")
-    (redefine-faces-exotica)
-    (when tool-bar-mode
-      (menu-bar-mode 0)
-      (scroll-bar-mode 0)
-      (tool-bar-mode 0)
-      (tooltip-mode 0)))
+    (defun gui-tweaks ()
+      (interactive)
+      (set-face-attribute 'default nil :height 110 :font "JetBrains Mono")
+      (redefine-faces-exotica)
+      (when tool-bar-mode
+        (menu-bar-mode 0)
+        (scroll-bar-mode 0)
+        (tool-bar-mode 0)
+        (tooltip-mode 0)))
 
-  (defun my-suspend-frame ()
-    "In a GUI environment, do nothing; otherwise `suspend-frame'."
-    (interactive)
-    (if (display-graphic-p)
-        (message "suspend-frame disabled for graphical displays.")
-      (suspend-frame)))
+    (defun my-suspend-frame ()
+      "In a GUI environment, do nothing; otherwise `suspend-frame'."
+      (interactive)
+      (if (display-graphic-p)
+          (message "suspend-frame disabled for graphical displays.")
+        (suspend-frame)))
 
-  (defun font-names-list ()
-    "Get list of names of installed fonts,which can be used to set font."
-    (seq-filter (lambda (font)
-                  (when-let ((info (font-info font)))
-                    (string-match-p "spacing=100" (aref info 1))))
-                (font-family-list)))
+    (defun font-names-list ()
+      "Get list of names of installed fonts,which can be used to set font."
+      (seq-filter (lambda (font)
+                    (when-let ((info (font-info font)))
+                      (string-match-p "spacing=100" (aref info 1))))
+                  (font-family-list)))
 
-  (defun me/prev-window ()
-    "Other-window, backward"
-    (interactive)
-    (other-window -1))
+    (defun me/prev-window ()
+      "Other-window, backward"
+      (interactive)
+      (other-window -1))
 
-  (defun zarkone/insert-current-date ()
-    "Insert current date here."
-    (interactive)
-    (insert
-     (shell-command-to-string "date")))
+    (defun zarkone/insert-current-date ()
+      "Insert current date here."
+      (interactive)
+      (insert
+       (shell-command-to-string "date")))
 
-  (defun vertical-three-windows-layout ()
-    "Vertical, three window layout"
-    (interactive)
-    (delete-other-windows)
-    (split-window-horizontally)
-    (split-window-horizontally)
-    (balance-windows))
+    (defun vertical-three-windows-layout ()
+      "Vertical, three window layout"
+      (interactive)
+      (delete-other-windows)
+      (split-window-horizontally)
+      (split-window-horizontally)
+      (balance-windows))
 
-  (defun run-static-server (&optional on-random-port)
-    "Run static server in current dir, with default port (8000).
-      With prefix arg, run at random free port"
-    (interactive "P")
-    (let ((shell-command "python -m SimpleHTTPServer"))
-      (async-shell-command
-       (concat shell-command
-               (when on-random-port
-                 " 0")))))
+    (defun run-static-server (&optional on-random-port)
+      "Run static server in current dir, with default port (8000).
+        With prefix arg, run at random free port"
+      (interactive "P")
+      (let ((shell-command "python -m SimpleHTTPServer"))
+        (async-shell-command
+         (concat shell-command
+                 (when on-random-port
+                   " 0")))))
 
-  (defun emacs-reload ()
-    "reloads emacs config"
-    (interactive)
-    (org-babel-load-file (expand-file-name "literally.org" user-emacs-directory)))
+    (defun emacs-reload ()
+      "reloads emacs config"
+      (interactive)
+      (org-babel-load-file (expand-file-name "literally.org" user-emacs-directory)))
 
-  (defun me/comment-or-uncomment-region-or-line ()
-    "Comments or uncomments the region or the current line if there's no active region."
-    (interactive)
-    (let (beg end)
-      (if (region-active-p)
-          (setq beg (region-beginning) end (region-end))
-        (setq beg (line-beginning-position) end (line-end-position)))
-      (comment-or-uncomment-region beg end)
-      (next-line)))
+    (defun me/comment-or-uncomment-region-or-line ()
+      "Comments or uncomments the region or the current line if there's no active region."
+      (interactive)
+      (let (beg end)
+        (if (region-active-p)
+            (setq beg (region-beginning) end (region-end))
+          (setq beg (line-beginning-position) end (line-end-position)))
+        (comment-or-uncomment-region beg end)
+        (next-line)))
 
-  (defun me/switch-to-previous-buffer ()
-    (interactive)
-    (switch-to-buffer (other-buffer (current-buffer) 1)))
+    (defun me/switch-to-previous-buffer ()
+      (interactive)
+      (switch-to-buffer (other-buffer (current-buffer) 1)))
 
-  (defun me/kill-region-or-backward-kill-word (&optional arg region)
-    "`kill-region' if the region is active, otherwise `backward-kill-word'"
-    (interactive
-     (list (prefix-numeric-value current-prefix-arg) (use-region-p)))
-    (if region
-        (kill-region (region-beginning) (region-end))
-      (backward-kill-word arg)))
+    (defun me/kill-region-or-backward-kill-word (&optional arg region)
+      "`kill-region' if the region is active, otherwise `backward-kill-word'"
+      (interactive
+       (list (prefix-numeric-value current-prefix-arg) (use-region-p)))
+      (if region
+          (kill-region (region-beginning) (region-end))
+        (backward-kill-word arg)))
 
-  (global-set-key (kbd "C-w") 'me/kill-region-or-backward-kill-word)
+    (global-set-key (kbd "C-w") 'me/kill-region-or-backward-kill-word)
 
-  (defun me/my-put-file-name-on-clipboard ()
-    "Put the current file name on the clipboard"
-    (interactive)
-    (let ((filename (if (equal major-mode 'dired-mode)
-                        default-directory
-                      (buffer-file-name))))
-      (when filename
-        (with-temp-buffer
-          (insert filename)
-          (clipboard-kill-region (point-min) (point-max)))
-        (message filename))))
+    (defun me/my-put-file-name-on-clipboard ()
+      "Put the current file name on the clipboard"
+      (interactive)
+      (let ((filename (if (equal major-mode 'dired-mode)
+                          default-directory
+                        (buffer-file-name))))
+        (when filename
+          (with-temp-buffer
+            (insert filename)
+            (clipboard-kill-region (point-min) (point-max)))
+          (message filename))))
 
-  (defun me/duplicate-line ()
-    "Duplicate current line."
-    (interactive)
-    (move-beginning-of-line 1)
-    (kill-line)
-    (yank)
-    (open-line 1)
-    (next-line 1)
-    (yank))
+    (defun me/duplicate-line ()
+      "Duplicate current line."
+      (interactive)
+      (move-beginning-of-line 1)
+      (kill-line)
+      (yank)
+      (open-line 1)
+      (next-line 1)
+      (yank))
 
-  (defun me/kill-till-end ()
-    "Deletes everything from point to end of file"
-    (interactive)
-    (delete-region
-     (point)
-     (point-max)))
-
-  (defun delete-whitespace (&optional backward-only)
-    "Delete all spaces, tabs and newlinesaround point.
-      If BACKWARD-ONLY is non-nil, only delete them before point."
-    (interactive "*P")
-    (let ((orig-pos (point)))
+    (defun me/kill-till-end ()
+      "Deletes everything from point to end of file"
+      (interactive)
       (delete-region
-       (if backward-only
-           orig-pos
+       (point)
+       (point-max)))
+
+    (defun delete-whitespace (&optional backward-only)
+      "Delete all spaces, tabs and newlinesaround point.
+        If BACKWARD-ONLY is non-nil, only delete them before point."
+      (interactive "*P")
+      (let ((orig-pos (point)))
+        (delete-region
+         (if backward-only
+             orig-pos
+           (progn
+             (skip-chars-forward " \t\n")
+             (constrain-to-field nil orig-pos t)))
          (progn
-           (skip-chars-forward " \t\n")
-           (constrain-to-field nil orig-pos t)))
-       (progn
-         (skip-chars-backward " \t\n")
-         (constrain-to-field nil orig-pos)))))
+           (skip-chars-backward " \t\n")
+           (constrain-to-field nil orig-pos)))))
 
-  (defun bf-pretty-print-xml-region (begin end)
-    "Pretty format XML markup in region. You need to have nxml-mode
-  http://www.emacswiki.org/cgi-bin/wiki/NxmlMode installed to do
-  this.  The function inserts linebreaks to separate tags that have
-  nothing but whitespace between them.  It then indents the markup
-  by using nxml's indentation rules."
-    (interactive "r")
-    (save-excursion
-      (nxml-mode)
-      (goto-char begin)
-      (while (search-forward-regexp "\>[ \\t]*\<" nil t)
-        (backward-char) (insert "\n"))
-      (indent-region begin end)))
+    (defun bf-pretty-print-xml-region (begin end)
+      "Pretty format XML markup in region. You need to have nxml-mode
+    http://www.emacswiki.org/cgi-bin/wiki/NxmlMode installed to do
+    this.  The function inserts linebreaks to separate tags that have
+    nothing but whitespace between them.  It then indents the markup
+    by using nxml's indentation rules."
+      (interactive "r")
+      (save-excursion
+        (nxml-mode)
+        (goto-char begin)
+        (while (search-forward-regexp "\>[ \\t]*\<" nil t)
+          (backward-char) (insert "\n"))
+        (indent-region begin end)))
 
-  (defun zarkone/pretty-print-xml-buffer ()
-    (interactive)
-    (bf-pretty-print-xml-region (point-min) (point-max)))
+    (defun zarkone/pretty-print-xml-buffer ()
+      (interactive)
+      (bf-pretty-print-xml-region (point-min) (point-max)))
 #+END_SRC
 
 ** Custom KBD Macro
@@ -446,11 +446,6 @@ future reference.
     :config
     (push 'company-elisp company-backends))
 #+END_SRC
-** dockerfile
-   #+begin_src emacs-lisp
-     (use-package dockerfile-mode
-       :init (add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-mode)))
-   #+end_src
 ** expand-region
 #+BEGIN_SRC emacs-lisp
   (use-package expand-region
@@ -499,7 +494,7 @@ future reference.
      (expand-file-name (vc-find-root default-directory ".git")) nil))
 
   (use-package helm-ag
-    :bind (("C-x DEL" . helm-projectile)
+    :bind (("C-z C-v" . helm-projectile)
            )
     :custom
     (helm-grep-ag-command (concat "rg"
@@ -512,11 +507,6 @@ future reference.
   (use-package helm-projectile
     :bind (("C-x C-b" . helm-projectile-switch-to-buffer)))
 #+END_SRC
-** ivy
-   #+begin_src emacs-lisp
-     (use-package ivy-emoji
-       :bind (("C-x M-j" . ivy-emoji)))
-   #+end_src
 ** magit
 #+BEGIN_SRC emacs-lisp
   (use-package magit
@@ -678,29 +668,6 @@ future reference.
        ("\\.pdf\\'" . default)))
     )
 #+END_SRC
-** COMMENT matrix.org
-   #+begin_src emacs-lisp
-     ;; Install and load `quelpa-use-package'.
-     (package-install 'quelpa-use-package)
-     (require 'quelpa-use-package)
-
-     ;; (package-install 'plz)
-     ;; Install `plz' HTTP library (not on MELPA yet).
-     (use-package plz
-       :quelpa (plz :fetcher github :repo "alphapapa/plz.el"))
-
-     ;; Install Ement.
-     (use-package ement
-       :quelpa (ement :fetcher github :repo "alphapapa/ement.el"))
-   #+end_src
-** buf-move
-#+BEGIN_SRC emacs-lisp
-  (use-package buffer-move
-    :bind (("C-s-k" . buf-move-up)
-           ("C-s-j" . buf-move-down)
-           ("C-s-h" . buf-move-left)
-           ("C-s-l" . buf-move-right)))
-#+END_SRC
 ** markdown
 #+BEGIN_SRC emacs-lisp
   (use-package markdown-mode
@@ -763,24 +730,6 @@ future reference.
               ("C-c e t" . lsp-find-type-definition)))
    #+end_src
 
-** Go
-   #+begin_src emacs-lisp
-     (use-package go-mode
-       :hook ((go-mode . lsp)
-              (before-save-hook . gofmt-before-save))
-       :custom
-       (company-lsp-async t)
-       (go-coverage-display-buffer-func 'display-buffer-same-window)
-       (gofmt-command "goimports")
-       (compile-command "go build -v")
-
-       :config
-       (use-package go-snippets)
-       (setenv "GO111MODULE" "on")
-       (lsp-register-custom-settings
-        '(("gopls.completeUnimported" t t)
-          ("gopls.staticcheck" t t))))
-   #+end_src
 ** Rust
 #+BEGIN_SRC emacs-lisp
   (use-package cargo)
@@ -844,26 +793,6 @@ future reference.
        (require 'flycheck-clj-kondo))
    #+end_src
 ** ts
-*** COMMENT with tide
-    tide is here for now, but seems like LSP works much better
-    for me
-#+begin_src emacs-lisp
-  (use-package tide
-    :ensure t
-    :commands (tide-setup tide-hl-identifier-mode tide-format-before-save)
-    :after (typescript-mode company flycheck)
-    :custom
-    (typescript-indent-level 2))
-
-  (use-package typescript-mode
-    :custom
-    (flycheck-check-syntax-automatically '(save mode-enabled))
-    :hook ((typescript-mode . tide-setup)
-           (typescript-mode . flycheck-mode)
-           (typescript-mode . tide-hl-identifier-mode)
-           (before-save . tide-format-before-save)))
-#+end_src
-
 *** with lsp
 #+begin_src emacs-lisp
   (use-package typescript-mode
@@ -882,63 +811,7 @@ future reference.
        :ensure nil)
    #+end_src
 
-** ps
-#+begin_src emacs-lisp
-  (use-package purescript-mode)
-
-  (defun pcs-enable ()
-    (psc-ide-mode)
-    (company-mode)
-    (flycheck-mode)
-    (turn-on-purescript-indentation))
-
-  (use-package psc-ide
-    :hook (purescript-mode . pcs-enable))
-#+end_src
-
-** Ruby
-   #+begin_src emacs-lisp
-     (use-package ruby-mode
-       :hook ((ruby-mode . flymake-mode)))
-
-     (use-package rvm
-       :config
-       (rvm-use-default))
-   #+end_src
-
-*** HAML
-       #+begin_src emacs-lisp
-         (use-package haml-mode
-           :hook ((haml-mode . flycheck-mode)))
-   #+end_src
-
-*** inf-ruby
-   #+begin_src emacs-lisp
-     (use-package inf-ruby)
-   #+end_src
-
-*** SASS
-   #+begin_src emacs-lisp
-     (use-package sass-mode
-       )
-   #+end_src
-** elixir
-   #+begin_src emacs-lisp
-     (use-package elixir-mode)
-     (use-package elixir-yasnippets)
-
-   #+end_src
-
 ** haskell
   #+begin_src emacs-lisp
     (use-package haskell-mode)
   #+end_src
-
-** common lisp
-   #+begin_src emacs-lisp
-     (use-package slime
-       :hook ((lisp-mode . slime-mode)
-              (lisp-mode . paredit-mode))
-       :custom
-       (inferior-lisp-program  "/home/zarkone/.nix-profile/bin/sbcl"))
-   #+end_src
