@@ -2,188 +2,187 @@ Global functions and key bindings
 
 ** Custom Functions
 #+BEGIN_SRC emacs-lisp
-    (defun nxml-where ()
-      "Display the hierarchy of XML elements the point is on as a path."
-      (interactive)
-      (let ((path nil))
-        (save-excursion
-          (save-restriction
-            (widen)
-            (while (and (< (point-min) (point)) ;; Doesn't error if point is at beginning of buffer
-                        (condition-case nil
-                            (progn
-                              (nxml-backward-up-element) ; always returns nil
-                              t)
-                          (error nil)))
-              (setq path (cons (xmltok-start-tag-local-name) path)))
-            (if (called-interactively-p t)
-                (message "/%s" (mapconcat 'identity path "/"))
-              (format "/%s" (mapconcat 'identity path "/")))))))
-
-    (defun redefine-faces-exotica ()
-      (set-face-attribute 'cursor nil :background "#d1d")
-      (set-face-attribute 'cursor nil :background "white")
-      (set-face-attribute 'cursor nil :background "#d1d")
-      (set-face-attribute 'fringe nil :foreground "spring green")
-      (set-face-attribute 'vertical-border nil :foreground "#212")
-
-      (set-face-attribute 'region nil :background "dark slate blue")
-      (set-face-attribute 'hl-line nil :background "#224")
-      (set-face-attribute 'show-paren-match nil
-                          :background "dark slate blue"
-                          :underline nil)
-      (set-face-attribute 'mode-line nil
-                          :background "dark slate blue"
-                          :foreground "CadetBlue1"
-                          :box '(:line-width 1 :color "#212"))
-      (set-face-attribute 'mode-line-inactive nil
-                          :background "#212"
-                          :foreground "purple"
-                          :box '(:line-width 1 :color "#212")))
-
-    (defun gui-tweaks ()
-      (interactive)
-      (set-face-attribute 'default nil :height 110 :font "JetBrains Mono")
-      (redefine-faces-exotica)
-      (when tool-bar-mode
-        (menu-bar-mode 0)
-        (scroll-bar-mode 0)
-        (tool-bar-mode 0)
-        (tooltip-mode 0)))
-
-    (defun my-suspend-frame ()
-      "In a GUI environment, do nothing; otherwise `suspend-frame'."
-      (interactive)
-      (if (display-graphic-p)
-          (message "suspend-frame disabled for graphical displays.")
-        (suspend-frame)))
-
-    (defun font-names-list ()
-      "Get list of names of installed fonts,which can be used to set font."
-      (seq-filter (lambda (font)
-                    (when-let ((info (font-info font)))
-                      (string-match-p "spacing=100" (aref info 1))))
-                  (font-family-list)))
-
-    (defun me/prev-window ()
-      "Other-window, backward"
-      (interactive)
-      (other-window -1))
-
-    (defun zarkone/insert-current-date ()
-      "Insert current date here."
-      (interactive)
-      (insert
-       (shell-command-to-string "date")))
-
-    (defun vertical-three-windows-layout ()
-      "Vertical, three window layout"
-      (interactive)
-      (delete-other-windows)
-      (split-window-horizontally)
-      (split-window-horizontally)
-      (balance-windows))
-
-    (defun run-static-server (&optional on-random-port)
-      "Run static server in current dir, with default port (8000).
-        With prefix arg, run at random free port"
-      (interactive "P")
-      (let ((shell-command "python -m SimpleHTTPServer"))
-        (async-shell-command
-         (concat shell-command
-                 (when on-random-port
-                   " 0")))))
-
-    (defun emacs-reload ()
-      "reloads emacs config"
-      (interactive)
-      (org-babel-load-file (expand-file-name "literally.org" user-emacs-directory)))
-
-    (defun me/comment-or-uncomment-region-or-line ()
-      "Comments or uncomments the region or the current line if there's no active region."
-      (interactive)
-      (let (beg end)
-        (if (region-active-p)
-            (setq beg (region-beginning) end (region-end))
-          (setq beg (line-beginning-position) end (line-end-position)))
-        (comment-or-uncomment-region beg end)
-        (next-line)))
-
-    (defun me/switch-to-previous-buffer ()
-      (interactive)
-      (switch-to-buffer (other-buffer (current-buffer) 1)))
-
-    (defun me/kill-region-or-backward-kill-word (&optional arg region)
-      "`kill-region' if the region is active, otherwise `backward-kill-word'"
-      (interactive
-       (list (prefix-numeric-value current-prefix-arg) (use-region-p)))
-      (if region
-          (kill-region (region-beginning) (region-end))
-        (backward-kill-word arg)))
-
-    (global-set-key (kbd "C-w") 'me/kill-region-or-backward-kill-word)
-
-    (defun me/my-put-file-name-on-clipboard ()
-      "Put the current file name on the clipboard"
-      (interactive)
-      (let ((filename (if (equal major-mode 'dired-mode)
-                          default-directory
-                        (buffer-file-name))))
-        (when filename
-          (with-temp-buffer
-            (insert filename)
-            (clipboard-kill-region (point-min) (point-max)))
-          (message filename))))
-
-    (defun me/duplicate-line ()
-      "Duplicate current line."
-      (interactive)
-      (move-beginning-of-line 1)
-      (kill-line)
-      (yank)
-      (open-line 1)
-      (next-line 1)
-      (yank))
-
-    (defun me/kill-till-end ()
-      "Deletes everything from point to end of file"
-      (interactive)
-      (delete-region
-       (point)
-       (point-max)))
-
-    (defun delete-whitespace (&optional backward-only)
-      "Delete all spaces, tabs and newlinesaround point.
-        If BACKWARD-ONLY is non-nil, only delete them before point."
-      (interactive "*P")
-      (let ((orig-pos (point)))
-        (delete-region
-         (if backward-only
-             orig-pos
-           (progn
-             (skip-chars-forward " \t\n")
-             (constrain-to-field nil orig-pos t)))
-         (progn
-           (skip-chars-backward " \t\n")
-           (constrain-to-field nil orig-pos)))))
-
-    (defun bf-pretty-print-xml-region (begin end)
-      "Pretty format XML markup in region. You need to have nxml-mode
-    http://www.emacswiki.org/cgi-bin/wiki/NxmlMode installed to do
-    this.  The function inserts linebreaks to separate tags that have
-    nothing but whitespace between them.  It then indents the markup
-    by using nxml's indentation rules."
-      (interactive "r")
+  (defun nxml-where ()
+    "Display the hierarchy of XML elements the point is on as a path."
+    (interactive)
+    (let ((path nil))
       (save-excursion
-        (nxml-mode)
-        (goto-char begin)
-        (while (search-forward-regexp "\>[ \\t]*\<" nil t)
-          (backward-char) (insert "\n"))
-        (indent-region begin end)))
+        (save-restriction
+          (widen)
+          (while (and (< (point-min) (point)) ;; Doesn't error if point is at beginning of buffer
+                      (condition-case nil
+                          (progn
+                            (nxml-backward-up-element) ; always returns nil
+                            t)
+                        (error nil)))
+            (setq path (cons (xmltok-start-tag-local-name) path)))
+          (if (called-interactively-p t)
+              (message "/%s" (mapconcat 'identity path "/"))
+            (format "/%s" (mapconcat 'identity path "/")))))))
 
-    (defun zarkone/pretty-print-xml-buffer ()
-      (interactive)
-      (bf-pretty-print-xml-region (point-min) (point-max)))
+  (defun redefine-faces-exotica ()
+    (set-face-attribute 'cursor nil :background "#d1d")
+    (set-face-attribute 'cursor nil :background "white")
+    (set-face-attribute 'cursor nil :background "#d1d")
+    (set-face-attribute 'fringe nil :foreground "spring green")
+    (set-face-attribute 'vertical-border nil :foreground "#212")
+
+    (set-face-attribute 'region nil :background "dark slate blue")
+    (set-face-attribute 'hl-line nil :background "#224")
+    (set-face-attribute 'show-paren-match nil
+                        :background "dark slate blue"
+                        :underline nil)
+    (set-face-attribute 'mode-line nil
+                        :background "dark slate blue"
+                        :foreground "CadetBlue1"
+                        :box '(:line-width 1 :color "#212"))
+    (set-face-attribute 'mode-line-inactive nil
+                        :background "#212"
+                        :foreground "purple"
+                        :box '(:line-width 1 :color "#212")))
+  (defun gui-tweaks ()
+    (interactive)
+    (set-face-attribute 'default nil :height 110 :font "JetBrains Mono")
+    (redefine-faces-exotica)
+    (when tool-bar-mode
+      (menu-bar-mode 0)
+      (scroll-bar-mode 0)
+      (tool-bar-mode 0)
+      (tooltip-mode 0)))
+
+  (defun my-suspend-frame ()
+    "In a GUI environment, do nothing; otherwise `suspend-frame'."
+    (interactive)
+    (if (display-graphic-p)
+        (message "suspend-frame disabled for graphical displays.")
+      (suspend-frame)))
+
+  (defun font-names-list ()
+    "Get list of names of installed fonts,which can be used to set font."
+    (seq-filter (lambda (font)
+                  (when-let ((info (font-info font)))
+                    (string-match-p "spacing=100" (aref info 1))))
+                (font-family-list)))
+
+  (defun me/prev-window ()
+    "Other-window, backward"
+    (interactive)
+    (other-window -1))
+
+  (defun zarkone/insert-current-date ()
+    "Insert current date here."
+    (interactive)
+    (insert
+     (shell-command-to-string "date")))
+
+  (defun vertical-three-windows-layout ()
+    "Vertical, three window layout"
+    (interactive)
+    (delete-other-windows)
+    (split-window-horizontally)
+    (split-window-horizontally)
+    (balance-windows))
+
+  (defun run-static-server (&optional on-random-port)
+    "Run static server in current dir, with default port (8000).
+      With prefix arg, run at random free port"
+    (interactive "P")
+    (let ((shell-command "python -m SimpleHTTPServer"))
+      (async-shell-command
+       (concat shell-command
+               (when on-random-port
+                 " 0")))))
+
+  (defun emacs-reload ()
+    "reloads emacs config"
+    (interactive)
+    (org-babel-load-file (expand-file-name "literally.org" user-emacs-directory)))
+
+  (defun me/comment-or-uncomment-region-or-line ()
+    "Comments or uncomments the region or the current line if there's no active region."
+    (interactive)
+    (let (beg end)
+      (if (region-active-p)
+          (setq beg (region-beginning) end (region-end))
+        (setq beg (line-beginning-position) end (line-end-position)))
+      (comment-or-uncomment-region beg end)
+      (next-line)))
+
+  (defun me/switch-to-previous-buffer ()
+    (interactive)
+    (switch-to-buffer (other-buffer (current-buffer) 1)))
+
+  (defun me/kill-region-or-backward-kill-word (&optional arg region)
+    "`kill-region' if the region is active, otherwise `backward-kill-word'"
+    (interactive
+     (list (prefix-numeric-value current-prefix-arg) (use-region-p)))
+    (if region
+        (kill-region (region-beginning) (region-end))
+      (backward-kill-word arg)))
+
+  (global-set-key (kbd "C-w") 'me/kill-region-or-backward-kill-word)
+
+  (defun me/my-put-file-name-on-clipboard ()
+    "Put the current file name on the clipboard"
+    (interactive)
+    (let ((filename (if (equal major-mode 'dired-mode)
+                        default-directory
+                      (buffer-file-name))))
+      (when filename
+        (with-temp-buffer
+          (insert filename)
+          (clipboard-kill-region (point-min) (point-max)))
+        (message filename))))
+
+  (defun me/duplicate-line ()
+    "Duplicate current line."
+    (interactive)
+    (move-beginning-of-line 1)
+    (kill-line)
+    (yank)
+    (open-line 1)
+    (next-line 1)
+    (yank))
+
+  (defun me/kill-till-end ()
+    "Deletes everything from point to end of file"
+    (interactive)
+    (delete-region
+     (point)
+     (point-max)))
+
+  (defun delete-whitespace (&optional backward-only)
+    "Delete all spaces, tabs and newlinesaround point.
+      If BACKWARD-ONLY is non-nil, only delete them before point."
+    (interactive "*P")
+    (let ((orig-pos (point)))
+      (delete-region
+       (if backward-only
+           orig-pos
+         (progn
+           (skip-chars-forward " \t\n")
+           (constrain-to-field nil orig-pos t)))
+       (progn
+         (skip-chars-backward " \t\n")
+         (constrain-to-field nil orig-pos)))))
+
+  (defun bf-pretty-print-xml-region (begin end)
+    "Pretty format XML markup in region. You need to have nxml-mode
+  http://www.emacswiki.org/cgi-bin/wiki/NxmlMode installed to do
+  this.  The function inserts linebreaks to separate tags that have
+  nothing but whitespace between them.  It then indents the markup
+  by using nxml's indentation rules."
+    (interactive "r")
+    (save-excursion
+      (nxml-mode)
+      (goto-char begin)
+      (while (search-forward-regexp "\>[ \\t]*\<" nil t)
+        (backward-char) (insert "\n"))
+      (indent-region begin end)))
+
+  (defun zarkone/pretty-print-xml-buffer ()
+    (interactive)
+    (bf-pretty-print-xml-region (point-min) (point-max)))
 #+END_SRC
 
 ** Custom KBD Macro
@@ -386,6 +385,13 @@ future reference.
     :init (load-theme 'exotica t)
     :config
     (gui-tweaks))
+
+  ;; (use-package ef-themes
+  ;;   :init (load-theme 'ef-winter t)
+  ;;   :config
+  ;;   (gui-tweaks)
+  ;;   )
+
 
   ;; (use-package phoenix-dark-mono-theme
   ;;   :init (load-theme 'phoenix-dark-mono t)
@@ -638,6 +644,19 @@ future reference.
     (mail-user-agent 'mu4e-user-agent)
     :bind (("C-x M-u" . mu4e)
            ("C-c C-a" . mu4e-view-attachment-action)))
+
+  (defun attach-marked-files (buffer)
+    "Attach all marked files to BUFFER"
+    (interactive "BAttach to buffer: ")
+    (let ((files (dired-get-marked-files)))
+      (with-current-buffer (get-buffer buffer)
+        (dolist (file files)
+          (if (file-regular-p file)
+              (mml-attach-file file
+                               (mm-default-file-encoding file)
+                               nil "attachment")
+            (message "skipping non-regular file %s" file)))))
+    (switch-to-buffer buffer))
 #+END_SRC
 ** telega
 #+BEGIN_SRC emacs-lisp
