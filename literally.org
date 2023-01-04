@@ -249,6 +249,7 @@ future reference.
     (put 'downcase-region 'disabled nil)
     (global-unset-key (kbd "M-ESC ESC"))
     (global-unset-key (kbd "C-z"))
+    (global-unset-key (kbd "M-c"))
 
     :chords (("k[" . delete-whitespace)
              ("3r" . replace-regexp)
@@ -380,15 +381,15 @@ future reference.
            ("M-g i" . consult-imenu)
            ("M-g I" . consult-imenu-multi)
            ;; M-s bindings (search-map)
-           ("M-s d" . consult-find)
-           ("M-s D" . consult-locate)
-           ("M-s g" . consult-grep)
-           ("M-s G" . consult-git-grep)
-           ("M-s r" . consult-ripgrep)
-           ("M-s l" . consult-line)
-           ("M-s L" . consult-line-multi)
-           ("M-s k" . consult-keep-lines)
-           ("M-s u" . consult-focus-lines)
+           ("M-c d" . consult-find)
+           ("M-c D" . consult-locate)
+           ("M-c g" . consult-grep)
+           ("M-c G" . consult-git-grep)
+           ("M-c r" . consult-ripgrep)
+           ("M-c l" . consult-line)
+           ("M-c L" . consult-line-multi)
+           ("M-c k" . consult-keep-lines)
+           ("M-c u" . consult-focus-lines)
            ;; Isearch integration
            ("M-s e" . consult-isearch-history)
            :map isearch-mode-map
@@ -465,6 +466,32 @@ future reference.
   )
 
 
+  (use-package embark
+    :ensure t
+
+    :bind
+    (("C-`" . embark-act)         ;; pick some comfortable binding
+     ("C-;" . embark-dwim)        ;; good alternative: M-.
+     ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
+
+    :init
+
+    ;; Optionally replace the key help with a completing-read interface
+    (setq prefix-help-command #'embark-prefix-help-command)
+
+    :config
+
+    ;; Hide the mode line of the Embark live/completions buffers
+    (add-to-list 'display-buffer-alist
+                 '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+                   nil
+                   (window-parameters (mode-line-format . none)))))
+
+  ;; Consult users will also want the embark-consult package.
+  (use-package embark-consult
+    :ensure t ; only need to install it, embark loads it after consult if found
+    :hook
+    (embark-collect-mode . consult-preview-at-point-mode))
 
 #+END_SRC
 * Appearance
