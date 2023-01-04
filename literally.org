@@ -20,30 +20,9 @@ Global functions and key bindings
               (message "/%s" (mapconcat 'identity path "/"))
             (format "/%s" (mapconcat 'identity path "/")))))))
 
-  (defun redefine-faces-exotica ()
-    (set-face-attribute 'cursor nil :background "#d1d")
-    (set-face-attribute 'cursor nil :background "white")
-    (set-face-attribute 'cursor nil :background "#d1d")
-    (set-face-attribute 'fringe nil :foreground "spring green")
-    (set-face-attribute 'vertical-border nil :foreground "#212")
-
-    (set-face-attribute 'region nil :background "dark slate blue")
-    (set-face-attribute 'hl-line nil :background "#224")
-    (set-face-attribute 'show-paren-match nil
-                        :background "dark slate blue"
-                        :underline nil)
-    (set-face-attribute 'mode-line nil
-                        :background "dark slate blue"
-                        :foreground "CadetBlue1"
-                        :box '(:line-width 1 :color "#212"))
-    (set-face-attribute 'mode-line-inactive nil
-                        :background "#212"
-                        :foreground "purple"
-                        :box '(:line-width 1 :color "#212")))
   (defun gui-tweaks ()
     (interactive)
-    (set-face-attribute 'default nil :height 110 :font "JetBrains Mono")
-    (redefine-faces-exotica)
+    (set-face-attribute 'default nil :height 110 :weight 'normal :font "Iosevka Comfy" )
     (when tool-bar-mode
       (menu-bar-mode 0)
       (scroll-bar-mode 0)
@@ -567,32 +546,10 @@ future reference.
 #+BEGIN_SRC emacs-lisp
   (setq custom-safe-themes t)
 
-  (use-package exotica-theme
-    :init (load-theme 'exotica t)
+  (use-package ef-themes
+    :init (load-theme 'ef-dark t)
     :config
     (gui-tweaks))
-
-  ;; (use-package ef-themes
-  ;;   :init (load-theme 'ef-winter t)
-  ;;   :config
-  ;;   (gui-tweaks)
-  ;;   )
-
-
-  ;; (use-package phoenix-dark-mono-theme
-  ;;   :init (load-theme 'phoenix-dark-mono t)
-  ;;   :config
-  ;;   (gui-tweaks))
-
-  ;; (use-package modus-operandi-theme
-  ;;   :init (load-theme 'modus-operandi t)
-  ;;   :config
-  ;;   (gui-tweaks))
-
-  ;; (use-package modus-vivendi-theme
-  ;;   :init (load-theme 'modus-vivendi t)
-  ;;   :config
-  ;;   (gui-tweaks))
 #+END_SRC
 * Packages
 ** nyan-cat
