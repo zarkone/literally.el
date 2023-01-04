@@ -919,6 +919,22 @@ future reference.
        (call-interactively 'cider-load-buffer))
 
      ;; (use-package rainbow-mode)
+     (defun zarkone/cider-refresh-all ()
+       (interactive)
+       (let* ((form "(user/restart-all)")
+              (override cider-interactive-eval-override)
+              (ns-form (if (cider-ns-form-p form) "" (format "(ns %s)" (cider-current-ns)))))
+         (with-current-buffer (get-buffer-create cider-read-eval-buffer)
+           (erase-buffer)
+           (clojure-mode)
+           (unless (string= "" ns-form)
+             (insert ns-form "\n\n"))
+           (insert form)
+           (let ((cider-interactive-eval-override override))
+             (cider-interactive-eval form
+                                     nil
+                                     nil
+                                     (cider--nrepl-pr-request-map))))))
 
      (use-package cider
        :commands (cider-mode)
@@ -927,11 +943,11 @@ future reference.
        (setq cider-known-endpoints '(("pitch-app/desktop-app" "localhost" "7888")))
 
        :bind (:map cider-mode-map
+                   ("C-c C-n" . zarkone/cider-refresh-all)
                    ("C-c C-k" . cider-save-and-compile-and-load-file)
                    ("C-c C-i" . cider-interrupt)
                    :map cider-repl-mode-map
-                   ("C-c C-l" . cider-repl-clear-buffer)
-                   ))
+                   ("C-c C-l" . cider-repl-clear-buffer)))
 
      (use-package flycheck-clj-kondo)
 
