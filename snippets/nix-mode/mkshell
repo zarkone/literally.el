@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: mkshell
+# key: mkshell
+# --
+{ pkgs ? import <nixpkgs> { } }:
+let
+  foo = {};
+in pkgs.mkShell {
+  name = "";
+  nativeBuildInputs = with pkgs; [
+  ];
+}

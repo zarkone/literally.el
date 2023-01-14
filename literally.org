@@ -22,6 +22,7 @@ Global functions and key bindings
 
   (defun gui-tweaks ()
     (interactive)
+    (set-face-attribute 'default nil :background "#112")
     (set-face-attribute 'default nil :height 110 :weight 'normal :font "Iosevka Comfy" )
     (when tool-bar-mode
       (menu-bar-mode 0)
@@ -288,7 +289,7 @@ future reference.
            ("C-x M-o" . helm-occur)
            ("M-o" . other-window)
            ("C-x RET RET" . compile)
-           ("C-x M-m" . recompile)
+           ("M-RET" . recompile)
            ("C-M-;" . replace-regexp)
            ("C-x H" . help)
            ("C-c M-." . zarkone/insert-current-date)
@@ -365,16 +366,15 @@ future reference.
     :init
     (savehist-mode))
 
-  ;; Optionally use the `orderless' completion style.
+  ;; A few more useful configurations...
+
   (use-package orderless
     :init
-    ;; Configure a custom style dispatcher (see the Consult wiki)
-    ;; (setq orderless-style-dispatchers '(+orderless-dispatch)
-    ;;       orderless-component-separator #'orderless-escapable-split-on-space)
-    (setq completion-styles '(orderless basic)
+    ;; Tune the global completion style settings to your liking!
+    ;; This affects the minibuffer and non-lsp completion at point.
+    (setq completion-styles '(orderless partial-completion basic)
           completion-category-defaults nil
-          completion-category-overrides '((file (styles partial-completion)))))
-  ;; A few more useful configurations...
+          completion-category-overrides '((eglot (styles orderless)))))
 
   (use-package marginalia
     ;; Either bind `marginalia-cycle' globally or only in the minibuffer
@@ -397,7 +397,7 @@ future reference.
            ("C-c k" . consult-kmacro)
            ;; C-x bindings (ctl-x-map)
            ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
-           ("C-z M-t" . consult-buffer)                ;; orig. switch-to-buffer
+           ("C-z C-p" . consult-buffer)                ;; orig. switch-to-buffer
            ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
            ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
            ("C-z C-b" . consult-bookmark)            ;; orig. bookmark-jump
@@ -492,16 +492,16 @@ future reference.
     ;; By default `consult-project-function' uses `project-root' from project.el.
     ;; Optionally configure a different project root function.
     ;; There are multiple reasonable alternatives to chose from.
-    ;;;; 1. project.el (the default)
+      ;;;; 1. project.el (the default)
     ;; (setq consult-project-function #'consult--default-project--function)
-    ;;;; 2. projectile.el (projectile-project-root)
+      ;;;; 2. projectile.el (projectile-project-root)
     ;; (autoload 'projectile-project-root "projectile")
     ;; (setq consult-project-function (lambda (_) (projectile-project-root)))
-    ;;;; 3. vc.el (vc-root-dir)
+      ;;;; 3. vc.el (vc-root-dir)
     ;; (setq consult-project-function (lambda (_) (vc-root-dir)))
-    ;;;; 4. locate-dominating-file
+      ;;;; 4. locate-dominating-file
     ;; (setq consult-project-function (lambda (_) (locate-dominating-file "." ".git")))
-  )
+    )
 
 
   (use-package embark
@@ -632,7 +632,7 @@ future reference.
 ** nix
 #+BEGIN_SRC emacs-lisp
   (use-package nix-mode
-    :hook ((nix-mode . lsp)))
+    :hook ((nix-mode . eglot)))
 
 #+END_SRC
 
@@ -652,14 +652,6 @@ future reference.
     :hook ((before-save . fish_indent-before-save)))
 #+END_SRC
 
-** COMMENT company
-#+BEGIN_SRC emacs-lisp
-  (use-package company
-    :diminish ""
-    :hook ((prog-mode . company-mode))
-    :config
-    (push 'company-elisp company-backends))
-#+END_SRC
 ** expand-region
 #+BEGIN_SRC emacs-lisp
   (use-package expand-region
@@ -670,56 +662,7 @@ future reference.
   (use-package git-timemachine
     :bind (("C-x G" . git-timemachine)))
 #+END_SRC
-** COMMENT helm
-#+BEGIN_SRC emacs-lisp
-  (use-package helm
-    :diminish ""
-    :commands helm
-    :hook (after-init . helm-mode)
-    :custom
-    (helm-buffers-fuzzy-matching t)
-    (helm-recentf-fuzzy-match t)
-    (helm-M-x-fuzzy-match t)
-    :bind (("C-z M-t" . helm-mini)
-           ("C-x C-f" . helm-find-files)
-           ("M-x" . helm-M-x)
-           ("M-y" . helm-show-kill-ring)
-           ("C-M-h" . me/kill-region-or-backward-kill-word)
-           ("C-c M-o" . helm-occur)
-           ("C-x C-r" . helm-recentf)
-           :map helm-map
-           ("C-i" . helm-execute-persistent-action)))
 
-#+END_SRC
-*** TODO helm-cd-path
-    implement (or find) helm autocomplete for dirs from ~$CDPATH~
-*** COMMENT helm plugins
-#+BEGIN_SRC emacs-lisp
-  (use-package helm-company)
-
-  (use-package counsel
-    :custom
-    (ivy-height 15)
-    :bind (("C-x C-p" . counsel-rg)))
-
-  (defun zarkone/helm-do-grep-ag ()
-    (interactive)
-    (helm-grep-ag
-     (expand-file-name (vc-find-root default-directory ".git")) nil))
-
-  (use-package helm-ag
-    :bind (("C-z C-t" . helm-projectile))
-    :custom
-    (helm-grep-ag-command (concat "rg"
-                                  " --color=never"
-                                  " --smart-case"
-                                  " --no-heading"
-                                  " --line-number %s %s %s"))
-    (helm-grep-file-path-style 'relative)
-    (helm-projectile-set-input-automatically nil))
-  (use-package helm-projectile
-    :bind (("C-x C-b" . helm-projectile-switch-to-buffer)))
-#+END_SRC
 ** magit
 #+BEGIN_SRC emacs-lisp
   (use-package magit
@@ -731,18 +674,6 @@ future reference.
        :diminish ""
        :commands (enable-paredit-mode))
    #+end_src
-** projectile
-#+BEGIN_SRC emacs-lisp
-  (use-package projectile
-    :diminish ""
-    :demand t
-    :after (helm)
-    :hook (after-init . projectile-global-mode)
-    :bind-keymap (("C-c C-p" . projectile-command-map))
-    :custom
-    (projectile-completion-system 'helm)
-    (projectile-mode-line " P"))
-#+END_SRC
 ** yasnippet
 #+BEGIN_SRC emacs-lisp
   (use-package yasnippet
@@ -764,19 +695,6 @@ future reference.
 #+BEGIN_SRC emacs-lisp
   (use-package restclient)
 #+END_SRC
-** gnus
-#+begin_src emacs-lisp
-  (setq gnus-select-method
-   '(nnmaildir "pitch"
-               (directory "~/.nnmaildir/Pitch")))
-
-  (setq gnus-secondary-select-methods
-        '((nnmaildir "pitch"
-                     (directory "~/.nnmaildir/Pitch"))
-          (nnmaildir "zarkonesmall"
-                     (directory "~/.nnmaildir/Gmail"))))
-
-#+end_src
 ** mu4e
 #+BEGIN_SRC emacs-lisp
   ;; Installed mu via nixos; it automatically adds it to load path.
@@ -852,7 +770,7 @@ future reference.
     :bind (("C-x M-u" . mu4e)
            ("C-c C-a" . mu4e-view-attachment-action)))
 
-  (defun attach-marked-files (buffer)
+  (defun mu4e-attach-marked-files (buffer)
     "Attach all marked files to BUFFER"
     (interactive "BAttach to buffer: ")
     (let ((files (dired-get-marked-files)))
@@ -864,35 +782,6 @@ future reference.
                                nil "attachment")
             (message "skipping non-regular file %s" file)))))
     (switch-to-buffer buffer))
-#+END_SRC
-** COMMENT telega
-#+BEGIN_SRC emacs-lisp
-
-  (defun disable-company-mode ()
-    (company-mode -1))
-
-  (use-package telega
-    :bind (("C-x M-t" . telega))
-    :hook ((telega-chat-mode . disable-company-mode))
-    :custom
-    (telega-video-player-command "mpv")
-    :config
-    (telega-notifications-mode t)
-    (telega-mode-line-mode t)
-    (setcdr (assq t org-file-apps-gnu) 'browse-url-xdg-open)
-    (setq telega-open-file-function 'org-open-file)
-    (setq telega-open-message-as-file '(animation photo video video-note))
-    (setq-default
-     org-file-apps
-     '((auto-mode . emacs)
-       (directory . emacs)
-       ("\\.mm\\'" . default)
-       ("\\.jpg\\'" . default)
-       ("\\.png\\'" . default)
-       ("\\.gif\\'" . default)
-       ("\\.x?html?\\'" . default)
-       ("\\.pdf\\'" . default)))
-    )
 #+END_SRC
 ** markdown
 #+BEGIN_SRC emacs-lisp
@@ -917,52 +806,23 @@ future reference.
 #+END_SRC
 
 * Prog modes
-** lsp
-   #+begin_src emacs-lisp
-     (use-package lsp-ui)
+** eglot
+#+begin_src emacs-lisp
+  (use-package eglot
+    :init
+    (with-eval-after-load 'eglot
+      (setq completion-category-defaults nil)))
+  (use-package consult-eglot)
 
-     (use-package lsp-mode
-       :hook ((lsp-mode . lsp-ui-mode)
-              (lsp-mode . lsp-enable-which-key-integration))
-       :commands (lsp lsp-register-custom-settings lsp-deferred)
-       ;; reformat code and add missing (or remove old) imports
-       :custom
-       (lsp-keymap-prefix "C-c l")
-       (lsp-prefer-flymake nil)
-       (read-process-output-max 8092)
-       (gc-cons-threshold 1800000)
-       :config
-       (define-key lsp-mode-map (kbd "C-c l") lsp-command-map)
-       (add-to-list 'lsp-language-id-configuration '(nix-mode . "nix"))
-       (lsp-register-client
-        (make-lsp-client :new-connection (lsp-stdio-connection '("rnix-lsp"))
-                         :major-modes '(nix-mode)
-                         :server-id 'nix))
-       :init
-       (add-to-list 'exec-path "/home/zarkone/.emacs.d/elixir-ls")
-       (add-hook 'lsp-mode-hook
-                 ;; TODO: add macro or fn for `when find minor-mode ...`
-                 #'(lambda ()
-                     (when (member 'lsp-mode minor-mode-list)
-                       (lsp-format-buffer)
-                       (lsp-organize-imports))))
 
-       :bind (("C-c d" . lsp-describe-thing-at-point)
-              ("C-c e n" . flymake-goto-next-error)
-              ("C-c e p" . flymake-goto-prev-error)
-              ("C-c e r" . lsp-find-references)
-              ("C-c e R" . lsp-rename)
-              ("C-c e i" . lsp-find-implementation)
-              ("C-c e t" . lsp-find-type-definition)))
-   #+end_src
-
+#+end_src
 ** Rust
 #+BEGIN_SRC emacs-lisp
   (use-package cargo)
   (use-package flycheck-rust)
   (use-package rust-mode
     :hook ((flycheck-mode . flycheck-rust-setup)
-           (rust-mode . lsp)
+           (rust-mode . eglot)
            (rust-mode . cargo-minor-mode)
            (rust-mode . flycheck-mode))
     :custom
@@ -971,9 +831,7 @@ future reference.
     (compile-command "cargo build")
     :bind (:map rust-mode-map
                 ("C-c C-m" . rust-run)
-                ("C-j" . newline)
-                ("C-c C-t" . rust-test)
-                ("TAB" . company-indent-or-complete-common)))
+                ("C-c C-t" . rust-test)))
 #+END_SRC
 ** Clojure
    #+begin_src emacs-lisp
@@ -1035,16 +893,14 @@ future reference.
        (require 'flycheck-clj-kondo))
    #+end_src
 ** ts
-*** with lsp
 #+begin_src emacs-lisp
   (use-package typescript-mode
     :custom
     (typescript-indent-level 2)
     (flycheck-check-syntax-automatically '(save mode-enabled))
-    :hook ((typescript-mode . lsp)
+    :hook ((typescript-mode . eglot)
            (typescript-mode . flycheck-mode)))
 #+end_src
-
 ** js
    #+begin_src emacs-lisp
      (use-package js-mode
@@ -1057,3 +913,12 @@ future reference.
   #+begin_src emacs-lisp
     (use-package haskell-mode)
   #+end_src
+
+* misc
+** speed-type
+Typing training mode, fetches some classic shorts which you type and
+gives you back some stats.
+
+#+begin_src emacs-lisp
+  (use-package speed-type)
+#+end_src
