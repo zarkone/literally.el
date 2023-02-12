@@ -181,7 +181,7 @@ future reference.
     :custom
     (auto-save-default nil)
     (create-lockfiles nil)
-    (auth-sources '((:source "/home/zarkone/.emacs.d/secrets/.authinfo.gpg")))
+    (auth-sources '((:source "~/.emacs.d/secrets/.authinfo.gpg")))
     (safe-local-variable-values '((url-max-redirections . 0)))
     (dired-listing-switches "-alGh")
     (indent-tabs-mode nil)
@@ -274,7 +274,7 @@ future reference.
            ("C-z C-s" . split-window-below)
            ("C-z C-r" . split-window-right)
            ("C-z C-z" . my-suspend-frame)
-           ("C-z C-n" . me/switch-to-previous-buffer)
+           ("C-z C-n" . zarkone/switch-to-previous-buffer)
            ("C-_" . undo) ;; for term comp-ty
            ("C-w" . zarkone/kill-region-or-backward-kill-word)
            ("C-x C-d" . dired-jump)
@@ -290,7 +290,7 @@ future reference.
            ("C-x C-g" . goto-address-at-point)
            ("M-/" . hippie-expand)
            ("M--" . delete-whitespace)
-           ("C-x C-k DEL" . me/kill-till-end)
+           ("C-x C-k DEL" . zarkone/kill-till-end)
            ("C-M-y" . zarkone/duplicate-line)
            ("C-x M-w" . zarkone/filename-to-clipboard)
            ("C-s" . isearch-forward-regexp)
@@ -303,7 +303,7 @@ future reference.
            ("C-<backspace>" . undo)
 
            :map prog-mode-map
-           ("C-M-c" . me/comment-or-uncomment-region-or-line)
+           ("C-M-c" . zarkone/comment-or-uncomment-region-or-line)
 
            ;; :map nxml-mode-map
            ;; ("M-." . zarkone/pretty-print-xml-buffer)
