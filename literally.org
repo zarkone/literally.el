@@ -296,9 +296,6 @@ future reference.
            :map prog-mode-map
            ("C-M-c" . zarkone/comment-or-uncomment-region-or-line)
 
-           ;; :map nxml-mode-map
-           ;; ("M-." . zarkone/pretty-print-xml-buffer)
-           ;; ("M-," . nxml-where)
            ))
 
   (use-package corfu
