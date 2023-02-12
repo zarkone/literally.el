@@ -122,7 +122,7 @@ Global functions and key bindings
     (next-line 1)
     (yank))
 
-  (defun delete-whitespace (&optional backward-only)
+  (defun zarkone/delete-whitespace (&optional backward-only)
     "Delete all spaces, tabs and newlinesaround point.
       If BACKWARD-ONLY is non-nil, only delete them before point."
     (interactive "*P")
@@ -284,7 +284,7 @@ future reference.
            ("C-c M-." . zarkone/insert-current-date)
            ("C-x C-g" . goto-address-at-point)
            ("M-/" . hippie-expand)
-           ("M--" . delete-whitespace)
+           ("M--" . zarkone/delete-whitespace)
            ("C-x C-k DEL" . zarkone/kill-till-end)
            ("C-M-y" . zarkone/duplicate-line)
            ("C-x M-w" . zarkone/filename-to-clipboard)
