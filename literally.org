@@ -633,8 +633,7 @@ future reference.
    #+end_src
 ** nix
 #+BEGIN_SRC emacs-lisp
-  (use-package nix-mode
-    :hook ((nix-mode . eglot)))
+  (use-package nix-mode)
 
 #+END_SRC
 
