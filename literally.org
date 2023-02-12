@@ -124,13 +124,6 @@ Global functions and key bindings
     (next-line 1)
     (yank))
 
-  (defun me/kill-till-end ()
-    "Deletes everything from point to end of file"
-    (interactive)
-    (delete-region
-     (point)
-     (point-max)))
-
   (defun delete-whitespace (&optional backward-only)
     "Delete all spaces, tabs and newlinesaround point.
       If BACKWARD-ONLY is non-nil, only delete them before point."
