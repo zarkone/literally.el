@@ -276,7 +276,6 @@ future reference.
            ("C-x C-d" . dired-jump)
            ("C-c M-o" . occur)
            ("<C-return>" . save-buffer)
-           ("C-x M-o" . helm-occur)
            ("M-o" . other-window)
            ("C-x RET RET" . compile)
            ("M-RET" . recompile)
