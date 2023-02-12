@@ -100,8 +100,6 @@ Global functions and key bindings
         (kill-region (region-beginning) (region-end))
       (backward-kill-word arg)))
 
-  (global-set-key (kbd "C-w") 'me/kill-region-or-backward-kill-word)
-
   (defun zarkone/filename-to-clipboard ()
     "Put the current file name on the clipboard"
     (interactive)
@@ -278,6 +276,7 @@ future reference.
            ("C-z C-z" . my-suspend-frame)
            ("C-z C-n" . me/switch-to-previous-buffer)
            ("C-_" . undo) ;; for term comp-ty
+           ("C-w" . zarkone/kill-region-or-backward-kill-word)
            ("C-x C-d" . dired-jump)
            ("C-c M-o" . occur)
            ("<C-return>" . save-buffer)
