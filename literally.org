@@ -44,7 +44,7 @@ Global functions and key bindings
                     (string-match-p "spacing=100" (aref info 1))))
                 (font-family-list)))
 
-  (defun me/prev-window ()
+  (defun zarkone/prev-window ()
     "Other-window, backward"
     (interactive)
     (other-window -1))
@@ -78,7 +78,7 @@ Global functions and key bindings
     (interactive)
     (org-babel-load-file (expand-file-name "literally.org" user-emacs-directory)))
 
-  (defun me/comment-or-uncomment-region-or-line ()
+  (defun zarkone/comment-or-uncomment-region-or-line ()
     "Comments or uncomments the region or the current line if there's no active region."
     (interactive)
     (let (beg end)
@@ -88,11 +88,11 @@ Global functions and key bindings
       (comment-or-uncomment-region beg end)
       (next-line)))
 
-  (defun me/switch-to-previous-buffer ()
+  (defun zarkone/switch-to-previous-buffer ()
     (interactive)
     (switch-to-buffer (other-buffer (current-buffer) 1)))
 
-  (defun me/kill-region-or-backward-kill-word (&optional arg region)
+  (defun zarkone/kill-region-or-backward-kill-word (&optional arg region)
     "`kill-region' if the region is active, otherwise `backward-kill-word'"
     (interactive
      (list (prefix-numeric-value current-prefix-arg) (use-region-p)))
