@@ -284,7 +284,7 @@ future reference.
            ("C-z C-r" . split-window-right)
            ("C-z C-z" . my-suspend-frame)
            ("C-z C-n" . me/switch-to-previous-buffer)
-           ("C-_" . upcase-word)
+           ("C-_" . undo) ;; for term comp-ty
            ("C-x C-d" . dired-jump)
            ("C-c M-o" . occur)
            ("<C-return>" . save-buffer)
