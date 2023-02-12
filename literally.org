@@ -30,7 +30,7 @@ Global functions and key bindings
       (tool-bar-mode 0)
       (tooltip-mode 0)))
 
-  (defun my-suspend-frame ()
+  (defun maybe-suspend-frame ()
     "In a GUI environment, do nothing; otherwise `suspend-frame'."
     (interactive)
     (if (display-graphic-p)
@@ -267,9 +267,9 @@ future reference.
     :bind (("C-x M-5" . delete-other-windows-vertically)
            ("C-z 3" . vertical-three-windows-layout)
            ("C-z C-d" . delete-other-windows)
-           ("C-z C-s" . split-window-below)
+           ("C-z C-x" . split-window-below)
            ("C-z C-r" . split-window-right)
-           ("C-z C-z" . my-suspend-frame)
+           ("C-z C-z" . maybe-suspend-frame)
            ("C-z C-n" . zarkone/switch-to-previous-buffer)
            ("C-_" . undo) ;; for term comp-ty
            ("C-w" . zarkone/kill-region-or-backward-kill-word)
