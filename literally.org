@@ -291,10 +291,6 @@ future reference.
            ("C-s" . isearch-forward-regexp)
            ("C-r" . isearch-backward-regexp)
            ("C-x M-v" . visual-line-mode)
-           ("C-c p" . windmove-up)
-           ("C-c n" . windmove-down)
-           ("C-c b" . windmove-left)
-           ("C-c f" . windmove-right)
            ("C-<backspace>" . undo)
 
            :map prog-mode-map
