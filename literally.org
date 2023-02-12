@@ -102,7 +102,7 @@ Global functions and key bindings
 
   (global-set-key (kbd "C-w") 'me/kill-region-or-backward-kill-word)
 
-  (defun me/my-put-file-name-on-clipboard ()
+  (defun zarkone/filename-to-clipboard ()
     "Put the current file name on the clipboard"
     (interactive)
     (let ((filename (if (equal major-mode 'dired-mode)
@@ -114,7 +114,7 @@ Global functions and key bindings
           (clipboard-kill-region (point-min) (point-max)))
         (message filename))))
 
-  (defun me/duplicate-line ()
+  (defun zarkone/duplicate-line ()
     "Duplicate current line."
     (interactive)
     (move-beginning-of-line 1)
@@ -297,8 +297,8 @@ future reference.
            ("M-/" . hippie-expand)
            ("M--" . delete-whitespace)
            ("C-x C-k DEL" . me/kill-till-end)
-           ("C-M-y" . me/duplicate-line)
-           ("C-x M-w" . me/my-put-file-name-on-clipboard)
+           ("C-M-y" . zarkone/duplicate-line)
+           ("C-x M-w" . zarkone/filename-to-clipboard)
            ("C-s" . isearch-forward-regexp)
            ("C-r" . isearch-backward-regexp)
            ("C-x M-v" . visual-line-mode)
