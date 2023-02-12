@@ -257,11 +257,7 @@ future reference.
     (global-unset-key (kbd "C-z"))
     (global-unset-key (kbd "M-c"))
 
-    :chords (("k[" . delete-whitespace)
-             ("3r" . replace-regexp)
-             ("jk" . save-buffer)
-             ("i0" . me/switch-to-previous-buffer)
-             ("[]" . "[]\C-b")
+    :chords (("[]" . "[]\C-b")
              ("<>" . "<>\C-b")
              ("''" . "''\C-b")
              ("\"\"" . "\"\"\C-b")
