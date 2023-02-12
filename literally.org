@@ -188,6 +188,8 @@ future reference.
            (org-mode . auto-fill-mode)
            (org-mode . flyspell-mode))
     :custom
+    (auto-save-default nil)
+    (create-lockfiles nil)
     (auth-sources '((:source "/home/zarkone/.emacs.d/secrets/.authinfo.gpg")))
     (safe-local-variable-values '((url-max-redirections . 0)))
     (dired-listing-switches "-alGh")
