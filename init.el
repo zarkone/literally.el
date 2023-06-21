@@ -6,6 +6,8 @@
    load-prefer-newer t
    package-enable-at-startup nil)
 
+  (load custom-file)
+
   (setq
    package-archives
    '(("gnu" . "https://elpa.gnu.org/packages/")
