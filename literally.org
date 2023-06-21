@@ -604,10 +604,14 @@ future reference.
 #+BEGIN_SRC emacs-lisp
   (setq custom-safe-themes t)
 
-  (use-package ef-themes
-    :init (load-theme 'ef-duo-dark t)
-    :config
-    (gui-tweaks))
+  (use-package cyanapunk-neontrix-theme
+    :vc (:fetcher sourcehut :repo mhcat/matrix-emacs-theme :rev moar-hackery)
+    :init (load-theme 'cyanapunk-neontrix t)
+    :config (gui-tweaks))
+
+  ;; (use-package ef-themes
+  ;;   :init (load-theme 'ef-cherie t)
+  ;;   :config (gui-tweaks))
 #+END_SRC
 * Packages
 ** nyan-cat
@@ -681,7 +685,7 @@ future reference.
 #+BEGIN_SRC emacs-lisp
   (use-package restclient)
 #+END_SRC
-** mu4e
+** COMMENT mu4e
 #+BEGIN_SRC emacs-lisp
   ;; Installed mu via nixos; it automatically adds it to load path.
   ;; But still need to require it manually.
