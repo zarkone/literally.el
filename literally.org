@@ -593,8 +593,12 @@ future reference.
 #+BEGIN_SRC emacs-lisp
   (setq custom-safe-themes t)
 
+  ;; (setopt cyanapunk-neontrix-modeline-shade 'dark-blue)
+
   (use-package cyanapunk-neontrix-theme
     :vc (:fetcher sourcehut :repo mhcat/matrix-emacs-theme :rev moar-hackery)
+    ;; cyanapunk-neontrix-modeline-shade to 'dark-cyan, 'dark-blue, 'purple, or nil
+    :custom ((cyanapunk-neontrix-modeline-shade 'purple))
     :init (load-theme 'cyanapunk-neontrix t)
     :config (gui-tweaks))
 
