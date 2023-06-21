@@ -401,11 +401,11 @@ future reference.
            ("M-g i" . consult-imenu)
            ("M-g I" . consult-imenu-multi)
            ;; M-s bindings (search-map)
-           ("M-c d" . consult-find)
+           ("M-c M-d" . consult-find)
            ("M-c D" . consult-locate)
            ("M-c g" . consult-grep)
            ("M-c G" . consult-git-grep)
-           ("M-c r" . consult-ripgrep)
+           ("M-c M-c" . consult-ripgrep)
            ("M-c l" . consult-line)
            ("M-c L" . consult-line-multi)
            ("M-c k" . consult-keep-lines)
@@ -594,7 +594,7 @@ future reference.
   (setq custom-safe-themes t)
 
   (use-package ef-themes
-    :init (load-theme 'ef-dark t)
+    :init (load-theme 'ef-duo-dark t)
     :config
     (gui-tweaks))
 #+END_SRC

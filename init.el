@@ -16,15 +16,24 @@
   (when (eq system-type 'darwin)
     (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"))
 
-  (package-initialize)
+  (unless (bound-and-true-p package--initialized)
+    (setq package-enable-at-startup nil) ; To prevent initializing twice
+    (package-initialize))
 
   ;; Install dependencies
   (unless (package-installed-p 'use-package)
     (package-refresh-contents)
     (package-install 'use-package t))
+  (eval-when-compile
+    (require 'use-package))
   (setq-default
    use-package-always-defer t
    use-package-always-ensure t)
+
+  ;; https://github.com/slotThe/vc-use-package
+  (unless (package-installed-p 'vc-use-package)
+    (package-vc-install "https://github.com/slotThe/vc-use-package"))
+  (require 'vc-use-package)
 
   ;; Use latest Org
   (use-package org
