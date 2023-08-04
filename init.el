@@ -11,26 +11,14 @@
   (setq
    package-archives
    '(("gnu" . "https://elpa.gnu.org/packages/")
-     ;;("nongnu" . "https://elpa.nongnu.org/nongnu/")
      ("melpa" . "http://melpa.org/packages/")))
-  ;; (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
-  ;; MacOS package not found workaround
-  (when (eq system-type 'darwin)
-    (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"))
 
-  (unless (bound-and-true-p package--initialized)
-    (setq package-enable-at-startup nil) ; To prevent initializing twice
-    (package-initialize))
+  (package-initialize)
 
-  ;; Install dependencies
-  (unless (package-installed-p 'use-package)
-    (package-refresh-contents)
-    (package-install 'use-package t))
-  (eval-when-compile
-    (require 'use-package))
-  (setq-default
-   use-package-always-defer t
-   use-package-always-ensure t)
+  (require 'use-package-ensure)
+  (setq use-package-always-ensure t
+        use-package-always-defer t
+        use-package-expand-minimally t)
 
   ;; https://github.com/slotThe/vc-use-package
   (unless (package-installed-p 'vc-use-package)
@@ -45,7 +33,7 @@
     :custom
     (org-log-done t)
     (org-agenda-files '("/home/zarkone/work/pitch/notes"))
-    (org-todo-keywords '((sequence "TODO" "HOLD" "|" "DONE" "CANCELLED")))
+    (org-todo-keywords '((sequence "TODO" "IN-PROGRESS" "HOLD" "|" "DONE" "CANCELLED")))
     (org-todo-keyword-faces
      '(("TODO" . org-warning)
        ("HOLD" . (:foreground "purple" :weight bold))
