@@ -472,7 +472,8 @@ future reference.
   (setq custom-safe-themes t)
 
   ;; (use-package cyanapunk-neontrix-theme
-  ;;   :vc (:fetcher sourcehut :repo mhcat/matrix-emacs-theme)
+
+  ;;   :vc (:fetcher sourcehut :repo mhcat/cyanapunk-neontrix-theme)
   ;;   ;; cyanapunk-neontrix-modeline-shade to 'dark-cyan, 'dark-blue, 'purple, or nil
   ;;   :custom ((cyanapunk-neontrix-modeline-shade 'purple))
   ;;   :init
@@ -694,6 +695,7 @@ future reference.
     :bind (:map rust-mode-map
                 ("C-c C-m" . rust-run)
                 ("C-c C-d" . eldoc-doc-buffer)
+                ("C-c C-e" . flycheck-next-error)
                 ("C-c C-t" . rust-test)))
 #+END_SRC
 ** Clojure
