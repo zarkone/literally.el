@@ -424,12 +424,14 @@ future reference.
 ** Set window title in TERM
    #+begin_src emacs-lisp
      (setq-default frame-title-format '("Emacs: %b"))
+     (load "~/.emacs.d/term-title.el")
+     (require 'term-title)
+     (term-title-mode)
 
      (add-hook 'after-make-frame-functions
                (lambda (frame)
                  (nyan-mode 1)
-                 (gui-tweaks)
-                 ))
+                 (gui-tweaks)))
 
    #+end_src
 ** Highlight git changes in fringes
