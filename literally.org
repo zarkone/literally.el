@@ -531,7 +531,8 @@ future reference.
 ** magit
 #+BEGIN_SRC emacs-lisp
   (use-package magit
-    :bind (("C-z C-g" . magit-status)))
+    :bind (("C-z C-g" . magit-status)
+           ("C-z g" . magit-status)))
 #+END_SRC
 ** paredit
    #+begin_src emacs-lisp
