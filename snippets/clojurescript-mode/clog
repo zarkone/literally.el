@@ -2,4 +2,4 @@
 # name: clog
 # key: clog
 # --
-(js/console.log $0)
+(js/console.log $0 (clj->js $1))
