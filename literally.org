@@ -531,8 +531,8 @@ future reference.
 ** magit
 #+BEGIN_SRC emacs-lisp
   (use-package magit
-    :bind (("C-z C-g" . magit-status)
-           ("C-z g" . magit-status)))
+    :bind (("C-z RET" . magit-status)
+           ("C-z m" . magit-status)))
 #+END_SRC
 ** paredit
    #+begin_src emacs-lisp
@@ -808,124 +808,124 @@ to be put in the end of file" solution wins.
 
 #+begin_src emacs-lisp
   (use-package emacs
-  :hook ((before-save . delete-trailing-whitespace)
-         (emacs-lisp-mode . enable-paredit-mode)
-         (org-mode . auto-fill-mode)
-         (org-mode . flyspell-mode))
-  :custom
-  (auto-save-default nil)
-  (create-lockfiles nil)
-  (auth-sources '((:source "~/.emacs.d/secrets/.authinfo.gpg")))
-  (safe-local-variable-values '((url-max-redirections . 0)))
-  (dired-listing-switches "-alGh")
-  (indent-tabs-mode nil)
-  (truncate-lines t)
-  (word-wrap nil)
-  (select-enable-clipboard t)
-  (select-enable-primary nil)
-  (uniquify-buffer-name-style 'forward)
-  (save-interprogram-paste-before-kill t)
-  (compilation-always-kill  t)
-  (apropos-do-all t)
-  (mouse-yank-at-point t)
-  (save-place-file (concat user-emacs-directory ".places"))
-  (backup-directory-alist `(("." . ,(concat user-emacs-directory ".backups"))))
-  (warning-suppress-types '((comp)))
-  (default-input-method 'russian-computer)
-  (browse-url-browser-function 'browse-url-firefox)
-  (safe-local-variable-values '((eval define-clojure-indent
-                                      (reg-cofx :defn)
-                                      (reg-event-db :defn)
-                                      (reg-event-fx :defn)
-                                      (reg-fx :defn)
-                                      (reg-sub :defn)
-                                      (reg-event-domain :defn)
-                                      (reg-block-event-fx :defn)
-                                      (reg-event-domain-fx :defn)
-                                      (this-as 0))
-                                (url-max-redirections . 0)) nil nil "Customized with use-package emacs")
-  :config
-  ;; TAB cycle if there are only few candidates
-  (setq completion-cycle-threshold 3)
+    :hook ((before-save . delete-trailing-whitespace)
+           (emacs-lisp-mode . enable-paredit-mode)
+           (org-mode . auto-fill-mode)
+           (org-mode . flyspell-mode))
+    :custom
+    (auto-save-default nil)
+    (create-lockfiles nil)
+    (auth-sources '((:source "~/.emacs.d/secrets/.authinfo.gpg")))
+    (safe-local-variable-values '((url-max-redirections . 0)))
+    (dired-listing-switches "-alGh")
+    (indent-tabs-mode nil)
+    (truncate-lines t)
+    (word-wrap nil)
+    (select-enable-clipboard t)
+    (select-enable-primary nil)
+    (uniquify-buffer-name-style 'forward)
+    (save-interprogram-paste-before-kill t)
+    (compilation-always-kill  t)
+    (apropos-do-all t)
+    (mouse-yank-at-point t)
+    (save-place-file (concat user-emacs-directory ".places"))
+    (backup-directory-alist `(("." . ,(concat user-emacs-directory ".backups"))))
+    (warning-suppress-types '((comp)))
+    (default-input-method 'russian-computer)
+    (browse-url-browser-function 'browse-url-firefox)
+    (safe-local-variable-values '((eval define-clojure-indent
+                                        (reg-cofx :defn)
+                                        (reg-event-db :defn)
+                                        (reg-event-fx :defn)
+                                        (reg-fx :defn)
+                                        (reg-sub :defn)
+                                        (reg-event-domain :defn)
+                                        (reg-block-event-fx :defn)
+                                        (reg-event-domain-fx :defn)
+                                        (this-as 0))
+                                  (url-max-redirections . 0)) nil nil "Customized with use-package emacs")
+    :config
+    ;; TAB cycle if there are only few candidates
+    (setq completion-cycle-threshold 3)
 
-  ;; Emacs 28: Hide commands in M-x which do not apply to the current mode.
-  ;; Corfu commands are hidden, since they are not supposed to be used via M-x.
-  (setq read-extended-command-predicate
-        #'command-completion-default-include-p)
+    ;; Emacs 28: Hide commands in M-x which do not apply to the current mode.
+    ;; Corfu commands are hidden, since they are not supposed to be used via M-x.
+    (setq read-extended-command-predicate
+          #'command-completion-default-include-p)
 
-  ;; Enable indentation+completion using the TAB key.
-  ;; `completion-at-point' is often bound to M-TAB.
-  (setq tab-always-indent 'complete)
+    ;; Enable indentation+completion using the TAB key.
+    ;; `completion-at-point' is often bound to M-TAB.
+    (setq tab-always-indent 'complete)
 
-  (show-paren-mode 1)
-  (menu-bar-mode 0)
-  ;; Add prompt indicator to `completing-read-multiple'.
-  ;; We display [CRM<separator>], e.g., [CRM,] if the separator is a comma.
-  (defun crm-indicator (args)
-    (cons (format "[CRM%s] %s"
-                  (replace-regexp-in-string
-                   "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
-                   crm-separator)
-                  (car args))
-          (cdr args)))
-  (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
+    (show-paren-mode 1)
+    (menu-bar-mode 0)
+    ;; Add prompt indicator to `completing-read-multiple'.
+    ;; We display [CRM<separator>], e.g., [CRM,] if the separator is a comma.
+    (defun crm-indicator (args)
+      (cons (format "[CRM%s] %s"
+                    (replace-regexp-in-string
+                     "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
+                     crm-separator)
+                    (car args))
+            (cdr args)))
+    (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
 
-  ;; Do not allow the cursor in the minibuffer prompt
-  (setq minibuffer-prompt-properties
-        '(read-only t cursor-intangible t face minibuffer-prompt))
-  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+    ;; Do not allow the cursor in the minibuffer prompt
+    (setq minibuffer-prompt-properties
+          '(read-only t cursor-intangible t face minibuffer-prompt))
+    (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
 
-  ;; Emacs 28: Hide commands in M-x which do not work in the current mode.
-  ;; Vertico commands are hidden in normal buffers.
-  ;; (setq read-extended-command-predicate
-  ;;       #'command-completion-default-include-p)
+    ;; Emacs 28: Hide commands in M-x which do not work in the current mode.
+    ;; Vertico commands are hidden in normal buffers.
+    ;; (setq read-extended-command-predicate
+    ;;       #'command-completion-default-include-p)
 
-  ;; Enable recursive minibuffers
-  (setq enable-recursive-minibuffers t)
+    ;; Enable recursive minibuffers
+    (setq enable-recursive-minibuffers t)
 
-  :config
-  (put 'narrow-to-region 'disabled nil)
-  (put 'narrow-to-page 'disabled nil)
-  (put 'downcase-region 'disabled nil)
+    :config
+    (put 'narrow-to-region 'disabled nil)
+    (put 'narrow-to-page 'disabled nil)
+    (put 'downcase-region 'disabled nil)
 
-  :chords (("[]" . "[]\C-b")
-           ("<>" . "<>\C-b")
-           ("''" . "''\C-b")
-           ("\"\"" . "\"\"\C-b")
-           ("()" . "()\C-b")
-           ("{}" . "{}\C-b"))
+    :chords (("[]" . "[]\C-b")
+             ("<>" . "<>\C-b")
+             ("''" . "''\C-b")
+             ("\"\"" . "\"\"\C-b")
+             ("()" . "()\C-b")
+             ("{}" . "{}\C-b"))
 
-  :bind (("C-x M-5" . delete-other-windows-vertically)
-         ("C-z 3" . vertical-three-windows-layout)
-         ("C-z C-d" . delete-other-windows)
-         ("C-z C-x" . split-window-below)
-         ("C-z C-r" . split-window-right)
-         ("C-z C-z" . maybe-suspend-frame)
-         ("C-z C-n" . zarkone/switch-to-previous-buffer)
-         ("C-_" . undo) ;; for term comp-ty
-         ("C-w" . zarkone/kill-region-or-backward-kill-word)
-         ("C-x C-d" . dired-jump)
-         ("C-c M-o" . occur)
-         ("<C-return>" . save-buffer)
-         ("M-o" . other-window)
-         ("C-x RET RET" . compile)
-         ("M-RET" . recompile)
-         ("C-M-;" . replace-regexp)
-         ("C-x H" . help)
-         ("C-c M-." . zarkone/insert-current-date)
-         ("C-x C-g" . goto-address-at-point)
-         ("M-/" . hippie-expand)
-         ("M--" . zarkone/delete-whitespace)
-         ("C-x C-k DEL" . zarkone/kill-till-end)
-         ("C-M-y" . zarkone/duplicate-line)
-         ("C-x M-w" . zarkone/filename-to-clipboard)
-         ("C-s" . isearch-forward-regexp)
-         ("C-r" . isearch-backward-regexp)
-         ("C-x M-v" . visual-line-mode)
-         ("C-<backspace>" . undo)
+    :bind (("C-x M-5" . delete-other-windows-vertically)
+           ("C-z 3" . vertical-three-windows-layout)
+           ("C-z C-d" . delete-other-windows)
+           ("C-z C-x" . split-window-below)
+           ("C-z C-r" . split-window-right)
+           ("C-z C-z" . maybe-suspend-frame)
+           ("C-z C-n" . zarkone/switch-to-previous-buffer)
+           ("C-_" . undo) ;; for term comp-ty
+           ("C-w" . zarkone/kill-region-or-backward-kill-word)
+           ("C-x C-d" . dired-jump)
+           ("C-c M-o" . occur)
+           ("<C-return>" . save-buffer)
+           ("M-o" . other-window)
+           ("C-x RET RET" . compile)
+           ("M-RET" . recompile)
+           ("M-;" . replace-regexp)
+           ("C-x H" . help)
+           ("C-c M-." . zarkone/insert-current-date)
+           ("C-x C-g" . goto-address-at-point)
+           ("M-/" . hippie-expand)
+           ("M--" . zarkone/delete-whitespace)
+           ("C-x C-k DEL" . zarkone/kill-till-end)
+           ("C-M-y" . zarkone/duplicate-line)
+           ("C-x M-w" . zarkone/filename-to-clipboard)
+           ("C-s" . isearch-forward-regexp)
+           ("C-r" . isearch-backward-regexp)
+           ("C-x M-v" . visual-line-mode)
+           ("C-<backspace>" . undo)
 
-         :map prog-mode-map
-         ("C-M-c" . zarkone/comment-or-uncomment-region-or-line)
+           :map prog-mode-map
+           ("C-M-c" . zarkone/comment-or-uncomment-region-or-line)
 
-         ))
+           ))
 #+end_src
