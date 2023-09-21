@@ -36,7 +36,7 @@
     (org-todo-keywords '((sequence "TODO" "IN-PROGRESS" "HOLD" "|" "DONE" "CANCELLED")))
     (org-todo-keyword-faces
      '(("TODO" . org-warning)
-       ("IN-PROGRESS" . (:foreground "pink" :weight bold))
+       ("IN-PROGRESS" . (:foreground "yellow" :weight bold))
        ("HOLD" . (:foreground "purple" :weight bold))
        ("CANCELLED" . (:foreground "pink"))))
     :config

@@ -27,16 +27,6 @@ Put it here to remove warning about prefix keys.
               (message "/%s" (mapconcat 'identity path "/"))
             (format "/%s" (mapconcat 'identity path "/")))))))
 
-  (defun gui-tweaks ()
-    (interactive)
-    (set-face-attribute 'default nil :background "#112")
-    (set-face-attribute 'default nil :height 110 :weight 'normal :font "Iosevka Comfy" )
-    (when tool-bar-mode
-      (menu-bar-mode 0)
-      (scroll-bar-mode 0)
-      (tool-bar-mode 0)
-      (tooltip-mode 0)))
-
   (defun maybe-suspend-frame ()
     "In a GUI environment, do nothing; otherwise `suspend-frame'."
     (interactive)
@@ -161,6 +151,33 @@ Put it here to remove warning about prefix keys.
   (defun zarkone/pretty-print-xml-buffer ()
     (interactive)
     (bf-pretty-print-xml-region (point-min) (point-max)))
+
+  (defun wl-paste-running ()
+    (and wl-copy-process
+         (process-live-p wl-copy-process)))
+
+  (defun is-wayland-session ()
+    (string= (getenv "XDG_SESSION_TYPE")
+             "wayland"))
+
+  (defun wl-clipboard-init ()
+    (when (is-wayland-session)
+      (setq wl-copy-process nil)
+      (setq interprogram-cut-function 'wl-copy)
+      (setq interprogram-paste-function 'wl-paste)))
+
+  (defun wl-copy (text)
+    (setq wl-copy-process (make-process :name "wl-copy"
+                                        :buffer nil
+                                        :command '("wl-copy" "-f" "-n")
+                                        :connection-type 'pipe))
+    (process-send-string wl-copy-process text)
+    (process-send-eof wl-copy-process))
+
+  (defun wl-paste ()
+    (when (not (wl-paste-running))
+      (let ((content-raw (shell-command-to-string "wl-paste -n")))
+        (replace-regexp-in-string "\s+$" "" content-raw))))
 #+END_SRC
 
 ** Custom KBD Macro
@@ -427,12 +444,6 @@ future reference.
      (load "~/.emacs.d/term-title.el")
      (require 'term-title)
      (term-title-mode)
-
-     (add-hook 'after-make-frame-functions
-               (lambda (frame)
-                 (nyan-mode 1)
-                 (gui-tweaks)))
-
    #+end_src
 ** Highlight git changes in fringes
    #+begin_src emacs-lisp
@@ -472,33 +483,12 @@ future reference.
 ** Color Theme
 #+BEGIN_SRC emacs-lisp
   (setq custom-safe-themes t)
-
-  ;; (use-package cyanapunk-neontrix-theme
-
-  ;;   :vc (:fetcher sourcehut :repo mhcat/cyanapunk-neontrix-theme)
-  ;;   ;; cyanapunk-neontrix-modeline-shade to 'dark-cyan, 'dark-blue, 'purple, or nil
-  ;;   :custom ((cyanapunk-neontrix-modeline-shade 'purple))
-  ;;   :init
-  ;;   (setopt cyanapunk-neontrix-modeline-shade 'purple)
-  ;;   (load-theme 'cyanapunk-neontrix t)
-  ;;   :config (gui-tweaks))
-
   (load-theme 'modus-vivendi t)
-  (gui-tweaks)
-
-
 #+END_SRC
 * Packages
-** nyan-cat
-   #+begin_src emacs-lisp
-     (use-package nyan-mode
-       :config
-       (nyan-mode))
-   #+end_src
 ** nix
 #+BEGIN_SRC emacs-lisp
   (use-package nix-mode)
-
 #+END_SRC
 
 ** browse-at-remote
@@ -538,6 +528,7 @@ future reference.
    #+begin_src emacs-lisp
      (use-package paredit
        :diminish ""
+       :bind (("C-M-c" . paredit-comment-dwim))
        :commands (enable-paredit-mode))
    #+end_src
 ** yasnippet
@@ -694,7 +685,6 @@ future reference.
     :custom
     (indent-tabs-mode nil)
     (rust-format-on-save t)
-    (compile-command "cargo build")
     :bind (:map rust-mode-map
                 ("C-c C-m" . rust-run)
                 ("C-c C-d" . eldoc-doc-buffer)
@@ -743,6 +733,7 @@ future reference.
      (use-package flycheck-clj-kondo)
 
      (use-package clj-refactor
+       :diminish ""
        :commands (clj-refactor-mode)
        :config
        (cljr-add-keybindings-with-prefix "C-c C-j"))
@@ -883,6 +874,12 @@ to be put in the end of file" solution wins.
     ;; Enable recursive minibuffers
     (setq enable-recursive-minibuffers t)
 
+    ;; workaround for gnupg 2.4.1 encryption
+    ;; https://www.masteringemacs.org/article/keeping-secrets-in-emacs-gnupg-auth-sources
+    (fset 'epg-wait-for-status 'ignore)
+
+    ;; use wl-clipboard for copy-paste
+    (wl-clipboard-init)
     :config
     (put 'narrow-to-region 'disabled nil)
     (put 'narrow-to-page 'disabled nil)
