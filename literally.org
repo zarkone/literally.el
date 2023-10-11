@@ -9,6 +9,12 @@ Put it here to remove warning about prefix keys.
 
 ** Custom Functions
 #+BEGIN_SRC emacs-lisp
+  (defun zarkone/reload-dir-locals-for-current-buffer ()
+    "reload dir locals for the current buffer"
+    (interactive)
+    (let ((enable-local-variables :all))
+      (hack-dir-local-variables-non-file-buffer)))
+
   (defun nxml-where ()
     "Display the hierarchy of XML elements the point is on as a path."
     (interactive)
