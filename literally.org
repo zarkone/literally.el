@@ -675,14 +675,44 @@ future reference.
 * Prog modes
 ** eglot
 #+begin_src emacs-lisp
+  (use-package consult-eglot)
   (use-package eglot
+    :bind (("C-c M-i" . eglot-code-action-organize-imports)
+           ("C-c M-/" . eglot-find-implementation))
     :init
     (with-eval-after-load 'eglot
-      (setq completion-category-defaults nil)))
-  (use-package consult-eglot)
+      (setq completion-category-defaults nil)
+      (setq-default eglot-workspace-configuration
+                    '((:gopls .
+                              ((staticcheck . t)
+                               (matcher . "CaseSensitive")))))))
+
 
 
 #+end_src
+
+** Go
+   #+begin_src emacs-lisp
+     (use-package go-mode
+       :hook ((go-mode . eglot-ensure)
+              (go-mode . flycheck-mode)
+              (before-save . gofmt-before-save))
+       :custom
+       (tab-width 4)
+       ;;(company-lsp-async t)
+       ;;(go-coverage-display-buffer-func 'display-buffer-same-window)
+       (gofmt-command "goimports")
+       (compile-command "go build -v")
+
+       ;;:config
+       (use-package go-snippets)
+       ;; (setenv "GO111MODULE" "on")
+       ;; (lsp-register-custom-settings
+       ;;  '(("gopls.completeUnimported" t t)
+       ;;    ("gopls.staticcheck" t t)))
+       )
+   #+end_src
+
 ** Rust
 #+BEGIN_SRC emacs-lisp
   (require 'ansi-color)
@@ -782,14 +812,22 @@ future reference.
        :config
        (require 'flycheck-clj-kondo))
    #+end_src
-** COMMENT ts
+** ts
 #+begin_src emacs-lisp
+  (use-package tide)
   (use-package typescript-mode
     :custom
-    (typescript-indent-level 2)
+    (typescript-ts-mode)
+    (typescript-indent-level 4)
+    (typescript-ts-mode-indent-offset 4)
+    (js-indent-level 4)
     (flycheck-check-syntax-automatically '(save mode-enabled))
-    :hook ((typescript-mode . eglot)
-           (typescript-mode . flycheck-mode)))
+    :hook ((typescript-mode . typescript-ts-mode)
+           (typescript-ts-mode . tide-setup)
+           (typescript-ts-mode . tide-hl-identifier-mode)
+           (typescript-ts-mode . indent-tabs-mode)
+           (typescript-ts-mode . flycheck-mode)
+           (before-save . tide-format-before-save)))
 #+end_src
 ** COMMENT js
    looks :ensure nil doesn't work, use-package still tries to fetch
@@ -808,6 +846,10 @@ future reference.
 ** elixir
   #+begin_src emacs-lisp
     (use-package elixir-mode)
+  #+end_src
+** ponylang
+  #+begin_src emacs-lisp
+    (use-package ponylang-mode)
   #+end_src
 
 * misc
@@ -837,7 +879,8 @@ to be put in the end of file" solution wins.
     :hook ((before-save . delete-trailing-whitespace)
            (emacs-lisp-mode . enable-paredit-mode)
            (org-mode . auto-fill-mode)
-           (org-mode . flyspell-mode))
+           (org-mode . flyspell-mode)
+           (org-mode . org-indent-mode))
     :custom
     (auto-save-default nil)
     (create-lockfiles nil)
@@ -873,6 +916,9 @@ to be put in the end of file" solution wins.
     :config
     ;; TAB cycle if there are only few candidates
     (setq completion-cycle-threshold 3)
+
+    ;; Pinentry mode for gpg
+    (setq epa-pinentry-mode 'loopback)
 
     ;; Emacs 28: Hide commands in M-x which do not apply to the current mode.
     ;; Corfu commands are hidden, since they are not supposed to be used via M-x.
@@ -940,7 +986,7 @@ to be put in the end of file" solution wins.
            ("C-c M-o" . occur)
            ("<C-return>" . save-buffer)
            ("M-o" . other-window)
-           ("C-x RET RET" . compile)
+           ("C-x RET RET" . project-compile)
            ("M-RET" . recompile)
            ("M-;" . replace-regexp)
            ("C-x H" . help)
