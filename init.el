@@ -39,6 +39,10 @@
        ("IN-PROGRESS" . (:foreground "yellow" :weight bold))
        ("HOLD" . (:foreground "purple" :weight bold))
        ("CANCELLED" . (:foreground "pink"))))
+    (org-babel-do-load-languages
+      'org-babel-load-languages
+      '((emacs-lisp . t)
+        (python . t)))
     :config
     (custom-set-faces
      '(org-link ((t (:inherit link :underline t :italic t)))))

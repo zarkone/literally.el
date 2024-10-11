@@ -456,7 +456,8 @@ future reference.
      (use-package diff-hl
        :hook (after-init . global-diff-hl-mode))
    #+end_src
-** Ligatures
+
+** COMMENT Ligatures
 #+begin_src emacs-lisp
   (load-file "~/.emacs.d/ligature.el/ligature.el")
 
@@ -490,6 +491,9 @@ future reference.
 #+BEGIN_SRC emacs-lisp
   (setq custom-safe-themes t)
   (load-theme 'modus-vivendi t)
+  (set-face-attribute 'default nil :background "#112")
+
+
 #+END_SRC
 * Packages
 ** nix
@@ -681,8 +685,29 @@ future reference.
 #+end_src
 ** Rust
 #+BEGIN_SRC emacs-lisp
+  (require 'ansi-color)
+
+  (defun rust--compile-color-hook ()
+    "Used to interpret cargo's colored output"
+    (ansi-color-apply-on-region compilation-filter-start (point)))
+
+  ;; This cannot be done in a buffer-local variable since the hook must be set
+  ;; in the compilation buffer.
+  (defadvice compilation-start (around add-ansi-color-hook activate)
+    (if (eq major-mode 'rust-mode)
+        (let ((compilation-start-hook (cons
+                                       (lambda (proc) (add-hook 'compilation-filter-hook
+                                                                'rust--compile-color-hook
+                                                                nil t))
+                                       compilation-start-hook)))
+          ad-do-it)
+      ad-do-it))
+
+
   (use-package cargo)
   (use-package flycheck-rust)
+
+
   (use-package rust-mode
     :hook ((flycheck-mode . flycheck-rust-setup)
            (rust-mode . eglot-ensure)
@@ -779,6 +804,10 @@ future reference.
 ** haskell
   #+begin_src emacs-lisp
     (use-package haskell-mode)
+  #+end_src
+** elixir
+  #+begin_src emacs-lisp
+    (use-package elixir-mode)
   #+end_src
 
 * misc
