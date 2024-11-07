@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: prn
+# key: prn
+# --
+fmt.Printf("%s\n", $0)

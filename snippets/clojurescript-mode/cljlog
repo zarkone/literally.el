@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: cljlog
+# key: cljlog
+# --
+(js/console.log (clj->js $0))
