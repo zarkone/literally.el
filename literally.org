@@ -693,12 +693,25 @@ future reference.
 
 ** Go
    #+begin_src emacs-lisp
+     (defun my-gofmt-before-save ()
+       "Add this to .emacs to run gofmt on the current buffer when saving:
+     \(add-hook 'before-save-hook 'gofmt-before-save).
+
+     Note that this will cause ‘go-mode’ to get loaded the first time
+     you save any file, kind of defeating the point of autoloading."
+
+       (interactive)
+       (when (or (eq major-mode 'go-ts-mode)
+                 (eq major-mode 'go-mode)) (gofmt)))
      (use-package go-mode
-       :hook ((go-mode . eglot-ensure)
-              (go-mode . flycheck-mode)
-              (before-save . gofmt-before-save))
+       :hook ((go-ts-mode . eglot-ensure)
+              (go-ts-mode . flycheck-mode)
+              (go-ts-mode . eldoc-mode)
+              (before-save . my-gofmt-before-save))
        :custom
+
        (tab-width 4)
+       (go-ts-mode-indent-offset 4)
        ;;(company-lsp-async t)
        ;;(go-coverage-display-buffer-func 'display-buffer-same-window)
        (gofmt-command "goimports")
@@ -827,7 +840,8 @@ future reference.
            (typescript-ts-mode . tide-hl-identifier-mode)
            (typescript-ts-mode . indent-tabs-mode)
            (typescript-ts-mode . flycheck-mode)
-           (before-save . tide-format-before-save)))
+           ;; (before-save . tide-format-before-save)
+           ))
 #+end_src
 ** COMMENT js
    looks :ensure nil doesn't work, use-package still tries to fetch
@@ -843,22 +857,22 @@ future reference.
   #+begin_src emacs-lisp
     (use-package haskell-mode)
   #+end_src
-** elixir
-  #+begin_src emacs-lisp
-    (use-package elixir-mode)
-  #+end_src
-** ponylang
-  #+begin_src emacs-lisp
-    (use-package ponylang-mode)
-  #+end_src
+
+** guile scheme
+#+begin_src emacs-lisp
+  (use-package geiser-guile)
+  (use-package geiser
+    :hook (scheme-mode . enable-paredit-mode))
+
+#+end_src
 
 * misc
-** speed-type
-Typing training mode, fetches some classic shorts which you type and
-gives you back some stats.
-
+** protobuf3
 #+begin_src emacs-lisp
-  (use-package speed-type)
+  (use-package protobuf-mode
+    :hook (protobuf-mode . protobuf-ts-mode))
+  (use-package protobuf-ts-mode
+    :custom (protobuf-ts-mode-indent-offset 4))
 #+end_src
 
 * emacs global conf: MUST BE IN THE END FOR EMACS 29 ?!
@@ -875,8 +889,13 @@ eln-cache. Which probably means that "use-package emacs which needs
 to be put in the end of file" solution wins.
 
 #+begin_src emacs-lisp
+  (defun delete-whitespace-if-not-ts-ts ()
+    (interactive)
+    (when (not (eq major-mode 'typescript-ts-mode))
+      (delete-trailing-whitespace)))
+
   (use-package emacs
-    :hook ((before-save . delete-trailing-whitespace)
+    :hook ((before-save . delete-whitespace-if-not-ts-ts)
            (emacs-lisp-mode . enable-paredit-mode)
            (org-mode . auto-fill-mode)
            (org-mode . flyspell-mode)
