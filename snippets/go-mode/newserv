@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
-# name: newcomp
-# key: newcomp
+# name: newserv
+# key: newserv
 # --
 
 const CName = "common.yourname.here"
@@ -12,11 +12,11 @@ var (
 	ErrSomeError = errors.New("some error")
 )
 
-func New() YourName {
+func New() YourNameService {
 	return new(yourName)
 }
 
-type YourName interface {
+type YourNameService interface {
 	app.ComponentRunnable
 }
 
