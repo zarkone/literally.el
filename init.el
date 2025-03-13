@@ -6,7 +6,7 @@
    load-prefer-newer t
    package-enable-at-startup nil)
 
-  (load custom-file)
+  ;; (load custom-file)
 
   (setq
    package-archives

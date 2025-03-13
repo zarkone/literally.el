@@ -703,13 +703,18 @@ future reference.
        (interactive)
        (when (or (eq major-mode 'go-ts-mode)
                  (eq major-mode 'go-mode)) (gofmt)))
+
+     (use-package templ-ts-mode)
+
      (use-package go-mode
        :hook ((go-ts-mode . eglot-ensure)
               (go-ts-mode . flycheck-mode)
               (go-ts-mode . eldoc-mode)
+              (go-mode . eglot-ensure)
+              (go-mode . flycheck-mode)
+              (go-mode . eldoc-mode)
               (before-save . my-gofmt-before-save))
        :custom
-
        (tab-width 4)
        (go-ts-mode-indent-offset 4)
        ;;(company-lsp-async t)
@@ -774,6 +779,11 @@ future reference.
        (call-interactively 'cider-load-buffer))
 
      ;; (use-package rainbow-mode)
+     (defun cider-jack-in-dev-alias ()
+       (interactive)
+       (let ((cider-jack-in-cmd "clj -A:dev"))
+         (cider-jack-in- '())))
+
      (defun zarkone/cider-refresh-all ()
        (interactive)
        (let* ((form "(user/restart-all)")
@@ -796,6 +806,7 @@ future reference.
        :hook ((cider-mode . eldoc-mode))
        :config
        (setq cider-known-endpoints '(("pitch-app/desktop-app" "localhost" "7888")))
+       (setq cider-clojure-clj-aliases ":dev")
 
        :bind (:map cider-mode-map
                    ("C-c C-n" . zarkone/cider-refresh-all)
@@ -874,7 +885,118 @@ future reference.
   (use-package protobuf-ts-mode
     :custom (protobuf-ts-mode-indent-offset 4))
 #+end_src
+* AI
+** COMMENT minuet
+#+begin_src emacs-lisp
+  (use-package minuet
+    :bind
+    (("M-l" . #'minuet-complete-with-minibuffer) ;; use minibuffer for completion
+     ("M-i" . #'minuet-show-suggestion) ;; use overlay for completion
+     ("C-c m" . #'minuet-configure-provider)
+     :map minuet-active-mode-map
+     ;; These keymaps activate only when a minuet suggestion is displayed in the current buffer
+     ("M-p" . #'minuet-previous-suggestion) ;; invoke completion or cycle to next completion
+     ("M-n" . #'minuet-next-suggestion) ;; invoke completion or cycle to previous completion
+     ("M-A" . #'minuet-accept-suggestion) ;; accept whole completion
+     ;; Accept the first line of completion, or N lines with a numeric-prefix:
+     ;; e.g. C-u 2 M-a will accepts 2 lines of completion.
+     ("M-a" . #'minuet-accept-suggestion-line)
+     ("M-e" . #'minuet-dismiss-suggestion))
 
+    :init
+    ;; if you want to enable auto suggestion.
+    ;; Note that you can manually invoke completions without enable minuet-auto-suggestion-mode
+    (add-hook 'prog-mode-hook #'minuet-auto-suggestion-mode)
+
+    :config
+    (setq minuet-provider 'codestral)
+    (setq minuet-codestral-options
+      '(:model "codestral-latest"
+               :end-point "https://codestral.mistral.ai/v1/fim/completions"
+               :api-key (lambda () "")
+               :template (:prompt minuet--default-fim-prompt-function
+                                  :suffix minuet--default-fim-suffix-function)
+               :optional nil))
+    (minuet-set-optional-options minuet-codestral-options :stop ["\n\n"])
+    (minuet-set-optional-options minuet-codestral-options :max_tokens 256)
+
+
+    )
+
+  ;; gemini
+  ;;   (setq minuet-provider 'gemini)
+  ;;   (defvar minuet-gemini-options
+  ;;     `(:model "gemini-2.0-flash"
+  ;;              :api-key (lambda () "put key here")
+  ;;              :system
+  ;;              (:template minuet-default-system-template
+  ;;                         :prompt minuet-default-prompt
+  ;;                         :guidelines minuet-default-guidelines
+  ;;                         :n-completions-template minuet-default-n-completion-template)
+  ;;              :fewshots minuet-default-fewshots
+  ;;              :chat-input
+  ;;              (:template minuet-default-chat-input-template
+  ;;                         :language-and-tab minuet--default-chat-input-language-and-tab-function
+  ;;                         :context-before-cursor minuet--default-chat-input-before-cursor-function
+  ;;                         :context-after-cursor minuet--default-chat-input-after-cursor-function)
+  ;;              :optional nil)
+  ;;     "config options for Minuet Gemini provider")
+  ;;   (defvar mg-minuet-gemini-prompt
+  ;;     "You are the backend of an AI-powered code completion engine. Your task is to
+  ;; provide code suggestions based on the user's input. The user's code will be
+  ;; enclosed in markers:
+
+  ;; - `<contextAfterCursor>`: Code context after the cursor
+  ;; - `<cursorPosition>`: Current cursor location
+  ;; - `<contextBeforeCursor>`: Code context before the cursor
+  ;; ")
+
+  ;;   (defvar mg-minuet-gemini-chat-input-template
+  ;;     "{{{:language-and-tab}}}
+  ;; <contextBeforeCursor>
+  ;; {{{:context-before-cursor}}}<cursorPosition>
+  ;; <contextAfterCursor>
+  ;; {{{:context-after-cursor}}}")
+
+  ;;   (defvar mg-minuet-gemini-fewshots
+  ;;     `((:role "user"
+  ;;              :content "# language: python
+  ;; <contextBeforeCursor>
+  ;; def fibonacci(n):
+  ;;     <cursorPosition>
+  ;; <contextAfterCursor>
+
+  ;; fib(5)")
+  ;;       ,(cadr minuet-default-fewshots)))
+
+  ;;   (minuet-set-optional-options minuet-gemini-options
+  ;;                                :prompt 'mg-minuet-gemini-prompt
+  ;;                                :system)
+  ;;   (minuet-set-optional-options minuet-gemini-options
+  ;;                                :template 'mg-minuet-gemini-chat-input-template
+  ;;                                :chat-input)
+  ;;   (plist-put minuet-gemini-options :fewshots 'mg-minuet-gemini-fewshots)
+
+  ;;   (minuet-set-optional-options minuet-gemini-options
+  ;;                                :generationConfig
+  ;;                                '(:maxOutputTokens 256
+  ;;                                                   :topP 0.9))
+  ;;   (minuet-set-optional-options minuet-gemini-options
+  ;;                                :safetySettings
+  ;;                                [(:category "HARM_CATEGORY_DANGEROUS_CONTENT"
+  ;;                                            :threshold "BLOCK_NONE")
+  ;;                                 (:category "HARM_CATEGORY_HATE_SPEECH"
+  ;;                                            :threshold "BLOCK_NONE")
+  ;;                                 (:category "HARM_CATEGORY_HARASSMENT"
+  ;;                                            :threshold "BLOCK_NONE")
+  ;;                                 (:category "HARM_CATEGORY_SEXUALLY_EXPLICIT"
+  ;;                                            :threshold "BLOCK_NONE")])
+
+
+
+
+
+#+end_src
 * emacs global conf: MUST BE IN THE END FOR EMACS 29 ?!
 
 This has to be in the end of file for emacs 29, it turns out.
@@ -920,6 +1042,7 @@ to be put in the end of file" solution wins.
     (backup-directory-alist `(("." . ,(concat user-emacs-directory ".backups"))))
     (warning-suppress-types '((comp)))
     (default-input-method 'russian-computer)
+    (browse-url-firefox-program "firefox-beta")
     (browse-url-browser-function 'browse-url-firefox)
     (safe-local-variable-values '((eval define-clojure-indent
                                         (reg-cofx :defn)

@@ -1,0 +1,40 @@
+# -*- mode: snippet -*-
+# name: newcomp
+# key: newcomp
+# --
+
+const CName = "common.yourname.here"
+
+var log = logger.NewNamed(CName)
+
+
+var (
+	ErrSomeError = errors.New("some error")
+)
+
+func New() YourName {
+	return new(yourName)
+}
+
+type YourName interface {
+	app.ComponentRunnable
+}
+
+type yourName struct {
+}
+
+func (c *yourName) Init(a *app.App) (err error) {
+	return
+}
+
+func (c *yourName) Name() (name string) {
+	return CName
+}
+
+func (c *yourName) Run(ctx context.Context) error {
+	return nil
+}
+
+func (c *yourName) Close(_ context.Context) (err error) {
+	return nil
+}
