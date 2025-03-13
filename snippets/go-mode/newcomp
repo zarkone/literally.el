@@ -23,18 +23,18 @@ type YourName interface {
 type yourName struct {
 }
 
-func (c *yourName) Init(a *app.App) (err error) {
+func (s *yourName) Init(a *app.App) (err error) {
 	return
 }
 
-func (c *yourName) Name() (name string) {
+func (s *yourName) Name() (name string) {
 	return CName
 }
 
-func (c *yourName) Run(ctx context.Context) error {
+func (s *yourName) Run(ctx context.Context) error {
 	return nil
 }
 
-func (c *yourName) Close(_ context.Context) (err error) {
+func (s *yourName) Close(_ context.Context) (err error) {
 	return nil
 }
