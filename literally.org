@@ -498,7 +498,10 @@ future reference.
 * Packages
 ** nix
 #+BEGIN_SRC emacs-lisp
-  (use-package nix-mode)
+  (use-package nix-mode
+    :hook (nix-mode . eglot-ensure)
+    :ensure t)
+
 #+END_SRC
 
 ** browse-at-remote
@@ -701,34 +704,49 @@ future reference.
      you save any file, kind of defeating the point of autoloading."
 
        (interactive)
-       (when (or (eq major-mode 'go-ts-mode)
+       (when (or (eq major-mode 'go-mode)
                  (eq major-mode 'go-mode)) (gofmt)))
 
      (use-package templ-ts-mode)
 
+     (defun remove-window-margins ()
+       (set-window-margins nil nil nil))
+
+
+
      (use-package go-mode
-       :hook ((go-ts-mode . eglot-ensure)
-              (go-ts-mode . flycheck-mode)
-              (go-ts-mode . eldoc-mode)
+       :hook ((go-mode . eglot-ensure)
+              (go-mode . flycheck-mode)
+              (go-mode . eldoc-mode)
               (go-mode . eglot-ensure)
               (go-mode . flycheck-mode)
               (go-mode . eldoc-mode)
+              (go-mode . remove-window-margins)
               (before-save . my-gofmt-before-save))
+       :bind
+       :bind (("C-c a" . eglot-code-actions)
+              ("C-c C-c" . eglot-code-action-quickfix)
+              ("C-c C-e" . eglot-code-action-extract))
        :custom
        (tab-width 4)
-       (go-ts-mode-indent-offset 4)
+       (go-mode-indent-offset 4)
        ;;(company-lsp-async t)
        ;;(go-coverage-display-buffer-func 'display-buffer-same-window)
        (gofmt-command "goimports")
        (compile-command "go build -v")
 
-       ;;:config
+       :config
        (use-package go-snippets)
        ;; (setenv "GO111MODULE" "on")
        ;; (lsp-register-custom-settings
        ;;  '(("gopls.completeUnimported" t t)
        ;;    ("gopls.staticcheck" t t)))
        )
+
+     (use-package gotest
+       :ensure t
+       :bind (:map go-mode-map
+                   ("C-c C-t" . go-test-current-test)))
    #+end_src
 
 ** Rust
@@ -841,16 +859,16 @@ future reference.
   (use-package tide)
   (use-package typescript-mode
     :custom
-    (typescript-ts-mode)
+    (typescript-mode)
     (typescript-indent-level 4)
-    (typescript-ts-mode-indent-offset 4)
+    (typescript-mode-indent-offset 4)
     (js-indent-level 4)
     (flycheck-check-syntax-automatically '(save mode-enabled))
-    :hook ((typescript-mode . typescript-ts-mode)
-           (typescript-ts-mode . tide-setup)
-           (typescript-ts-mode . tide-hl-identifier-mode)
-           (typescript-ts-mode . indent-tabs-mode)
-           (typescript-ts-mode . flycheck-mode)
+    :hook ((typescript-mode . typescript-mode)
+           (typescript-mode . tide-setup)
+           (typescript-mode . tide-hl-identifier-mode)
+           (typescript-mode . indent-tabs-mode)
+           (typescript-mode . flycheck-mode)
            ;; (before-save . tide-format-before-save)
            ))
 #+end_src
@@ -881,9 +899,9 @@ future reference.
 ** protobuf3
 #+begin_src emacs-lisp
   (use-package protobuf-mode
-    :hook (protobuf-mode . protobuf-ts-mode))
-  (use-package protobuf-ts-mode
-    :custom (protobuf-ts-mode-indent-offset 4))
+    :hook (protobuf-mode . protobuf-mode))
+  (use-package protobuf-mode
+    :custom (protobuf-mode-indent-offset 4))
 #+end_src
 * AI
 ** COMMENT minuet
@@ -1013,7 +1031,7 @@ to be put in the end of file" solution wins.
 #+begin_src emacs-lisp
   (defun delete-whitespace-if-not-ts-ts ()
     (interactive)
-    (when (not (eq major-mode 'typescript-ts-mode))
+    (when (not (eq major-mode 'typescript-mode))
       (delete-trailing-whitespace)))
 
   (use-package emacs

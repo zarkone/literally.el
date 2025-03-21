@@ -32,7 +32,7 @@
            ("<C-return>" . save-buffer))
     :custom
     (org-log-done t)
-    (org-agenda-files '("/home/zarkone/work/pitch/notes"))
+    (org-agenda-files '("/home/zarkone/docs/notes"))
     (org-todo-keywords '((sequence "TODO" "IN-PROGRESS" "HOLD" "|" "DONE" "CANCELLED")))
     (org-todo-keyword-faces
      '(("TODO" . org-warning)
