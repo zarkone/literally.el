@@ -34,6 +34,9 @@
     (org-log-done t)
     (org-agenda-files '("/home/zarkone/docs/notes"))
     (org-todo-keywords '((sequence "TODO" "IN-PROGRESS" "HOLD" "|" "DONE" "CANCELLED")))
+    (org-global-properties '(("Effort_ALL". "5m 15m 25m 40m 55m")))
+    (org-columns-default-format "%50ITEM(Task) %10Effort(Effort){:} %10CLOCKSUM")
+
     (org-todo-keyword-faces
      '(("TODO" . org-warning)
        ("IN-PROGRESS" . (:foreground "yellow" :weight bold))
