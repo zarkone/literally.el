@@ -33,7 +33,7 @@
   (defun my/org-agenda-show-date-if-any ()
     (let ((scheduled (org-get-scheduled-time (point))))
       (if scheduled
-          (format "📅%s" (format-time-string "%Y-%m-%d" scheduled))
+          (format "📅%s" (format-time-string "%a" scheduled))
         "☐           "))) ;; Align with Sch:<YYYY-MM-DD>
 
   ;; Use latest Org
