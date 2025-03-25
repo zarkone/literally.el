@@ -32,20 +32,23 @@
            ("<C-return>" . save-buffer))
     :custom
     (org-log-done t)
-    (org-agenda-files '("/home/zarkone/docs/notes"))
+    (org-agenda-files '("/home/zarkone/docs/notes/anytype/inbox.org"))
     (org-todo-keywords '((sequence "TODO" "IN-PROGRESS" "HOLD" "|" "DONE" "CANCELLED")))
     (org-global-properties '(("Effort_ALL". "5m 15m 25m 40m 55m")))
     (org-columns-default-format "%50ITEM(Task) %10Effort(Effort){:} %10CLOCKSUM")
-
+    (org-agenda-prefix-format '((agenda . " %i %-12:c%?-12te:%-6e% s")
+                                (todo . " %i %-12:c e:%-6e")
+                                (tags . " %i %-12:c")
+                                (search . " %i %-12:c")))
     (org-todo-keyword-faces
      '(("TODO" . org-warning)
        ("IN-PROGRESS" . (:foreground "yellow" :weight bold))
        ("HOLD" . (:foreground "purple" :weight bold))
        ("CANCELLED" . (:foreground "pink"))))
     (org-babel-do-load-languages
-      'org-babel-load-languages
-      '((emacs-lisp . t)
-        (python . t)))
+     'org-babel-load-languages
+     '((emacs-lisp . t)
+       (python . t)))
     :config
     (custom-set-faces
      '(org-link ((t (:inherit link :underline t :italic t)))))
