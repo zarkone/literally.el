@@ -25,6 +25,17 @@
     (package-vc-install "https://github.com/slotThe/vc-use-package"))
   (require 'vc-use-package)
 
+  (defun my/org-agenda-show-time-if-any ()
+    (let ((scheduled (org-get-scheduled-time (point))))
+      (if scheduled
+          (format-time-string "⏰%H:%M " scheduled)
+        "       "))) ;; 7 spaces to align with time
+  (defun my/org-agenda-show-date-if-any ()
+    (let ((scheduled (org-get-scheduled-time (point))))
+      (if scheduled
+          (format "📅%s" (format-time-string "%Y-%m-%d" scheduled))
+        "☐           "))) ;; Align with Sch:<YYYY-MM-DD>
+
   ;; Use latest Org
   (use-package org
     :bind (("C-x M-a" . org-agenda)
@@ -36,10 +47,14 @@
     (org-todo-keywords '((sequence "TODO" "IN-PROGRESS" "HOLD" "|" "DONE" "CANCELLED")))
     (org-global-properties '(("Effort_ALL". "5m 15m 25m 40m 55m")))
     (org-columns-default-format "%50ITEM(Task) %10Effort(Effort){:} %10CLOCKSUM")
-    (org-agenda-prefix-format '((agenda . " %i %-12:c%?-12te:%-6e% s")
-                                (todo . " %i %-12:c e:%-6e")
-                                (tags . " %i %-12:c")
-                                (search . " %i %-12:c")))
+
+    (org-agenda-prefix-format
+     '((agenda . " %i %-12:c %(my/org-agenda-show-time-if-any) e:%-6e ")
+       (todo   . " %i %-12:c %(my/org-agenda-show-date-if-any)  e:%-6e ")
+       (tags   . " %i %-12:c %(my/org-agenda-show-date-if-any)  e:%-6e ")
+       (search . " %i %-12:c %(my/org-agenda-show-date-if-any)  e:%-6e ")))
+
+
     (org-todo-keyword-faces
      '(("TODO" . org-warning)
        ("IN-PROGRESS" . (:foreground "yellow" :weight bold))
