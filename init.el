@@ -25,16 +25,18 @@
     (package-vc-install "https://github.com/slotThe/vc-use-package"))
   (require 'vc-use-package)
 
+  ;; TODO: show clocked time in log view
   (defun my/org-agenda-show-time-if-any ()
     (let ((scheduled (org-get-scheduled-time (point))))
       (if scheduled
           (format-time-string "⏰%H:%M " scheduled)
-        "       "))) ;; 7 spaces to align with time
+        "       ")))
+
   (defun my/org-agenda-show-date-if-any ()
     (let ((scheduled (org-get-scheduled-time (point))))
       (if scheduled
           (format "📅%s" (format-time-string "%a" scheduled))
-        "☐           "))) ;; Align with Sch:<YYYY-MM-DD>
+        "☐           ")))
 
   ;; Use latest Org
   (use-package org
