@@ -746,7 +746,7 @@ future reference.
      (use-package gotest
        :ensure t
        :bind (:map go-mode-map
-                   ("C-c C-t" . go-test-current-test)))
+                   ("M-t" . go-test-current-test)))
 
      (use-package dape
        :preface
