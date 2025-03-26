@@ -56,6 +56,16 @@
        (tags   . " %i %-12:c %(my/org-agenda-show-date-if-any)  e:%-6e ")
        (search . " %i %-12:c %(my/org-agenda-show-date-if-any)  e:%-6e ")))
 
+    (org-agenda-custom-commands '(("w" "Anytype tasks"
+                                   ((agenda "")
+                                    (alltodo ""))
+                                   ((org-agenda-files '("/home/zarkone/docs/notes/anytype/inbox.org"))))
+                                  ("b" "My Business tasks"
+                                   ((agenda "")
+                                    (alltodo ""))
+                                   ((org-agenda-files '("/home/zarkone/docs/notes/business.org"))))))
+
+
 
     (org-todo-keyword-faces
      '(("TODO" . org-warning)
