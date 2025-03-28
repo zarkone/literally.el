@@ -65,9 +65,9 @@ Can be run from org-agenda or org buffer."
            (total-minutes (+ (* hours 60) minutes)))
       (if (= total-minutes 0) "      "
         (cond
-         ((< total-minutes 60) (format "/%dm  " total-minutes))
+         ((< total-minutes 60) (format "/%2dm  " total-minutes))
          ((= (mod total-minutes 60) 0) (format "/%dh   " (/ total-minutes 60)))
-         (t (format "/%dh%dm" (/ total-minutes 60) (mod total-minutes 60)))))
+         (t (format "/%dh%2dm" (/ total-minutes 60) (mod total-minutes 60)))))
       ))
 
   (defun my/org-agenda-show-time-if-any ()
@@ -91,6 +91,7 @@ Can be run from org-agenda or org buffer."
            :map org-mode-map
            ("<C-return>" . save-buffer))
     :custom
+    (org-agenda-sticky nil)
     (org-log-done t)
     (org-agenda-files '("/home/zarkone/docs/notes/anytype/inbox.org"))
     (org-todo-keywords '((sequence "TODO" "IN-PROGRESS" "HOLD" "|" "DONE" "CANCELLED")))
@@ -131,6 +132,7 @@ Can be run from org-agenda or org buffer."
     :config
     (custom-set-faces
      '(org-link ((t (:inherit link :underline t :italic t)))))
+
     (use-package org-tempo
       :demand t
       :ensure nil))
