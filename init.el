@@ -25,11 +25,50 @@
     (package-vc-install "https://github.com/slotThe/vc-use-package"))
   (require 'vc-use-package)
 
-  (defun my/org-agenda-add-clocked-time ()
-    (let ((clocked (org-entry-get (point) "CLOCKSUM")))
-      (if clocked
-         (format "⏱️ %s" clocked) clocked
-        "⏱️ -:--")))
+  (defun my/org-agenda-insert-manual-clock ()
+    "Insert a manual CLOCK entry under the current Org heading.
+Can be run from org-agenda or org buffer."
+    (interactive)
+    ;; Jump to Org entry if in Agenda view
+    (when (equal major-mode 'org-agenda-mode)
+      (org-agenda-goto))
+    (let* ((start (org-read-date t t nil "Start time: "))
+           (end (org-read-date t t nil "End time: "))
+           (duration (org-duration-from-minutes
+                      (/ (float-time (time-subtract end start)) 60))))
+      (save-excursion
+        (org-back-to-heading t)
+        (org-end-of-meta-data)
+        (let ((logbook-start (re-search-forward ":LOGBOOK:" (save-excursion (org-end-of-subtree t t)) t))
+              (logbook-end))
+          ;; Create LOGBOOK drawer if it doesn't exist
+          (unless logbook-start
+            (insert ":LOGBOOK:\n:END:\n")
+            (forward-line -1)
+            (setq logbook-start (point)))
+          ;; Insert CLOCK line just before :END:
+          (goto-char logbook-start)
+          (setq logbook-end (re-search-forward ":END:" nil t))
+          (goto-char (or logbook-end (point-max)))
+          (beginning-of-line)
+          (insert (format "CLOCK: [%s]--[%s] =>  %s\n"
+                          (format-time-string "%Y-%m-%d %a %H:%M" start)
+                          (format-time-string "%Y-%m-%d %a %H:%M" end)
+                          duration))))))
+
+  (defun my/org-format-clocksum-minutes ()
+    "Return the clocksum of the current entry as e.g. '1h 15m'."
+    (let* ((clocksum (org-entry-get nil "CLOCKSUM"))
+           (parts (when clocksum (split-string clocksum ":")))
+           (hours (string-to-number (or (car parts) "0")))
+           (minutes (string-to-number (or (cadr parts) "0")))
+           (total-minutes (+ (* hours 60) minutes)))
+      (if (= total-minutes 0) "      "
+        (cond
+         ((< total-minutes 60) (format "/%dm  " total-minutes))
+         ((= (mod total-minutes 60) 0) (format "/%dh   " (/ total-minutes 60)))
+         (t (format "/%dh%dm" (/ total-minutes 60) (mod total-minutes 60)))))
+      ))
 
   (defun my/org-agenda-show-time-if-any ()
     (let ((scheduled (org-get-scheduled-time (point))))
@@ -45,6 +84,9 @@
 
   ;; Use latest Org
   (use-package org
+    :hook
+    ((org-agenda-mode . (lambda ()
+                          (define-key org-agenda-mode-map (kbd "M") #'my/org-agenda-insert-manual-clock))))
     :bind (("C-x M-a" . org-agenda)
            :map org-mode-map
            ("<C-return>" . save-buffer))
@@ -58,7 +100,8 @@
     (org-hide-properties t)
 
     (org-agenda-prefix-format
-     '((agenda . " %i %-12:c %(my/org-agenda-show-time-if-any) %(my/org-agenda-add-clocked-time) e:%-6e ")
+     '((agenda  . " %i %-12:c%?-12t%-3e%(my/org-format-clocksum-minutes) ")
+       ;;(agenda . " %i %-12:c %(my/org-agenda-show-time-if-any) %(my/org-agenda-add-clocked-time) e:%-6e ")
        (todo   . " %i %-12:c %(my/org-agenda-show-date-if-any)  e:%-6e ")
        (tags   . " %i %-12:c %(my/org-agenda-show-date-if-any)  e:%-6e ")
        (search . " %i %-12:c %(my/org-agenda-show-date-if-any)  e:%-6e ")))
@@ -84,6 +127,7 @@
      'org-babel-load-languages
      '((emacs-lisp . t)
        (python . t)))
+
     :config
     (custom-set-faces
      '(org-link ((t (:inherit link :underline t :italic t)))))
