@@ -25,12 +25,17 @@
     (package-vc-install "https://github.com/slotThe/vc-use-package"))
   (require 'vc-use-package)
 
-  ;; TODO: show clocked time in log view
+  (defun my/org-agenda-add-clocked-time ()
+    (let ((clocked (org-entry-get (point) "CLOCKSUM")))
+      (if clocked
+         (format "⏱️ %s" clocked) clocked
+        "⏱️ -:--")))
+
   (defun my/org-agenda-show-time-if-any ()
     (let ((scheduled (org-get-scheduled-time (point))))
       (if scheduled
-          (format-time-string "⏰%H:%M " scheduled)
-        "       ")))
+          (format-time-string "📅%H:%M " scheduled)
+        "        ")))
 
   (defun my/org-agenda-show-date-if-any ()
     (let ((scheduled (org-get-scheduled-time (point))))
@@ -53,7 +58,7 @@
     (org-hide-properties t)
 
     (org-agenda-prefix-format
-     '((agenda . " %i %-12:c %(my/org-agenda-show-time-if-any) e:%-6e ")
+     '((agenda . " %i %-12:c %(my/org-agenda-show-time-if-any) %(my/org-agenda-add-clocked-time) e:%-6e ")
        (todo   . " %i %-12:c %(my/org-agenda-show-date-if-any)  e:%-6e ")
        (tags   . " %i %-12:c %(my/org-agenda-show-date-if-any)  e:%-6e ")
        (search . " %i %-12:c %(my/org-agenda-show-date-if-any)  e:%-6e ")))

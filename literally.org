@@ -721,7 +721,6 @@ future reference.
               (go-mode . eglot-ensure)
               (go-mode . flycheck-mode)
               (go-mode . eldoc-mode)
-              (go-mode . go-test-mode)
               (go-mode . remove-window-margins)
               (before-save . my-gofmt-before-save))
        :bind
@@ -745,6 +744,7 @@ future reference.
        )
 
      (use-package gotest
+       :ensure t
        :bind (:map go-mode-map
                    ("M-t" . go-test-current-test)))
 
