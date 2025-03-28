@@ -49,6 +49,8 @@
     (org-todo-keywords '((sequence "TODO" "IN-PROGRESS" "HOLD" "|" "DONE" "CANCELLED")))
     (org-global-properties '(("Effort_ALL". "5m 15m 25m 40m 55m")))
     (org-columns-default-format "%50ITEM(Task) %10Effort(Effort){:} %10CLOCKSUM")
+    (org-startup-folded 'overview)
+    (org-hide-properties t)
 
     (org-agenda-prefix-format
      '((agenda . " %i %-12:c %(my/org-agenda-show-time-if-any) e:%-6e ")
@@ -59,7 +61,8 @@
     (org-agenda-custom-commands '(("w" "Anytype tasks"
                                    ((agenda "")
                                     (alltodo ""))
-                                   ((org-agenda-files '("/home/zarkone/docs/notes/anytype/inbox.org"))))
+                                   ((org-agenda-files '("/home/zarkone/docs/notes/anytype/inbox.org"))
+                                    (org-agenda-span 14)))
                                   ("b" "My Business tasks"
                                    ((agenda "")
                                     (alltodo ""))
