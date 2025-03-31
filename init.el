@@ -94,11 +94,13 @@ Can be run from org-agenda or org buffer."
     (org-agenda-sticky nil)
     (org-log-done t)
     (org-agenda-files '("/home/zarkone/docs/notes/anytype/inbox.org"))
-    (org-todo-keywords '((sequence "TODO" "IN-PROGRESS" "HOLD" "|" "DONE" "CANCELLED")))
+    (org-todo-keywords '((sequence "TODO" "IN-PROGRESS" "NEXT" "HOLD" "|" "DONE" "CANCELLED")))
     (org-global-properties '(("Effort_ALL". "5m 15m 25m 40m 55m")))
     (org-columns-default-format "%50ITEM(Task) %10Effort(Effort){:} %10CLOCKSUM")
     (org-startup-folded 'overview)
     (org-hide-properties t)
+    (org-agenda-start-day "-7d")
+    (org-agenda-span 14)
 
     (org-agenda-prefix-format
      '((agenda  . " %i %-12:c%?-12t%-3e%(my/org-format-clocksum-minutes) ")
@@ -122,6 +124,7 @@ Can be run from org-agenda or org buffer."
     (org-todo-keyword-faces
      '(("TODO" . org-warning)
        ("IN-PROGRESS" . (:foreground "yellow" :weight bold))
+       ("NEXT" . (:foreground "lavander" :weight bold))
        ("HOLD" . (:foreground "purple" :weight bold))
        ("CANCELLED" . (:foreground "pink"))))
     (org-babel-do-load-languages

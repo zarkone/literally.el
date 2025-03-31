@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
-# name: newserv
-# key: newserv
+# name: serv
+# key: serv
 # --
 
 const CName = "common.yourname.here"
