@@ -80,7 +80,7 @@ Can be run from org-agenda or org buffer."
     (let ((scheduled (org-get-scheduled-time (point))))
       (if scheduled
           (format "📅%s" (format-time-string "%a" scheduled))
-        "☐           ")))
+        "·····")))
 
   ;; Use latest Org
   (use-package org
@@ -100,7 +100,7 @@ Can be run from org-agenda or org buffer."
     (org-startup-folded 'overview)
     (org-hide-properties t)
     (org-agenda-start-day "-7d")
-    (org-agenda-span 14)
+    (org-agenda-span 21)
 
     (org-agenda-prefix-format
      '((agenda  . " %i %-12:c%?-12t%-3e%(my/org-format-clocksum-minutes) ")
@@ -114,10 +114,17 @@ Can be run from org-agenda or org buffer."
                                     (alltodo ""))
                                    ((org-agenda-files '("/home/zarkone/docs/notes/anytype/inbox.org"))
                                     (org-agenda-span 14)))
-                                  ("b" "My Business tasks"
+                                  ("b" " Business"
                                    ((agenda "")
                                     (alltodo ""))
-                                   ((org-agenda-files '("/home/zarkone/docs/notes/business.org"))))))
+                                   ((org-agenda-files '("/home/zarkone/docs/notes/business.org"
+                                                        "/home/zarkone/docs/notes/pasm"
+                                                        "/home/zarkone/docs/notes/routine.org"))))
+                                  ("m" " My"
+                                   ((agenda "")
+                                    (alltodo ""))
+                                   ((org-agenda-files '("/home/zarkone/docs/notes/my.org"
+                                                        "/home/zarkone/docs/notes/routine.org"))))))
 
 
 
