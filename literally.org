@@ -894,6 +894,12 @@ future reference.
        :config
        (require 'flycheck-clj-kondo))
    #+end_src
+** Svelte
+#+begin_src elisp
+  (use-package svelte-mode
+    :bind (:map svelte-mode-map
+                ("M-o" . other-window)))
+#+end_src
 ** ts
 #+begin_src emacs-lisp
   (use-package tide)
