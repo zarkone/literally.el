@@ -99,6 +99,9 @@ Can be run from org-agenda or org buffer."
     (org-columns-default-format "%50ITEM(Task) %10Effort(Effort){:} %10CLOCKSUM")
     (org-startup-folded 'overview)
     (org-hide-properties t)
+
+    ;; adjust agenda view for three weeks
+    (org-agenda-start-on-weekday 1)
     (org-agenda-start-day "-7d")
     (org-agenda-span 21)
 
@@ -112,8 +115,7 @@ Can be run from org-agenda or org buffer."
     (org-agenda-custom-commands '(("w" "Anytype tasks"
                                    ((agenda "")
                                     (alltodo ""))
-                                   ((org-agenda-files '("/home/zarkone/docs/notes/anytype/inbox.org"))
-                                    (org-agenda-span 14)))
+                                   ((org-agenda-files '("/home/zarkone/docs/notes/anytype/inbox.org"))))
                                   ("b" " Business"
                                    ((agenda "")
                                     (alltodo ""))

@@ -1061,7 +1061,7 @@ future reference.
 
 
 #+end_src
-* emacs global conf: MUST BE IN THE END FOR EMACS 29 ?!
+* emacs global conf
 
 This has to be in the end of file for emacs 29, it turns out.
 Otherwise getting a lot of nonsense like autoloads not created, file
