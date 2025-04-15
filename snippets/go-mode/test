@@ -1,0 +1,13 @@
+# -*- mode: snippet -*-
+# name: test
+# key: test
+# --
+
+func TestMy_My(t *testing.T) {
+	t.Run("my test", func(t *testing.T) {
+		_, err := hello("")
+		assert.Error(t, err)
+		require.NoError(t, err)
+	})
+
+}
