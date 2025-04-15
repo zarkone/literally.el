@@ -93,7 +93,6 @@ Can be run from org-agenda or org buffer."
     :custom
     (org-agenda-sticky nil)
     (org-log-done t)
-    (org-agenda-files '("/home/zarkone/docs/notes/anytype/inbox.org"))
     (org-todo-keywords '((sequence "TODO" "IN-PROGRESS" "NEXT" "HOLD" "|" "DONE" "CANCELLED")))
     (org-global-properties '(("Effort_ALL". "5m 15m 25m 40m 55m")))
     (org-columns-default-format "%50ITEM(Task) %10Effort(Effort){:} %10CLOCKSUM")
@@ -115,7 +114,7 @@ Can be run from org-agenda or org buffer."
     (org-agenda-custom-commands '(("w" "Anytype tasks"
                                    ((agenda "")
                                     (alltodo ""))
-                                   ((org-agenda-files '("/home/zarkone/docs/notes/anytype/inbox.org"))))
+                                   ((org-agenda-files '("/home/zarkone/docs/notes/anytype/current/"))))
                                   ("b" " Business"
                                    ((agenda "")
                                     (alltodo ""))

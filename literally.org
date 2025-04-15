@@ -726,6 +726,8 @@ future reference.
        :bind (("C-c a" . eglot-code-actions)
               ("C-c C-c" . eglot-code-action-quickfix)
               ("C-c C-e" . eglot-code-action-extract)
+              ("M-n" . flymake-goto-next-error)
+              ("M-p" . flymake-goto-prev-error)
               ("M-t" . go-test-current-test))
        :custom
        (tab-width 4)
