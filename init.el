@@ -121,11 +121,10 @@ Can be run from org-agenda or org buffer."
                                    ((org-agenda-files '("/home/zarkone/docs/notes/business.org"
                                                         "/home/zarkone/docs/notes/pasm"
                                                         "/home/zarkone/docs/notes/routine.org"))))
-                                  ("m" " My"
+                                  ("m" " May Week"
                                    ((agenda "")
                                     (alltodo ""))
-                                   ((org-agenda-files '("/home/zarkone/docs/notes/my.org"
-                                                        "/home/zarkone/docs/notes/routine.org"))))))
+                                   ((org-agenda-files '("/home/zarkone/docs/notes/may-week.org"))))))
 
 
 

@@ -1,6 +1,5 @@
 %backup%~
 .backups/
-.custom-vars
 .lsp-session-v1
 auto-save-list/
 bookmarks
