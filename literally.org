@@ -454,6 +454,9 @@ future reference.
 ** Highlight git changes in fringes
    #+begin_src emacs-lisp
      (use-package diff-hl
+       :custom
+       (diff-hl-fringe-bmp-function 'diff-hl-fringe-bmp-from-pos)
+
        :hook (after-init . global-diff-hl-mode))
    #+end_src
 
@@ -496,6 +499,10 @@ future reference.
 
 #+END_SRC
 * Packages
+** elixir
+#+begin_src emacs-lisp
+(use-package elixir-mode)
+#+end_src
 ** nix
 #+BEGIN_SRC emacs-lisp
   (use-package nix-mode
@@ -681,7 +688,7 @@ future reference.
   (use-package consult-eglot)
   (use-package eglot
     :bind (("C-c M-i" . eglot-code-action-organize-imports)
-           ("C-c M-/" . eglot-find-implementation))
+           ("C-c M-." . eglot-find-implementation))
     :init
     (with-eval-after-load 'eglot
       (setq completion-category-defaults nil)
@@ -703,27 +710,23 @@ future reference.
      Note that this will cause ‘go-mode’ to get loaded the first time
      you save any file, kind of defeating the point of autoloading."
 
+
        (interactive)
        (when (or (eq major-mode 'go-mode)
                  (eq major-mode 'go-mode)) (gofmt)))
 
      (use-package templ-ts-mode)
 
-     (defun remove-window-margins ()
-       (set-window-margins nil nil nil))
-
-
+     (require 'eglot)
 
      (use-package go-mode
        :hook ((go-mode . eglot-ensure)
               (go-mode . flycheck-mode)
               (go-mode . eldoc-mode)
-              (go-mode . eglot-ensure)
-              (go-mode . flycheck-mode)
-              (go-mode . eldoc-mode)
-              (go-mode . remove-window-margins)
               (before-save . my-gofmt-before-save))
        :bind (("C-c a" . eglot-code-actions)
+              ("C-c s" . consult-eglot-symbols)
+              ("C-c C-s" . consult-eglot-symbols)
               ("C-c C-c" . eglot-code-action-quickfix)
               ("C-c C-e" . eglot-code-action-extract)
               ("M-n" . flymake-goto-next-error)
@@ -731,14 +734,14 @@ future reference.
               ("M-t" . go-test-current-test))
        :custom
        (tab-width 4)
-       (go-mode-indent-offset 4)
+       (go-ts-mode-indent-offset 4)
        ;;(company-lsp-async t)
        ;;(go-coverage-display-buffer-func 'display-buffer-same-window)
        (gofmt-command "goimports")
        (compile-command "go build -v")
 
-       :config
-       (use-package go-snippets)
+       ;; :config
+       ;; (use-package go-snippets)
        ;; (setenv "GO111MODULE" "on")
        ;; (lsp-register-custom-settings
        ;;  '(("gopls.completeUnimported" t t)
@@ -784,6 +787,29 @@ future reference.
        (add-hook 'dape-compile-hook 'kill-buffer)
 
        )
+
+     (with-eval-after-load 'dape
+       (add-to-list 'dape-configs
+                    '(dape
+                      :request "launch"
+                      :mode "test"
+                      :program "." ;; or "." if you’re inside the test package
+                      :cwd "/home/zarkone/anytype/any-sync"
+                      :buildFlags "-gcflags=all=-N -l")
+                    '(delve
+                      modes (go-mode go-ts-mode)
+                      ;; how to start the adapter
+                      command "dlv"
+                      command-args ("dap" "--listen" "127.0.0.1:55878" "--log")
+                      command-cwd dape-cwd-fn
+                      host "127.0.0.1" port 55878
+                      ;; DAP launch request
+                      :request "launch"
+                      :program (lambda () (or (projectile-project-root)
+                                              default-directory))
+                      :cwd (lambda () (or (projectile-project-root)
+                                          default-directory))
+                      :buildFlags "-gcflags=all=-N -l")))
 
      ;; Enable repeat mode for more ergonomic `dape' use
      (use-package repeat
@@ -905,20 +931,20 @@ future reference.
 ** ts
 #+begin_src emacs-lisp
   (use-package tide)
+  (use-package company)
   (use-package typescript-mode
     :custom
     (typescript-mode)
-    (typescript-indent-level 4)
-    (typescript-mode-indent-offset 4)
-    (js-indent-level 4)
+    (typescript-indent-level 2)
+    (typescript-mode-indent-offset 2)
+    (js-indent-level 2)
     (flycheck-check-syntax-automatically '(save mode-enabled))
-    :hook ((typescript-mode . typescript-mode)
-           (typescript-mode . tide-setup)
+    :hook ((typescript-mode . tide-setup)
+           (typescript-mode . company-mode)
            (typescript-mode . tide-hl-identifier-mode)
            (typescript-mode . indent-tabs-mode)
            (typescript-mode . flycheck-mode)
-           ;; (before-save . tide-format-before-save)
-           ))
+           (before-save . tide-format-before-save)))
 #+end_src
 ** COMMENT js
    looks :ensure nil doesn't work, use-package still tries to fetch
@@ -947,12 +973,49 @@ future reference.
 ** protobuf3
 #+begin_src emacs-lisp
   (use-package protobuf-mode
-    :hook (protobuf-mode . protobuf-mode))
-  (use-package protobuf-mode
-    :custom (protobuf-mode-indent-offset 4))
+    :custom (c-basic-offset 4))
 #+end_src
 * AI
-** COMMENT minuet
+** COMMENT mcp
+#+begin_src emacs-lisp
+  (use-package gptel
+    :custom
+    (gptel-api-key (lambda ()
+                     (read-trimmed-string-from-file "/home/zarkone/.emacs.d/.openai-key"))))
+  ;; to try:
+  ;; https://github.com/karthink/gptel
+  (use-package mcp
+    :ensure t
+    :after gptel
+    :custom (mcp-hub-servers
+             `(("anytype" . (
+                             :command "npx"
+                             :args ("-y" "@anyproto/anytype-mcp")
+                             :env (
+                                   :OPENAPI_MCP_HEADERS "{\"Authorization\":\"Bearer xnOjkgbR1xN5HqtzTUnJutrnW4a6cp/cqXymhKqtIDY=\", \"Anytype-Version\":\"2025-05-20\"}"
+                                   )))))
+    :config
+    (require 'mcp-hub)
+    (require 'gptel-integrations)
+    :hook (after-init . mcp-hub-start-all-server))
+#+end_src
+** COMMENT chatgpt-shell
+#+begin_src emacs-lisp
+  (defun read-trimmed-string-from-file (file)
+    "Read the contents of FILE as a string and trim whitespace."
+    (with-temp-buffer
+      (insert-file-contents file)
+      (string-trim (buffer-string))))
+
+
+  (use-package chatgpt-shell
+    :ensure t
+    :custom
+    ((chatgpt-shell-openai-key
+      (lambda ()
+        (read-trimmed-string-from-file "/home/zarkone/.emacs.d/.openai-key")))))
+#+end_src
+** minuet
 #+begin_src emacs-lisp
   (use-package minuet
     :bind
@@ -969,99 +1032,24 @@ future reference.
      ("M-a" . #'minuet-accept-suggestion-line)
      ("M-e" . #'minuet-dismiss-suggestion))
 
-    :init
-    ;; if you want to enable auto suggestion.
-    ;; Note that you can manually invoke completions without enable minuet-auto-suggestion-mode
-    (add-hook 'prog-mode-hook #'minuet-auto-suggestion-mode)
-
     :config
-    (setq minuet-provider 'codestral)
-    (setq minuet-codestral-options
-      '(:model "codestral-latest"
-               :end-point "https://codestral.mistral.ai/v1/fim/completions"
-               :api-key (lambda () "")
-               :template (:prompt minuet--default-fim-prompt-function
-                                  :suffix minuet--default-fim-suffix-function)
-               :optional nil))
-    (minuet-set-optional-options minuet-codestral-options :stop ["\n\n"])
-    (minuet-set-optional-options minuet-codestral-options :max_tokens 256)
+    (setq minuet-provider 'openai-fim-compatible)
+    (setq minuet-n-completions 1) ; recommended for Local LLM for resource saving
+    ;; I recommend beginning with a small context window size and incrementally
+    ;; expanding it, depending on your local computing power. A context window
+    ;; of 512, serves as an good starting point to estimate your computing
+    ;; power. Once you have a reliable estimate of your local computing power,
+    ;; you should adjust the context window to a larger value.
+    (setq minuet-context-window 1024)
+    (plist-put minuet-openai-fim-compatible-options :end-point "http://localhost:11434/v1/completions")
+    ;; an arbitrary non-null environment variable as placeholder.
+    ;; For Windows users, TERM may not be present in environment variables.
+    ;; Consider using APPDATA instead.
+    (plist-put minuet-openai-fim-compatible-options :name "Ollama")
+    (plist-put minuet-openai-fim-compatible-options :api-key "TERM")
+    (plist-put minuet-openai-fim-compatible-options :model "qwen2.5-coder:3b")
 
-
-    )
-
-  ;; gemini
-  ;;   (setq minuet-provider 'gemini)
-  ;;   (defvar minuet-gemini-options
-  ;;     `(:model "gemini-2.0-flash"
-  ;;              :api-key (lambda () "put key here")
-  ;;              :system
-  ;;              (:template minuet-default-system-template
-  ;;                         :prompt minuet-default-prompt
-  ;;                         :guidelines minuet-default-guidelines
-  ;;                         :n-completions-template minuet-default-n-completion-template)
-  ;;              :fewshots minuet-default-fewshots
-  ;;              :chat-input
-  ;;              (:template minuet-default-chat-input-template
-  ;;                         :language-and-tab minuet--default-chat-input-language-and-tab-function
-  ;;                         :context-before-cursor minuet--default-chat-input-before-cursor-function
-  ;;                         :context-after-cursor minuet--default-chat-input-after-cursor-function)
-  ;;              :optional nil)
-  ;;     "config options for Minuet Gemini provider")
-  ;;   (defvar mg-minuet-gemini-prompt
-  ;;     "You are the backend of an AI-powered code completion engine. Your task is to
-  ;; provide code suggestions based on the user's input. The user's code will be
-  ;; enclosed in markers:
-
-  ;; - `<contextAfterCursor>`: Code context after the cursor
-  ;; - `<cursorPosition>`: Current cursor location
-  ;; - `<contextBeforeCursor>`: Code context before the cursor
-  ;; ")
-
-  ;;   (defvar mg-minuet-gemini-chat-input-template
-  ;;     "{{{:language-and-tab}}}
-  ;; <contextBeforeCursor>
-  ;; {{{:context-before-cursor}}}<cursorPosition>
-  ;; <contextAfterCursor>
-  ;; {{{:context-after-cursor}}}")
-
-  ;;   (defvar mg-minuet-gemini-fewshots
-  ;;     `((:role "user"
-  ;;              :content "# language: python
-  ;; <contextBeforeCursor>
-  ;; def fibonacci(n):
-  ;;     <cursorPosition>
-  ;; <contextAfterCursor>
-
-  ;; fib(5)")
-  ;;       ,(cadr minuet-default-fewshots)))
-
-  ;;   (minuet-set-optional-options minuet-gemini-options
-  ;;                                :prompt 'mg-minuet-gemini-prompt
-  ;;                                :system)
-  ;;   (minuet-set-optional-options minuet-gemini-options
-  ;;                                :template 'mg-minuet-gemini-chat-input-template
-  ;;                                :chat-input)
-  ;;   (plist-put minuet-gemini-options :fewshots 'mg-minuet-gemini-fewshots)
-
-  ;;   (minuet-set-optional-options minuet-gemini-options
-  ;;                                :generationConfig
-  ;;                                '(:maxOutputTokens 256
-  ;;                                                   :topP 0.9))
-  ;;   (minuet-set-optional-options minuet-gemini-options
-  ;;                                :safetySettings
-  ;;                                [(:category "HARM_CATEGORY_DANGEROUS_CONTENT"
-  ;;                                            :threshold "BLOCK_NONE")
-  ;;                                 (:category "HARM_CATEGORY_HATE_SPEECH"
-  ;;                                            :threshold "BLOCK_NONE")
-  ;;                                 (:category "HARM_CATEGORY_HARASSMENT"
-  ;;                                            :threshold "BLOCK_NONE")
-  ;;                                 (:category "HARM_CATEGORY_SEXUALLY_EXPLICIT"
-  ;;                                            :threshold "BLOCK_NONE")])
-
-
-
-
-
+    (minuet-set-optional-options minuet-openai-fim-compatible-options :max_tokens 1024))
 #+end_src
 * emacs global conf
 
@@ -1198,7 +1186,7 @@ to be put in the end of file" solution wins.
            ("M-RET" . recompile)
            ("M-;" . replace-regexp)
            ("C-x H" . help)
-           ("C-c M-." . zarkone/insert-current-date)
+           ;; ("C-c M-." . zarkone/insert-current-date)
            ("C-x C-g" . goto-address-at-point)
            ("M-/" . hippie-expand)
            ("M--" . zarkone/delete-whitespace)
@@ -1209,6 +1197,8 @@ to be put in the end of file" solution wins.
            ("C-r" . isearch-backward-regexp)
            ("C-x M-v" . visual-line-mode)
            ("C-<backspace>" . undo)
+           ("M-'" . point-to-register)
+           ("M-=" . jump-to-register)
 
            :map prog-mode-map
            ("C-M-c" . zarkone/comment-or-uncomment-region-or-line)
